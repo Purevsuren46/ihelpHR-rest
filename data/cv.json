@@ -1,0 +1,47 @@
+[
+    {
+        "email": "munhzayapurevsuren@gmail.com",
+        "phone": "95040448",
+        "password": "12345",
+        "role": "user",
+        "photo": "purve.jpg",
+        "name": "Мөнхзаяа Пүрэвсүрэн",
+        "location": "БЗД, 2-р хороо, Доржийн гудамж, 2-р хороо, 36-р байр, 14 тоот",
+        "age": 22,
+        "gender": "male",
+        "category": ["Мэдээлэл технологи"],
+        "company": "ihelp",
+        "occupation": "back-end developer",
+        "position": "senior",
+        "working": true,
+        "badge": ["Баталгаажсан", "Алтан"],
+        "filters": ["$gt=500"],
+        "special": true,
+        "point": 500000,
+        "wallet": 25000000,
+        "register": "УП99041614",
+        "about": "Миний бие back-end developer ийн ажил хийдэг",
+        "experience": [
+            {
+                "company": "Samsung",
+                "occupation": "sales-man",
+                "wage": 1500000,
+                "about": "Цахилгаан бараа бүтээгдэхүүний борлуулалтыг нэмэгдүүлэх",
+                "start": "2021-09-01",
+                "end": "2022-01-01"
+            }
+        ],
+        "course": [
+            {
+                "name": "Back-end developer",
+                "start": "2020-05-01",
+                "end": "2021-05-01"
+            }
+        ],
+        "following-profile": ["p-id1", "p-id2", "p-id3", "p-id4", "p-id5", "p-id6"],
+        "follower-profile": ["p-id1", "p-id2", "p-id3", "p-id4", "p-id5", "p-id6"],
+        "announcement": ["a-id1", "a-id2", "a-id3", "a-id4", "a-id5"],
+        "job": ["j-id1", "j-id2", "j-id3", "j-id4", "j-id5"],
+        "post": ["p-id1", "p-id2", "p-id3", "p-id4", "p-id5", "p-id6", "p-id7"]
+    }
+]
