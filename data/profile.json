@@ -4,10 +4,10 @@
         "phone": "77555255",
         "password": "12345",
         "photo": "ihelp.jpg",
+        "cover-photo": "ihelp.jpg",
         "name": "ihelp",
         "location": "Сүхбаатар дүүрэг, 1-р хороо, Энхтайвны өргөн чөлөө-23, UBH center, 9 давхар, 930Б тоот 14210 Ulaanbaatar, Mongolia.",
         "category": ["Хүний нөөц", "Мэдээлэл технологи"],
-        "organization": true,
         "authentication": true,
         "filters": ["$gt=500"],
         "special": true,
@@ -19,7 +19,6 @@
         "announcement": ["a-id1", "a-id2", "a-id3", "a-id4", "a-id5"],
         "workers": ["cv-id1", "cv-id2", "cv-id3", "cv-id4", "cv-id5", "cv-id6"],
         "following-cv": ["cv-id1", "cv-id2", "cv-id3", "cv-id4", "cv-id5", "cv-id6"],
-        "follower-cv": ["cv-id1", "cv-id2", "cv-id3", "cv-id4", "cv-id5", "cv-id6"],
-        "post": ["p-id1", "p-id2", "p-id3", "p-id4", "p-id5", "p-id6", "p-id7"]
+        "follower-cv": ["cv-id1", "cv-id2", "cv-id3", "cv-id4", "cv-id5", "cv-id6"]
     }
 ]

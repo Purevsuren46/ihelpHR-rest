@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 
 const AnnouncementSchema = new mongoose.Schema({
   
-  employee: {
-      type: String,
-      required: [true, "Ажил олгогчийн нэрийг оруулна уу"]
-  },
   description: {
     type: String,
     required: [true, "Тайлбар оруулна уу"]
@@ -48,7 +44,7 @@ const AnnouncementSchema = new mongoose.Schema({
   }],
   createUser: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Cv',
+    ref: 'Profile',
   },
   special: {
     type: Boolean,

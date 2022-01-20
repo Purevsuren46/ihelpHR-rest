@@ -1,4 +1,4 @@
-const Job = require("../models/Job");
+const Post = require("../models/Post");
 const path = require("path");
 
 const MyError = require("../utils/myError");
@@ -7,8 +7,8 @@ const paginate = require("../utils/paginate");
 const Profile = require("../models/Profile");
 const Occupation = require("../models/Occupation");
 
-// api/v1/Jobs
-exports.getJobs = asyncHandler(async (req, res, next) => {
+// api/v1/Posts
+exports.getPosts = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
   const sort = req.query.sort;
@@ -16,11 +16,11 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
 
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
-  const pagination = await paginate(page, limit, Job);
+  const pagination = await paginate(page, limit, Post);
 
-  const jobs = await Job.find(req.query, select)
+  const posts = await Post.find(req.query, select)
     .populate({
-      path: "jobCat",
+      path: "postCat",
       select: "name ",
     })
     .sort(sort)
@@ -29,19 +29,19 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    count: jobs.length,
-    data: jobs,
+    count: posts.length,
+    data: posts,
     pagination,
   });
 });
 
-exports.getUserJobs = asyncHandler(async (req, res, next) => {
+exports.getUserPosts = asyncHandler(async (req, res, next) => {
   req.query.createUser = req.userId;
-  return this.getJobs(req, res, next);
+  return this.getPosts(req, res, next);
 });
 
-// api/v1/categories/:catId/Jobs
-exports.getOccupationJobs = asyncHandler(async (req, res, next) => {
+// api/v1/categories/:catId/Posts
+exports.getOccupationPosts = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 2;
   const sort = req.query.sort;
@@ -49,10 +49,10 @@ exports.getOccupationJobs = asyncHandler(async (req, res, next) => {
 
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
-  const pagination = await paginate(page, limit, Job);
+  const pagination = await paginate(page, limit, Post);
 
   //req.query, select
-  const jobs = await Job.find(
+  const posts = await Post.find(
     { ...req.query, occupation: req.params.occupationId },
     select
   )
@@ -62,76 +62,73 @@ exports.getOccupationJobs = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    count: jobs.length,
-    data: jobs,
+    count: posts.length,
+    data: posts,
     pagination,
   });
 });
 
-exports.getJob = asyncHandler(async (req, res, next) => {
-  const job = await Job.findById(req.params.id);
+exports.getPost = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
 
-  if (!job) {
+  if (!post) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
   }
   // Хандалт тоологч
-  if (job.count == null) {
+  if (post.count == null) {
       // default data
-      const beginCount = new Job({
+      const beginCount = new Post({
           count : 1
       })
       beginCount.save()
   }
   else {
-      job.count += 1;
-      job.save()
+      post.count += 1;
+      post.save()
   }
   
 
   res.status(200).json({
     success: true,
-    data: job,
+    data: post,
   });
 });
 
 exports.createProfile = asyncHandler(async (req, res, next) => {
-  const jobCat = await Profile.create(req.body);
+  const postCat = await Profile.create(req.body);
 
   res.status(200).json({
     success: true,
-    data: jobCat,
+    data: postCat,
   });
 });
 
-exports.createJob = asyncHandler(async (req, res, next) => {
+exports.createPost = asyncHandler(async (req, res, next) => {
   const occupation = await Occupation.findById(req.body.occupation);
-  const profile = await Profile.findById(req.userId);
 
-  
   if (!occupation) {
     throw new MyError(req.body.occupation + " ID-тэй мэргэжил байхгүй!", 400);
   }
 
   req.body.createUser = req.userId;
-  const job = await Job.create(req.body);
-  // profile.job.addToSet(req.body.createUser);
-  // profile.save()
-  console.log()
+
+  const post = await Post.create(req.body);
+
   res.status(200).json({
     success: true,
-    data: job,
+    data: post,
   });
 });
 
-exports.deleteJob = asyncHandler(async (req, res, next) => {
-  const job = await Job.findById(req.params.id);
+exports.deletePost = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
 
-  if (!job) {
+  if (!post) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
   }
 
   if (
-    job.createProfile.toString() !== req.userId &&
+    post.createProfile.toString() !== req.userId &&
     req.userRole !== "admin"
   ) {
     throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
@@ -139,24 +136,24 @@ exports.deleteJob = asyncHandler(async (req, res, next) => {
 
   const user = await Profile.findById(req.userId);
 
-  job.remove();
+  post.remove();
 
   res.status(200).json({
     success: true,
-    data: job,
+    data: post,
     whoDeleted: user.name,
   });
 });
 
-exports.updateJob = asyncHandler(async (req, res, next) => {
-  const job = await Job.findById(req.params.id);
+exports.updatePost = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
 
-  if (!job) {
+  if (!post) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүйээээ.", 400);
   }
 
   if (
-    job.createProfile.toString() !== req.userId &&
+    post.createProfile.toString() !== req.userId &&
     req.userRole !== "admin"
   ) {
     throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
@@ -165,22 +162,22 @@ exports.updateJob = asyncHandler(async (req, res, next) => {
   req.body.updateProfile = req.userId;
 
   for (let attr in req.body) {
-    job[attr] = req.body[attr];
+    post[attr] = req.body[attr];
   }
 
-  job.save();
+  post.save();
 
   res.status(200).json({
     success: true,
-    data: job,
+    data: post,
   });
 });
 
-// PUT:  api/v1/Jobs/:id/photo
-exports.uploadJobPhoto = asyncHandler(async (req, res, next) => {
-  const job = await Job.findById(req.params.id);
+// PUT:  api/v1/Posts/:id/photo
+exports.uploadPostPhoto = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
 
-  if (!job) {
+  if (!post) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүйээ.", 400);
   }
 
@@ -206,8 +203,8 @@ exports.uploadJobPhoto = asyncHandler(async (req, res, next) => {
       );
     }
 
-    job.photo = file.name;
-    job.save();
+    post.photo = file.name;
+    post.save();
 
     res.status(200).json({
       success: true,

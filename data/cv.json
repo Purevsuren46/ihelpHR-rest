@@ -7,7 +7,7 @@
         "photo": "purve.jpg",
         "name": "Мөнхзаяа Пүрэвсүрэн",
         "location": "БЗД, 2-р хороо, Доржийн гудамж, 2-р хороо, 36-р байр, 14 тоот",
-        "age": 22,
+        "birth": "1999-04-16",
         "gender": "male",
         "category": ["Мэдээлэл технологи"],
         "company": "ihelp",
@@ -40,8 +40,7 @@
         ],
         "following-profile": ["p-id1", "p-id2", "p-id3", "p-id4", "p-id5", "p-id6"],
         "follower-profile": ["p-id1", "p-id2", "p-id3", "p-id4", "p-id5", "p-id6"],
-        "announcement": ["a-id1", "a-id2", "a-id3", "a-id4", "a-id5"],
-        "job": ["j-id1", "j-id2", "j-id3", "j-id4", "j-id5"],
-        "post": ["p-id1", "p-id2", "p-id3", "p-id4", "p-id5", "p-id6", "p-id7"]
+        "post": ["p-id1", "p-id2", "p-id3", "p-id4", "p-id5", "p-id6", "p-id7"],
+        "like": ["p-id1", "p-id2", "p-id3", "p-id4", "p-id5", "p-id6", "p-id7"]
     }
 ]

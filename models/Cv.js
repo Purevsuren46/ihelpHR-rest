@@ -16,25 +16,27 @@ const CvSchema = new mongoose.Schema({
         "Имэйл хаяг буруу байна.",
     ],
     required: [true, "Хэрэглэгчийн имэйл оруулна уу"],
+    unique: true,
   },
   name: {
       type: String,
       required: [true, "Нэр оруулна уу"]
+  },
+  birth: {
+    type: Date
   },
   photo: {
     type: String,
   },
   location: {
     type: String,
-    required: [true, "Байршил оруулна уу"]
   },
-  register: {
+  humanId: {
     type: String,
     required: [true, "Регистер оруулна уу"]
   },
   about: {
     type: String,
-    required: [true, "Товч танилцуулга оруулна уу"]
   },
   authentication: {
     type: Boolean,
@@ -43,6 +45,14 @@ const CvSchema = new mongoose.Schema({
   working: {
     type: Boolean,
     default: false,
+  },
+  workingCompany: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Profile',
+  },
+  status: {
+    type: String,
+    enum: ["opentowork"]
   },
   role: {
     type: String,
@@ -62,7 +72,6 @@ const CvSchema = new mongoose.Schema({
   category: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Category',
-    required: true,
   }],
   experience: [{
     type: mongoose.Schema.ObjectId,
@@ -72,25 +81,17 @@ const CvSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Course',
   }],
-  job: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Job',
-  }],
   following: [{
     type: mongoose.Schema.ObjectId,
-    ref: 'Profile',
+    ref: 'Cv',
   }],
   follower: [{
     type: mongoose.Schema.ObjectId,
-    ref: 'Profile',
+    ref: 'Cv',
   }],
   post: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Post',
-  }],
-  announcement: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Announcement',
   }],
   point: {
     type: Number,

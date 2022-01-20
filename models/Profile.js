@@ -63,11 +63,11 @@ const ProfileSchema = new mongoose.Schema({
   }],
   following: [{
     type: mongoose.Schema.ObjectId,
-    ref: 'Cv',
+    ref: ('Cv', 'Profile'),
   }],
   follower: [{
     type: mongoose.Schema.ObjectId,
-    ref: 'Cv',
+    ref: ('Cv', 'Profile'),
   }],
   post: [{
     type: mongoose.Schema.ObjectId,

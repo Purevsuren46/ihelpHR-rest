@@ -12,7 +12,6 @@
         "schedule" : "9-6 ажлын 5 өдөр",
         "experience" : "2 жил",
         "createdAt" : "2022-1-12",
-        "updatedAt" : "2022-1-12",
         "apply": ["cv-id", "cv-id", "cv-id", "cv-id", "cv-id", "cv-id"],
         "count": 5,
         "special": false,
