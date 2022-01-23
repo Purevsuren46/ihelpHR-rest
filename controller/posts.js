@@ -1,11 +1,12 @@
 const Post = require("../models/Post");
+const Cv = require("../models/Cv");
 const path = require("path");
 
 const MyError = require("../utils/myError");
 const asyncHandler = require("express-async-handler");
 const paginate = require("../utils/paginate");
 const Profile = require("../models/Profile");
-const Occupation = require("../models/Occupation");
+const Comment = require("../models/Comment");
 
 // api/v1/Posts
 exports.getPosts = asyncHandler(async (req, res, next) => {
@@ -35,7 +36,7 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.getUserPosts = asyncHandler(async (req, res, next) => {
+exports.getCvPosts = asyncHandler(async (req, res, next) => {
   req.query.createUser = req.userId;
   return this.getPosts(req, res, next);
 });
@@ -94,6 +95,42 @@ exports.getPost = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.likePost = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
+  const cv = await Cv.findById(req.userId);
+
+  if (!post) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+  cv.likePost.addToSet(req.params.id);
+  post.like.addToSet(req.userId);
+  cv.save()
+  post.save()
+
+  res.status(200).json({
+    success: true,
+    data: cv
+  });
+});
+
+exports.unlikePost = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
+  const cv = await Cv.findById(req.userId);
+
+  if (!post) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+  cv.likePost.remove(req.params.id);
+  post.like.remove(req.userId);
+  cv.save()
+  post.save()
+
+  res.status(200).json({
+    success: true,
+    data: cv
+  });
+});
+
 exports.createProfile = asyncHandler(async (req, res, next) => {
   const postCat = await Profile.create(req.body);
 
@@ -104,11 +141,6 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.createPost = asyncHandler(async (req, res, next) => {
-  const occupation = await Occupation.findById(req.body.occupation);
-
-  if (!occupation) {
-    throw new MyError(req.body.occupation + " ID-тэй мэргэжил байхгүй!", 400);
-  }
 
   req.body.createUser = req.userId;
 

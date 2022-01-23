@@ -10,6 +10,10 @@ const {
   deleteCategory,
 } = require("../controller/categories");
 
+const { getCategoryOccupations } = require("../controller/occupations");
+
+
+router.route("/:categoryId/occupations").get(getCategoryOccupations);
 
 
 //"/api/v1/categories"

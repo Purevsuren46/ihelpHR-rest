@@ -6,6 +6,8 @@ const {
   login,
   getProfiles,
   getProfile,
+  followProfile,
+  unfollowProfile,
   createProfile,
   updateProfile,
   deleteProfile,
@@ -14,8 +16,12 @@ const {
   logout,
 } = require("../controller/profiles");
 const {
-  getUserJobs
+  getProfileJobs
 } = require("../controller/jobs");
+
+const {
+  getProfileAnnouncements
+} = require("../controller/Announcements");
 
 
 const router = express.Router();
@@ -38,12 +44,19 @@ router
 
 router
   .route("/:id")
-  .get(authorize("admin"), getProfile)
+  .get(authorize("admin"), getProfile, )
   .put(authorize("admin"), updateProfile)
   .delete(authorize("admin"), deleteProfile);
 
+router.route("/:id/follow").get(followProfile)  
+router.route("/:id/unfollow").get(unfollowProfile)  
+
 router
   .route("/:id/jobs")
-  .get( getUserJobs);
+  .get( getProfileJobs);
+
+router
+  .route("/:id/announcements")
+  .get( getProfileAnnouncements);
 
 module.exports = router;

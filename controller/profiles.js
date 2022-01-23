@@ -1,4 +1,5 @@
 const Profile = require("../models/Profile");
+const Cv = require("../models/Cv");
 const MyError = require("../utils/myError");
 const asyncHandler = require("express-async-handler");
 const paginate = require("../utils/paginate");
@@ -99,6 +100,42 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: profile,
+  });
+});
+
+exports.followProfile = asyncHandler(async (req, res, next) => {
+  const profile = await Profile.findById(req.params.id);
+  const cv = await Cv.findById(req.userId);
+
+  if (!profile) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+  cv.following.addToSet(req.params.id);
+  profile.follower.addToSet(req.userId);
+  cv.save()
+  profile.save()
+
+  res.status(200).json({
+    success: true,
+    data: cv
+  });
+});
+
+exports.unfollowProfile = asyncHandler(async (req, res, next) => {
+  const profile = await Profile.findById(req.params.id);
+  const cv = await Cv.findById(req.userId);
+
+  if (!profile) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+  cv.following.remove(req.params.id);
+  profile.follower.remove(req.userId);
+  cv.save()
+  profile.save()
+
+  res.status(200).json({
+    success: true,
+    data: cv
   });
 });
 

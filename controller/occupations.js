@@ -37,6 +37,13 @@ exports.getOccupation = asyncHandler( async (req, res, next) => {
     
 })
 
+exports.getCategoryOccupations = asyncHandler(async (req, res, next) => {
+        req.query.category = req.params.categoryId;
+        return this.getOccupations(req, res, next);
+      });
+      
+
+
 exports.createOccupation = asyncHandler(async (req, res, next) => {
     console.log("data: ", req.body)
 

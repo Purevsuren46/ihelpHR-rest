@@ -7,6 +7,7 @@ const {
   createJob,
   deleteJob,
   updateJob,
+  applyJob,
 } = require("../controller/jobs");
 
 const router = express.Router();
@@ -23,6 +24,6 @@ router
   .delete(protect, authorize("admin", "operator"), deleteJob)
   .put(protect, authorize("admin", "operator"), updateJob);
 
-// router.route("/:id/upload-photo").put(uploadJobPhoto);
+router.route("/:id/apply").get(protect, applyJob);
 
 module.exports = router;

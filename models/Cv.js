@@ -25,7 +25,10 @@ const CvSchema = new mongoose.Schema({
   birth: {
     type: Date
   },
-  photo: {
+  profile: {
+    type: String,
+  },
+  cover: {
     type: String,
   },
   location: {
@@ -33,7 +36,6 @@ const CvSchema = new mongoose.Schema({
   },
   humanId: {
     type: String,
-    required: [true, "Регистер оруулна уу"]
   },
   about: {
     type: String,
@@ -81,6 +83,10 @@ const CvSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Course',
   }],
+  comment: [{
+    type: mongoose.Schema.ObjectId,
+    ref: 'Comment',
+  }],
   following: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
@@ -90,6 +96,10 @@ const CvSchema = new mongoose.Schema({
     ref: 'Cv',
   }],
   post: [{
+    type: mongoose.Schema.ObjectId,
+    ref: 'Post',
+  }],
+  likePost: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Post',
   }],

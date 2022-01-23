@@ -18,7 +18,7 @@ const CategorySchema = new mongoose.Schema({
 
 CategorySchema.pre("remove", async function(next) {
     console.log("removing ...")
-    await this.model('Book').deleteMany({category: this._id})
+    await this.model('Occupation').deleteMany({category: this._id})
     
     next()
 })

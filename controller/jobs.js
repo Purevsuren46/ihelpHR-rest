@@ -35,7 +35,7 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.getUserJobs = asyncHandler(async (req, res, next) => {
+exports.getProfileJobs = asyncHandler(async (req, res, next) => {
   req.query.createUser = req.userId;
   return this.getJobs(req, res, next);
 });
@@ -103,6 +103,21 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.applyJob = asyncHandler(async (req, res, next) => {
+  const job = await Job.findById(req.params.id);
+
+  if (!job) {
+    throw new MyError(req.params.id + " ID-тэй ажил байхгүй!", 400);
+  }
+  job.apply.addToSet(req.userId);
+  job.save()
+
+  res.status(200).json({
+    success: true,
+    data: job
+  });
+});
+
 exports.createJob = asyncHandler(async (req, res, next) => {
   const occupation = await Occupation.findById(req.body.occupation);
   const profile = await Profile.findById(req.userId);
@@ -116,7 +131,7 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   const job = await Job.create(req.body);
   // profile.job.addToSet(req.body.createUser);
   // profile.save()
-  console.log()
+  console.log(req)
   res.status(200).json({
     success: true,
     data: job,

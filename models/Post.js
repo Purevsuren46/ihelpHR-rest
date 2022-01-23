@@ -34,7 +34,7 @@ const PostSchema = new mongoose.Schema({
   }],
   createUser: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Profile',
+    ref: 'Cv',
   },
   boost: {
     type: Boolean,

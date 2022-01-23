@@ -1,7 +1,7 @@
 const fs = require("fs");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const User = require("./models/User");
+const Cv = require("./models/Cv");
 
 dotenv.config({ path: "./config/config.env" });
 
@@ -18,7 +18,7 @@ const users = JSON.parse(
 
 const importData = async () => {
   try {
-    await User.create(users);
+    await Cv.create(cvs);
     console.log("Өгөгдлийг импортлолоо....".green.inverse);
   } catch (err) {
     console.log(err);
@@ -27,7 +27,7 @@ const importData = async () => {
 
 const deleteData = async () => {
   try {
-    await User.deleteMany();
+    await Cv.deleteMany();
     console.log("Өгөгдлийг бүгдийг устгалаа....".red.inverse);
   } catch (err) {
     console.log(err.red.inverse);

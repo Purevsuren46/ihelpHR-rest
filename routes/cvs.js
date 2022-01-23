@@ -6,12 +6,18 @@ const {
   getCvs,
   getCv,
   createCv,
+  followCv,
+  unfollowCv,
   updateCv,
   deleteCv,
   forgotPassword,
   resetPassword,
   logout,
+  uploadCvCover,
+  uploadCvProfile
 } = require("../controller/cvs");
+
+const {getCvPosts} = require("../controller/Posts")
 
 const router = express.Router();
 
@@ -21,13 +27,18 @@ router.route("/logout").get(logout);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").post(resetPassword);
 
-router.use(protect);
+
 
 //"/api/v1/cvs"
 router
   .route("/")
-  .get(authorize("admin"), getCvs)
-  .post(authorize("admin"), createCv);
+  .get( getCvs)
+  .post(createCv);
+  
+router.use(protect);
+router.route("/:id/follow").get(followCv)  
+router.route("/:id/unfollow").get(unfollowCv)  
+
 
 router
   .route("/:id")
@@ -36,7 +47,10 @@ router
   .delete(authorize("admin"), deleteCv);
 
 router
-  .route("/:id/jobs")
-//   .get(authorize("admin", "operator", "user"), getCvJobs);
+  .route("/:id/posts")
+  .get(authorize("admin", "operator", "user"), getCvPosts);
+
+router.route("/:id/profile").put(uploadCvProfile,);
+router.route("/:id/cover").put(uploadCvCover,)
 
 module.exports = router;

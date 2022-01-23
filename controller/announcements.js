@@ -35,7 +35,7 @@ exports.getAnnouncements = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.getUserAnnouncements = asyncHandler(async (req, res, next) => {
+exports.getProfileAnnouncements = asyncHandler(async (req, res, next) => {
   req.query.createUser = req.userId;
   return this.getAnnouncements(req, res, next);
 });
