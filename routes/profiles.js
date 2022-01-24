@@ -21,7 +21,7 @@ const {
 
 const {
   getProfileAnnouncements
-} = require("../controller/Announcements");
+} = require("../controller/announcements");
 
 
 const router = express.Router();
