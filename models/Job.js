@@ -55,12 +55,12 @@ const JobSchema = new mongoose.Schema({
     ref: 'Profile',
   },
   special: {
-    type: Boolean,
-    default: false,
+    type: Date,
+    default: Date.now,
   },
   urgent: {
-    type: Boolean,
-    default: false,
+    type: Date,
+    default: Date.now,
   },
   count: {
     type: Number,

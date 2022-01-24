@@ -5,6 +5,8 @@ const {
   login,
   getCvs,
   getCv,
+  getCvFollower,
+  getCvFollowing,
   createCv,
   followCv,
   unfollowCv,
@@ -50,7 +52,9 @@ router
   .route("/:id/posts")
   .get(authorize("admin", "operator", "user"), getCvPosts);
 
-router.route("/:id/profile").put(uploadCvProfile,);
-router.route("/:id/cover").put(uploadCvCover,)
+router.route("/:id/profile").put(uploadCvProfile);
+router.route("/:id/cover").put(uploadCvCover);
+router.route("/:id/follower").get(getCvFollower);
+router.route("/:id/following").get(getCvFollowing);
 
 module.exports = router;

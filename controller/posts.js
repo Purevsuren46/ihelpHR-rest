@@ -131,6 +131,48 @@ exports.unlikePost = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.boostPost = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
+  const cv = await Cv.findById(req.userId);
+
+  if (!post) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+
+  if(!req.body.boost) {
+    throw new MyError(" Boost төрлөө сонгоно уу?", 400);
+  }
+
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  if(cv.point < req.body.boost) {
+    throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  } else {
+    if(post.boost < Date.now() ) {
+      const date = new Date()
+        cv.point -= req.body.boost
+        post.boost = date.addDays(req.body.boost) 
+    } else {
+        let date = post.boost
+        cv.point -= req.body.boost
+        post.boost = date.addDays(req.body.boost)
+    }
+  }
+
+  cv.save()
+  post.save()
+
+  res.status(200).json({
+    success: true,
+    data: post,
+    cv: cv
+  });
+});
+
 exports.createProfile = asyncHandler(async (req, res, next) => {
   const postCat = await Profile.create(req.body);
 

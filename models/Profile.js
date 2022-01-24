@@ -22,6 +22,7 @@ const ProfileSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
+    default: null
   },
   location: {
     type: String,
@@ -52,26 +53,32 @@ const ProfileSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.ObjectId,
     ref: 'Category',
+    default: null
   },
   filter: {
     type: mongoose.Schema.ObjectId,
     ref: 'Filter',
+    default: null
   },
   job: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Job',
+    default: null
   }],
   following: [{
     type: mongoose.Schema.ObjectId,
     ref: ('Cv', 'Profile'),
+    default: null
   }],
   follower: [{
     type: mongoose.Schema.ObjectId,
     ref: ('Cv', 'Profile'),
+    default: null
   }],
   post: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Post',
+    default: null
   }],
   point: {
     type: Number,

@@ -20,13 +20,5 @@ const CommentSchema = new mongoose.Schema({
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 
-CommentSchema.pre("remove", async function(next) {
-    console.log("removing ...")
-    await this.model('Comment').deleteMany({comment: this._id})
-    
-    next()
-})
-
-
 
 module.exports = mongoose.model("Comment", CommentSchema)

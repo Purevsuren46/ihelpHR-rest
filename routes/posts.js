@@ -5,6 +5,7 @@ const {
   getPosts,
   getPost,
   createPost,
+  boostPost,
   likePost,
   unlikePost,
   deletePost,
@@ -27,6 +28,6 @@ router
   .delete(protect, authorize("admin", "operator"), deletePost)
   .put(protect, authorize("admin", "operator"), updatePost);
 
-// router.route("/:id/upload-photo").put(uploadPostPhoto);
+router.route("/:id/boost").put(protect, boostPost);
 
 module.exports = router;

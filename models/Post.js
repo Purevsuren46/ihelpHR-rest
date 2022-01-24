@@ -37,8 +37,8 @@ const PostSchema = new mongoose.Schema({
     ref: 'Cv',
   },
   boost: {
-    type: Boolean,
-    default: false,
+    type: Date,
+    default: Date.now,
   },
   count: {
     type: Number,

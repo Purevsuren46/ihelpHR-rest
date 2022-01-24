@@ -36,6 +36,7 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
 });
 
 exports.getProfileJobs = asyncHandler(async (req, res, next) => {
+
   req.query.createUser = req.userId;
   return this.getJobs(req, res, next);
 });
@@ -91,6 +92,90 @@ exports.getJob = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: job,
+  });
+});
+
+exports.specialJob = asyncHandler(async (req, res, next) => {
+  const job = await Job.findById(req.params.id);
+  const profile = await Profile.findById(req.userId);
+
+  if (!job) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+
+  if(!req.body.special) {
+    throw new MyError(" Special төрлөө сонгоно уу?", 400);
+  }
+
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  if(profile.point < req.body.special) {
+    throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  } else {
+    if(job.special < Date.now() ) {
+        const date = new Date()
+        profile.point -= req.body.special
+        job.special = date.addDays(req.body.special) 
+    } else {
+        let date = job.special
+        profile.point -= req.body.special
+        job.special = date.addDays(req.body.special)
+    }
+  }
+
+  profile.save()
+  job.save()
+
+  res.status(200).json({
+    success: true,
+    data: job,
+    profile: profile
+  });
+});
+
+exports.urgentJob = asyncHandler(async (req, res, next) => {
+  const job = await Job.findById(req.params.id);
+  const profile = await Profile.findById(req.userId);
+
+  if (!job) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+
+  if(!req.body.urgent) {
+    throw new MyError(" Urgent төрлөө сонгоно уу?", 400);
+  }
+
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  if(profile.point < req.body.urgent) {
+    throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  } else {
+    if(job.urgent < Date.now() ) {
+        const date = new Date()
+        profile.point -= req.body.urgent
+        job.urgent = date.addDays(req.body.urgent) 
+    } else {
+        let date = job.urgent
+        profile.point -= req.body.urgent
+        job.urgent = date.addDays(req.body.urgent)
+    }
+  }
+
+  profile.save()
+  job.save()
+
+  res.status(200).json({
+    success: true,
+    data: job,
+    profile: profile
   });
 });
 
@@ -230,3 +315,4 @@ exports.uploadJobPhoto = asyncHandler(async (req, res, next) => {
     });
   });
 });
+

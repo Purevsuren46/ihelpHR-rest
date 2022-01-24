@@ -90,6 +90,18 @@ exports.getCv = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.getCvFollower = asyncHandler(async (req, res, next) => {
+
+  req.query.follower = req.params.id;
+  return this.getCvs(req, res, next);
+});
+
+exports.getCvFollowing = asyncHandler(async (req, res, next) => {
+
+  req.query.following = req.params.id;
+  return this.getCvs(req, res, next);
+});
+
 exports.followCv = asyncHandler(async (req, res, next) => {
   const cvs = await Cv.findById(req.params.id);
   const cv = await Cv.findById(req.userId);

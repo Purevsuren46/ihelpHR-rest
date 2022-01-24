@@ -18,27 +18,37 @@ const CvSchema = new mongoose.Schema({
     required: [true, "Хэрэглэгчийн имэйл оруулна уу"],
     unique: true,
   },
-  name: {
+  firstName: {
       type: String,
-      required: [true, "Нэр оруулна уу"]
+      required: [true, "Нэрээ оруулна уу"]
+  },
+  lastName: {
+    type: String,
+    required: [true, "Овгоо оруулна уу"]
   },
   birth: {
-    type: Date
+    type: Date,
+    default: null
   },
   profile: {
     type: String,
+    default: null
   },
   cover: {
     type: String,
+    default: null
   },
   location: {
     type: String,
+    default: null
   },
   humanId: {
     type: String,
+    default: null
   },
   about: {
     type: String,
+    default: null
   },
   authentication: {
     type: Boolean,
@@ -51,6 +61,7 @@ const CvSchema = new mongoose.Schema({
   workingCompany: {
     type: mongoose.Schema.ObjectId,
     ref: 'Profile',
+    default: null
   },
   status: {
     type: String,
@@ -69,39 +80,48 @@ const CvSchema = new mongoose.Schema({
     select: false,
   },
   filter: {
-    type: String
+    type: String,
+    default: null
   },
   category: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Category',
+    default: null
   }],
   experience: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Experience',
+    default: null
   }],
   course: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Course',
+    default: null
   }],
   comment: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Comment',
+    default: null
   }],
   following: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
+    default: null
   }],
   follower: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
+    default: null
   }],
   post: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Post',
+    default: null
   }],
   likePost: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Post',
+    default: null
   }],
   point: {
     type: Number,
