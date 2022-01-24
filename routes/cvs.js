@@ -17,7 +17,7 @@ const {
   uploadCvProfile
 } = require("../controller/cvs");
 
-const {getCvPosts} = require("../controller/Posts")
+const {getCvPosts} = require("../controller/posts")
 
 const router = express.Router();
 
