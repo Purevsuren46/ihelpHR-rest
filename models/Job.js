@@ -46,6 +46,10 @@ const JobSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
   }],
+  like: [{
+    type: mongoose.Schema.ObjectId,
+    ref: 'Cv',
+  }],
   createUser: {
     type: mongoose.Schema.ObjectId,
     ref: 'Profile',
@@ -54,11 +58,23 @@ const JobSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Profile',
   },
+  isSpecial: {
+    type: Boolean,
+    default: false,
+  },
   special: {
     type: Date,
     default: Date.now,
   },
+  isUrgent: {
+    type: Boolean,
+    default: false,
+  },
   urgent: {
+    type: Date,
+    default: Date.now,
+  },
+  order: {
     type: Date,
     default: Date.now,
   },
@@ -75,6 +91,16 @@ const JobSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+JobSchema.methods.getSpecial = function () {
+
+  if (this.special > String(Date.now())) {
+    this.isSpecial = true
+  } else {
+    this.isSpecial = false
+  }
+}
+
 
 
 

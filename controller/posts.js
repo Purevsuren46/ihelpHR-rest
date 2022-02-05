@@ -7,6 +7,7 @@ const asyncHandler = require("express-async-handler");
 const paginate = require("../utils/paginate");
 const Profile = require("../models/Profile");
 const Comment = require("../models/Comment");
+const sharp = require("sharp");
 
 // api/v1/Posts
 exports.getPosts = asyncHandler(async (req, res, next) => {
@@ -156,10 +157,12 @@ exports.boostPost = asyncHandler(async (req, res, next) => {
       const date = new Date()
         cv.point -= req.body.boost
         post.boost = date.addDays(req.body.boost) 
+        post.isBoost = true
     } else {
         let date = post.boost
         cv.point -= req.body.boost
         post.boost = date.addDays(req.body.boost)
+        post.isBoost = true
     }
   }
 
@@ -256,9 +259,7 @@ exports.uploadPostPhoto = asyncHandler(async (req, res, next) => {
   }
 
   // image upload
-
   const file = req.files.file;
-
   if (!file.mimetype.startsWith("image")) {
     throw new MyError("Та зураг upload хийнэ үү.", 400);
   }
@@ -268,21 +269,16 @@ exports.uploadPostPhoto = asyncHandler(async (req, res, next) => {
   }
 
   file.name = `photo_${req.params.id}${path.parse(file.name).ext}`;
-
-  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, (err) => {
-    if (err) {
-      throw new MyError(
-        "Файлыг хуулах явцад алдаа гарлаа. Алдаа : " + err.message,
-        400
-      );
-    }
-
+  
+  const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
     post.photo = file.name;
     post.save();
 
     res.status(200).json({
       success: true,
       data: file.name,
+      piture: picture
     });
-  });
+  
 });

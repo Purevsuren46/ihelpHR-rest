@@ -6,11 +6,46 @@ const asyncHandler = require("express-async-handler");
 const paginate = require("../utils/paginate");
 const Profile = require("../models/Profile");
 const Occupation = require("../models/Occupation");
+const Cv = require("../models/Cv");
+
+exports.getSpecialJobs = asyncHandler(async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Job);
+ 
+  // req.query = { special: {$gt: String(Date.now())}}
+  
+  const jobs = await Job.find(req.query, select) 
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+  
+
+    // const docs = await Job.aggregate(
+    //   [{$match: {special: {$gt: String(Date.now())}}}]
+    // );
+
+  // if (jobs.special < Date.now()) {
+  //   continue;
+  // }
+  // console.log()
+  res.status(200).json({
+    success: true,
+    count: jobs.length,
+    data: jobs,
+    pagination,
+  });
+});
 
 // api/v1/Jobs
 exports.getJobs = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 5;
+  const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
   const select = req.query.select;
 
@@ -19,13 +54,9 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Job);
 
   const jobs = await Job.find(req.query, select)
-    .populate({
-      path: "jobCat",
-      select: "name ",
-    })
     .sort(sort)
     .skip(pagination.start - 1)
-    .limit(limit);
+    .limit(limit)
 
   res.status(200).json({
     success: true,
@@ -70,11 +101,24 @@ exports.getOccupationJobs = asyncHandler(async (req, res, next) => {
 });
 
 exports.getJob = asyncHandler(async (req, res, next) => {
-  const job = await Job.findById(req.params.id);
+  const job = await Job.findById(req.params.id)
 
   if (!job) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
   }
+
+  if (job.special > String(Date.now())) {
+    job.isSpecial = true
+  } else {
+    job.isSpecial = false
+  }
+
+  if (job.urgent > String(Date.now())) {
+    job.isUrgent = true
+  } else {
+    job.isUrgent = false
+  }
+
   // Хандалт тоологч
   if (job.count == null) {
       // default data
@@ -87,11 +131,40 @@ exports.getJob = asyncHandler(async (req, res, next) => {
       job.count += 1;
       job.save()
   }
-  
 
   res.status(200).json({
     success: true,
     data: job,
+  });
+});
+
+exports.likeJob = asyncHandler(async (req, res, next) => {
+  const job = await Job.findById(req.params.id);
+
+  if (!job) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+  job.like.addToSet(req.userId);
+  job.save()
+
+  res.status(200).json({
+    success: true,
+    data: job
+  });
+});
+
+exports.unlikeJob = asyncHandler(async (req, res, next) => {
+  const job = await Job.findById(req.params.id);
+
+  if (!job) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+  job.like.remove(req.userId);
+  job.save()
+
+  res.status(200).json({
+    success: true,
+    data: job
   });
 });
 
@@ -120,10 +193,12 @@ exports.specialJob = asyncHandler(async (req, res, next) => {
         const date = new Date()
         profile.point -= req.body.special
         job.special = date.addDays(req.body.special) 
+        job.isSpecial = true
     } else {
         let date = job.special
         profile.point -= req.body.special
         job.special = date.addDays(req.body.special)
+        job.isSpecial = true
     }
   }
 
@@ -162,10 +237,12 @@ exports.urgentJob = asyncHandler(async (req, res, next) => {
         const date = new Date()
         profile.point -= req.body.urgent
         job.urgent = date.addDays(req.body.urgent) 
+        job.isUrgent = true
     } else {
         let date = job.urgent
         profile.point -= req.body.urgent
         job.urgent = date.addDays(req.body.urgent)
+        job.isUrgent = true
     }
   }
 
@@ -212,14 +289,37 @@ exports.createJob = asyncHandler(async (req, res, next) => {
     throw new MyError(req.body.occupation + " ID-тэй мэргэжил байхгүй!", 400);
   }
 
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  if(profile.point < req.body.special + req.body.urgent + req.body.order) {
+    throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  } else {
+    const date = new Date()
+    profile.point -= req.body.order
+    req.body.order = date.addDays(req.body.order)
+  
+    const date1 = new Date()
+    profile.point -= req.body.urgent
+    req.body.urgent = date1.addDays(req.body.urgent)
+  
+    const date2 = new Date()
+    profile.point -= req.body.special
+    req.body.special = date2.addDays(req.body.special)
+  }
+
+  profile.save()
   req.body.createUser = req.userId;
   const job = await Job.create(req.body);
   // profile.job.addToSet(req.body.createUser);
   // profile.save()
-  console.log(req)
   res.status(200).json({
     success: true,
     data: job,
+    profile: profile
   });
 });
 

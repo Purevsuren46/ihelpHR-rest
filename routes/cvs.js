@@ -14,6 +14,7 @@ const {
   deleteCv,
   forgotPassword,
   resetPassword,
+  chargePoint,
   logout,
   uploadCvCover,
   uploadCvProfile
@@ -54,6 +55,7 @@ router
 
 router.route("/:id/profile").put(uploadCvProfile);
 router.route("/:id/cover").put(uploadCvCover);
+router.route("/:id/point").put(protect, chargePoint);
 router.route("/:id/follower").get(getCvFollower);
 router.route("/:id/following").get(getCvFollowing);
 

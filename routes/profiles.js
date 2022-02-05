@@ -9,7 +9,10 @@ const {
   followProfile,
   unfollowProfile,
   createProfile,
+  chargePoint,
   updateProfile,
+  urgentProfile,
+  specialProfile,
   deleteProfile,
   forgotPassword,
   resetPassword,
@@ -59,4 +62,7 @@ router
   .route("/:id/announcements")
   .get( getProfileAnnouncements);
 
+router.route("/:id/special").put(protect, specialProfile);
+router.route("/:id/point").put(protect, chargePoint);
+router.route("/:id/urgent").put(protect, urgentProfile);
 module.exports = router;

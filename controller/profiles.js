@@ -97,6 +97,122 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
   }
 
+  if (profile.special > String(Date.now())) {
+    profile.isSpecial = true
+  } else {
+    profile.isSpecial = false
+  }
+
+  if (profile.urgent > String(Date.now())) {
+    profile.isUrgent = true
+  } else {
+    profile.isUrgent = false
+  }
+
+  res.status(200).json({
+    success: true,
+    data: profile,
+  });
+});
+
+exports.specialProfile = asyncHandler(async (req, res, next) => {
+  const profile = await Profile.findById(req.userId);
+
+  if (!profile) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+
+  if(!req.body.special) {
+    throw new MyError(" Special төрлөө сонгоно уу?", 400);
+  }
+
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  if(profile.point < req.body.special) {
+    throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  } else {
+    if(profile.special < Date.now() ) {
+        const date = new Date()
+        profile.point -= req.body.special
+        profile.special = date.addDays(req.body.special) 
+        profile.isSpecial = true
+    } else {
+        let date = profile.special
+        profile.point -= req.body.special
+        profile.special = date.addDays(req.body.special)
+        profile.isSpecial = true
+    }
+  }
+
+  profile.save()
+
+  res.status(200).json({
+    success: true,
+    profile: profile
+  });
+});
+
+exports.urgentProfile = asyncHandler(async (req, res, next) => {
+  const profile = await Profile.findById(req.userId);
+
+  if (!profile) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+
+  if(!req.body.urgent) {
+    throw new MyError(" Urgent төрлөө сонгоно уу?", 400);
+  }
+
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  if(profile.point < req.body.urgent) {
+    throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  } else {
+    if(profile.urgent < Date.now() ) {
+        const date = new Date()
+        profile.point -= req.body.urgent
+        profile.urgent = date.addDays(req.body.urgent) 
+        profile.isUrgent = true
+    } else {
+        let date = profile.urgent
+        profile.point -= req.body.urgent
+        profile.urgent = date.addDays(req.body.urgent)
+        profile.isUrgent = true
+    }
+  }
+
+  profile.save()
+
+  res.status(200).json({
+    success: true,
+    profile: profile
+  });
+});
+
+exports.chargePoint = asyncHandler(async (req, res, next) => {
+  const profile = await Profile.findById(req.userId);
+
+  if(!req.body.wallet) {
+    throw new MyError(" Point хэмжээ оруулна уу?", 400);
+  }
+
+  if(profile.point < req.body.wallet) {
+    throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  } else {
+    profile.point += req.body.wallet
+    profile.wallet -= req.body.wallet * 1000
+  }
+
+  profile.save()
+
   res.status(200).json({
     success: true,
     data: profile,

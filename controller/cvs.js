@@ -5,6 +5,7 @@ const paginate = require("../utils/paginate");
 const sendEmail = require("../utils/email");
 const crypto = require("crypto");
 const path = require("path");
+const sharp = require("sharp");
 
 // логин хийнэ
 exports.login = asyncHandler(async (req, res, next) => {
@@ -138,6 +139,28 @@ exports.unfollowCv = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.chargePoint = asyncHandler(async (req, res, next) => {
+  const cv = await Cv.findById(req.userId);
+
+  if(!req.body.wallet) {
+    throw new MyError(" Point хэмжээ оруулна уу?", 400);
+  }
+
+  if(cv.point < req.body.wallet) {
+    throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  } else {
+    cv.point += req.body.wallet
+    cv.wallet -= req.body.wallet * 1000
+  }
+
+  cv.save()
+
+  res.status(200).json({
+    success: true,
+    data: cv,
+  });
+});
+
 exports.createCv = asyncHandler(async (req, res, next) => {
   const cv = await Cv.create(req.body);
 
@@ -255,9 +278,7 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
   }
 
   // image upload
-
   const file = req.files.file;
-
   if (!file.mimetype.startsWith("image")) {
     throw new MyError("Та зураг upload хийнэ үү.", 400);
   }
@@ -266,24 +287,18 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
     throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
   }
 
-  file.name = `photo_${req.params.id}${path.parse(file.name).ext}`;
-
-  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, (err) => {
-    if (err) {
-      throw new MyError(
-        "Файлыг хуулах явцад алдаа гарлаа. Алдаа : " + err.message,
-        400
-      );
-    }
-
-    cv.cvs = file.name;
+  file.name = `profile_${req.params.id}${path.parse(file.name).ext}`;
+  
+  const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
+    cv.profile = file.name;
     cv.save();
 
     res.status(200).json({
       success: true,
       data: file.name,
     });
-  });
+  
 });
 
 // PUT: api/v1/cvs/:id/cover
@@ -291,13 +306,11 @@ exports.uploadCvCover = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.params.id);
 
   if (!cv) {
-    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээ.", 400);
+    throw new MyError(req.params.id + " ID-тэй ном байхгүйээ.", 400);
   }
 
   // image upload
-
   const file = req.files.file;
-
   if (!file.mimetype.startsWith("image")) {
     throw new MyError("Та зураг upload хийнэ үү.", 400);
   }
@@ -306,16 +319,10 @@ exports.uploadCvCover = asyncHandler(async (req, res, next) => {
     throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
   }
 
-  file.name = `photo_${req.params.id}${path.parse(file.name).ext}`;
-
-  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, (err) => {
-    if (err) {
-      throw new MyError(
-        "Файлыг хуулах явцад алдаа гарлаа. Алдаа : " + err.message,
-        400
-      );
-    }
-
+  file.name = `cover_${req.params.id}${path.parse(file.name).ext}`;
+  
+  const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
     cv.cover = file.name;
     cv.save();
 
@@ -323,5 +330,5 @@ exports.uploadCvCover = asyncHandler(async (req, res, next) => {
       success: true,
       data: file.name,
     });
-  });
+  
 });

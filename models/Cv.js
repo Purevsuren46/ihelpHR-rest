@@ -44,7 +44,12 @@ const CvSchema = new mongoose.Schema({
   },
   humanId: {
     type: String,
-    default: null
+    match: [
+        /([Ё-Ө]{2}[0-9]{8})/,
+        "Регистэр буруу байна.",
+    ],
+    required: [true, "Хэрэглэгчийн регистер оруулна уу"],
+    unique: true,
   },
   about: {
     type: String,
@@ -66,6 +71,10 @@ const CvSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["opentowork"]
+  },
+  position: {
+    type: String,
+    enum: ["senior", "intern", "junior"]
   },
   role: {
     type: String,

@@ -20,9 +20,13 @@ const cvsRoutes = require("./routes/cvs");
 const jobsRoutes = require("./routes/jobs");
 const postsRoutes = require("./routes/posts");
 const commentsRoutes = require("./routes/comments");
+const sharesRoutes = require("./routes/shares");
 const announcementsRoutes = require("./routes/announcements");
 const categoriesRoutes = require("./routes/categories");
 const occupationsRoutes = require("./routes/occupations");
+const experiencesRoutes = require("./routes/experiences");
+const notificationsRoutes = require("./routes/notifications");
+const coursesRoutes = require("./routes/courses");
 const errorHandler = require("./middleware/error");
 const connectDB = require("./config/db");
 
@@ -108,9 +112,13 @@ app.use("/api/v1/cvs", cvsRoutes);
 app.use("/api/v1/jobs", jobsRoutes);
 app.use("/api/v1/posts", postsRoutes);
 app.use("/api/v1/comments", commentsRoutes);
+app.use("/api/v1/shares", sharesRoutes);
 app.use("/api/v1/announcements", announcementsRoutes);
 app.use("/api/v1/categories", categoriesRoutes);
 app.use("/api/v1/occupations", occupationsRoutes);
+app.use("/api/v1/experiences", experiencesRoutes);
+app.use("/api/v1/notifications", notificationsRoutes);
+app.use("/api/v1/courses", coursesRoutes);
 
 // Алдаа үүсэхэд барьж авч алдааны мэдээллийг клиент тал руу автоматаар мэдээлнэ
 app.use(errorHandler);

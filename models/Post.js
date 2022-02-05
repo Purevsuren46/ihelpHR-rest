@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const PostSchema = new mongoose.Schema({
-  
   title: {
       type: String,
       // required: [true, "Ажил олгогчийн нэрийг оруулна уу"]
@@ -35,6 +34,10 @@ const PostSchema = new mongoose.Schema({
   createUser: {
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
+  },
+  isBoost: {
+    type: Boolean,
+    default: false,
   },
   boost: {
     type: Date,

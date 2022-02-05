@@ -24,10 +24,7 @@ const OccupationSchema = new mongoose.Schema({
 OccupationSchema.pre("remove", async function(next) {
     console.log("removing ...")
     await this.model('Book').deleteMany({occupation: this._id})
-    
     next()
 })
-
-
 
 module.exports = mongoose.model("Occupation", OccupationSchema)

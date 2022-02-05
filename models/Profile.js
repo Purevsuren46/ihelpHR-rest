@@ -24,6 +24,22 @@ const ProfileSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  isSpecial: {
+    type: Boolean,
+    default: false,
+  },
+  special: {
+    type: Date,
+    default: Date.now,
+  },
+  isUrgent: {
+    type: Boolean,
+    default: false,
+  },
+  urgent: {
+    type: Date,
+    default: Date.now,
+  },
   location: {
     type: String,
     required: [true, "Ажил олгогчийн байршлыг оруулна уу"]

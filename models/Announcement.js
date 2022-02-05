@@ -46,13 +46,21 @@ const AnnouncementSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Profile',
   },
+  isSpecial: {
+    type: Boolean,
+    default: false,
+  },
   special: {
+    type: Date,
+    default: Date.now,
+  },
+  isUrgent: {
     type: Boolean,
     default: false,
   },
   urgent: {
-    type: Boolean,
-    default: false,
+    type: Date,
+    default: Date.now,
   },
   count: {
     type: Number,

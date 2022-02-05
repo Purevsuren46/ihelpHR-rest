@@ -5,8 +5,11 @@ const {
   getJobs,
   getJob,
   createJob,
+  getSpecialJobs,
   specialJob,
   urgentJob,
+  likeJob,
+  unlikeJob,
   deleteJob,
   updateJob,
   applyJob,
@@ -17,8 +20,13 @@ const router = express.Router();
 //"/api/v1/jobs"
 router
   .route("/")
-  .get(getJobs)
+  .get(protect, getJobs)
   .post(protect, createJob);
+
+router.route("/specials").get(protect, getSpecialJobs)
+  
+router.route("/:id/like").get(protect, likeJob)  
+router.route("/:id/unlike").get(protect, unlikeJob)  
 
 router
   .route("/:id")
