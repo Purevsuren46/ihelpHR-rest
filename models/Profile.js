@@ -20,7 +20,18 @@ const ProfileSchema = new mongoose.Schema({
       type: String,
       required: [true, "Ажил олгогчийн нэрийг оруулна уу"]
   },
+  isEmployer: {
+    type: Boolean
+  },
   photo: {
+    type: String,
+    default: null
+  },
+  profile: {
+    type: String,
+    default: null
+  },
+  cover: {
     type: String,
     default: null
   },
@@ -29,6 +40,14 @@ const ProfileSchema = new mongoose.Schema({
     default: false,
   },
   special: {
+    type: Date,
+    default: Date.now,
+  },
+  isCvList: {
+    type: Boolean,
+    default: false,
+  },
+  cvList: {
     type: Date,
     default: Date.now,
   },
@@ -50,7 +69,6 @@ const ProfileSchema = new mongoose.Schema({
   },
   about: {
     type: String,
-    required: [true, "Ажил олгогчийн товч танилцуулга оруулна уу"]
   },
   organization: {
     type: Boolean,

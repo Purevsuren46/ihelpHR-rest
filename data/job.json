@@ -13,6 +13,27 @@
         "experience" : "2 жил",
         "createdAt" : "2022-1-12",
         "apply": ["cv-id", "cv-id", "cv-id", "cv-id", "cv-id", "cv-id"],
+        "score": [
+            {
+                "candidate": "61e130c862f0f20e14ad2d5a",
+                "hrPoint": [
+                    
+                    {
+                        "hr": "hr-id1",
+                        "point": 5
+                    },
+                    {
+                        "hr": "hr-id2",
+                        "point": 8
+                    },
+                    {
+                        "hr": "hr-id3",
+                        "point": 7
+                    }
+                ]
+            }
+
+        ],
         "count": 5,
         "special": false,
         "urgent": false

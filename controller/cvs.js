@@ -1,4 +1,5 @@
 const Cv = require("../models/Cv");
+const Profile = require("../models/Profile");
 const MyError = require("../utils/myError");
 const asyncHandler = require("express-async-handler");
 const paginate = require("../utils/paginate");
@@ -91,6 +92,15 @@ exports.getCv = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.getAuthCvs = asyncHandler(async (req, res, next) => {
+
+  req.query.authPhoto = {$ne: null};
+  req.query.isApproved = true;
+  req.query.authentication = false;
+  return this.getCvs(req, res, next);
+});
+
+
 exports.getCvFollower = asyncHandler(async (req, res, next) => {
 
   req.query.follower = req.params.id;
@@ -142,15 +152,15 @@ exports.unfollowCv = asyncHandler(async (req, res, next) => {
 exports.chargePoint = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.userId);
 
-  if(!req.body.wallet) {
+  if(!req.body.point) {
     throw new MyError(" Point хэмжээ оруулна уу?", 400);
   }
 
-  if(cv.point < req.body.wallet) {
+  if(cv.point < req.body.point) {
     throw new MyError(" Point оноо хүрэхгүй байна", 400);
   } else {
-    cv.point += req.body.wallet
-    cv.wallet -= req.body.wallet * 1000
+    cv.point += req.body.point
+    cv.wallet -= req.body.point * 1000
   }
 
   cv.save()
@@ -161,9 +171,138 @@ exports.chargePoint = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.settingProfile = asyncHandler(async (req, res, next) => {
+  const profile = await Profile.findById(req.params.id);
+
+  if (!profile) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+
+  // if(!req.body.special) {
+  //   throw new MyError(" Special төрлөө сонгоно уу?", 400);
+  // }
+
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  console.log(req.body.special !== undefined)
+  if (req.body.special !== undefined) {
+    if(profile.special < Date.now() ) {
+      const date = new Date()
+      profile.special = date.addDays(req.body.special) 
+      profile.isSpecial = true
+  } else {
+      let date = profile.special
+      profile.special = date.addDays(req.body.special)
+      profile.isSpecial = true
+  }
+  } else if (req.body.cv !== undefined) {
+    if(profile.cvList < Date.now() ) {
+      const date = new Date()
+      profile.cvList = date.addDays(req.body.cv) 
+      profile.isCvList = true
+    } else {
+      let date = profile.cvList
+      profile.cvList = date.addDays(req.body.cv)
+      profile.isCvList = true
+    }
+  } else if (req.body.urgent !== undefined) {
+    if(profile.urgent < Date.now() ) {
+      const date = new Date()
+      profile.urgent = date.addDays(req.body.urgent) 
+      profile.isUrgent = true
+  } else {
+      let date = profile.urgent
+      profile.urgent = date.addDays(req.body.urgent)
+      profile.isUrgent = true
+  }
+  } else {next()}
+
+  
+
+  profile.save()
+
+  res.status(200).json({
+    success: true,
+    profile: profile
+  });
+});
+
+exports.cvList = asyncHandler(async (req, res, next) => {
+  const profile = await Profile.findById(req.params.id);
+
+  if (!profile) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+
+  if(!req.body.cv) {
+    throw new MyError(" Анкет сан үзэх хугацаагаа сонгоно уу?", 400);
+  }
+
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  if(profile.cvList < Date.now() ) {
+    const date = new Date()
+    profile.cvList = date.addDays(req.body.cv) 
+    profile.isCvList = true
+} else {
+    let date = profile.cvList
+    profile.cvList = date.addDays(req.body.cv)
+    profile.isCvList = true
+}
+
+  profile.save()
+
+  res.status(200).json({
+    success: true,
+    profile: profile
+  });
+});
+
+exports.urgentProfile = asyncHandler(async (req, res, next) => {
+  const profile = await Profile.findById(req.params.id);
+
+  if (!profile) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+
+  if(!req.body.urgent) {
+    throw new MyError(" Urgent төрлөө сонгоно уу?", 400);
+  }
+
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  if(profile.urgent < Date.now() ) {
+    const date = new Date()
+    profile.urgent = date.addDays(req.body.urgent) 
+    profile.isUrgent = true
+} else {
+    let date = profile.urgent
+    profile.urgent = date.addDays(req.body.urgent)
+    profile.isUrgent = true
+}
+
+  profile.save()
+
+  res.status(200).json({
+    success: true,
+    profile: profile
+  });
+});
+
 exports.createCv = asyncHandler(async (req, res, next) => {
   const cv = await Cv.create(req.body);
-
   res.status(200).json({
     success: true,
     data: cv,
@@ -180,10 +319,15 @@ exports.updateCv = asyncHandler(async (req, res, next) => {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
   }
 
-  res.status(200).json({
-    success: true,
-    data: cv,
-  });
+  if (req.userId == req.params.id || req.userRole == "admin") {
+    res.status(200).json({
+      success: true,
+      data: cv,
+    });
+  } else {
+    throw new MyError ("Засах боломжгүй", 400)
+  }
+
 });
 
 exports.deleteCv = asyncHandler(async (req, res, next) => {
@@ -271,10 +415,10 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 
 // PUT: api/v1/cvs/:id/profile
 exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
-  const cv = await Cv.findById(req.params.id);
+  const cv = await Cv.findById(req.userId);
 
   if (!cv) {
-    throw new MyError(req.params.id + " ID-тэй ном байхгүйээ.", 400);
+    throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
   }
 
   // image upload
@@ -287,11 +431,11 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
     throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
   }
 
-  file.name = `profile_${req.params.id}${path.parse(file.name).ext}`;
+  file.name = `profile_${req.userId}${path.parse(file.name).ext}`;
   
   const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
-    cv.profile = file.name;
+    cv.profile.push(file.name);
     cv.save();
 
     res.status(200).json({
@@ -303,10 +447,10 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
 
 // PUT: api/v1/cvs/:id/cover
 exports.uploadCvCover = asyncHandler(async (req, res, next) => {
-  const cv = await Cv.findById(req.params.id);
+  const cv = await Cv.findById(req.userId);
 
   if (!cv) {
-    throw new MyError(req.params.id + " ID-тэй ном байхгүйээ.", 400);
+    throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
   }
 
   // image upload
@@ -319,11 +463,43 @@ exports.uploadCvCover = asyncHandler(async (req, res, next) => {
     throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
   }
 
-  file.name = `cover_${req.params.id}${path.parse(file.name).ext}`;
+  file.name = `cover_${req.userId}${path.parse(file.name).ext}`;
   
   const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
     cv.cover = file.name;
+    cv.save();
+
+    res.status(200).json({
+      success: true,
+      data: file.name,
+    });
+  
+});
+
+// PUT: api/v1/cvs/:id/auth-photo
+exports.uploadCvAuth = asyncHandler(async (req, res, next) => {
+  const cv = await Cv.findById(req.userId);
+
+  if (!cv) {
+    throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
+  }
+
+  // image upload
+  const file = req.files.file;
+  if (!file.mimetype.startsWith("image")) {
+    throw new MyError("Та зураг upload хийнэ үү.", 400);
+  }
+
+  if (file.size > process.env.MAX_UPLOAD_FILE_SIZE) {
+    throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
+  }
+
+  file.name = `auth_${req.userId}${path.parse(file.name).ext}`;
+  
+  const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
+    cv.authPhoto = file.name;
     cv.save();
 
     res.status(200).json({

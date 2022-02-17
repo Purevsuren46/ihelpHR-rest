@@ -1,12 +1,12 @@
 const Job = require("../models/Job");
 const path = require("path");
-
 const MyError = require("../utils/myError");
 const asyncHandler = require("express-async-handler");
 const paginate = require("../utils/paginate");
 const Profile = require("../models/Profile");
 const Occupation = require("../models/Occupation");
 const Cv = require("../models/Cv");
+const queryString = require('query-string');
 
 exports.getSpecialJobs = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
@@ -69,6 +69,7 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
 exports.getProfileJobs = asyncHandler(async (req, res, next) => {
 
   req.query.createUser = req.userId;
+  console.log(req.query)
   return this.getJobs(req, res, next);
 });
 
@@ -98,6 +99,13 @@ exports.getOccupationJobs = asyncHandler(async (req, res, next) => {
     data: jobs,
     pagination,
   });
+});
+
+exports.getCvFilterJobs = asyncHandler(async (req, res, next) => {
+  const cv = await Cv.findById(req.userId)
+  const data = queryString.parse(cv.filter)
+  req.query = data;
+  return this.getJobs(req, res, next);
 });
 
 exports.getJob = asyncHandler(async (req, res, next) => {
@@ -272,6 +280,33 @@ exports.applyJob = asyncHandler(async (req, res, next) => {
     throw new MyError(req.params.id + " ID-тэй ажил байхгүй!", 400);
   }
   job.apply.addToSet(req.userId);
+  job.save()
+
+  res.status(200).json({
+    success: true,
+    data: job
+  });
+});
+
+exports.evalCand = asyncHandler(async (req, res, next) => {
+  const job = await Job.findById(req.params.id);
+
+  if (!job) {
+    throw new MyError(req.params.id + " ID-тэй ажил байхгүй!", 400);
+  }
+  const candCheck = job.apply.includes(req.body.candidate);
+  if (candCheck == false) {
+    console.log(job.score)
+    job.score[0]._id
+    .addToSet(req.body.candidate)
+    console.log(job.score[0]._id)
+    // job.score[2].hrPoint[1] = req.userId
+    // job.score.hrPoint.score = req.body.score
+
+  } else {
+    console.log(req.body)
+    job.score.hrPoint = req.body.hrPoint
+  }
   job.save()
 
   res.status(200).json({

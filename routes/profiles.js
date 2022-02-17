@@ -13,10 +13,13 @@ const {
   updateProfile,
   urgentProfile,
   specialProfile,
+  cvList,
   deleteProfile,
   forgotPassword,
   resetPassword,
   logout,
+  uploadCover,
+  uploadProfile,
 } = require("../controller/profiles");
 const {
   getProfileJobs
@@ -36,9 +39,15 @@ router.route("/logout").get(logout);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").post(resetPassword);
 
+
+router.route("/profile/:id").put(uploadProfile);
+router.route("/cover/:id").put(uploadCover);
 router.use(protect);
 
-
+router.route("/point").put(chargePoint);
+router.route("/special").put(specialProfile);
+router.route("/urgent").put(urgentProfile);
+router.route("/cvlist").put(cvList);
 //"/api/v1/profiles"
 router
   .route("/")
@@ -47,8 +56,8 @@ router
 
 router
   .route("/:id")
-  .get(authorize("admin"), getProfile, )
-  .put(authorize("admin"), updateProfile)
+  .get(getProfile)
+  .put( updateProfile)
   .delete(authorize("admin"), deleteProfile);
 
 router.route("/:id/follow").get(followProfile)  
@@ -62,7 +71,5 @@ router
   .route("/:id/announcements")
   .get( getProfileAnnouncements);
 
-router.route("/:id/special").put(protect, specialProfile);
-router.route("/:id/point").put(protect, chargePoint);
-router.route("/:id/urgent").put(protect, urgentProfile);
+
 module.exports = router;

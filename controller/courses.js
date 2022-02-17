@@ -42,9 +42,7 @@ exports.getCvCourses = asyncHandler(async (req, res, next) => {
         return this.getCourses(req, res, next);
 });
       
-
 exports.createCourse = asyncHandler(async (req, res, next) => {
-    console.log("data: ", req.body)
     
     req.body.createUser = req.userId;
     const course = await Course.create(req.body)

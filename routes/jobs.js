@@ -6,6 +6,7 @@ const {
   getJob,
   createJob,
   getSpecialJobs,
+  getCvFilterJobs,
   specialJob,
   urgentJob,
   likeJob,
@@ -13,6 +14,7 @@ const {
   deleteJob,
   updateJob,
   applyJob,
+  evalCand,
 } = require("../controller/jobs");
 
 const router = express.Router();
@@ -24,9 +26,11 @@ router
   .post(protect, createJob);
 
 router.route("/specials").get(protect, getSpecialJobs)
+router.route("/filters").get(protect, getCvFilterJobs)
   
 router.route("/:id/like").get(protect, likeJob)  
 router.route("/:id/unlike").get(protect, unlikeJob)  
+
 
 router
   .route("/:id")
@@ -35,6 +39,7 @@ router
   .put(protect, authorize("admin", "operator"), updateJob);
 
 router.route("/:id/apply").get(protect, applyJob);
+router.route("/:id/eval").put(protect, evalCand);
 router.route("/:id/special").put(protect, specialJob);
 router.route("/:id/urgent").put(protect, urgentJob);
 

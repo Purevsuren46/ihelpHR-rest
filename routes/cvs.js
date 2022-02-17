@@ -7,7 +7,11 @@ const {
   getCv,
   getCvFollower,
   getCvFollowing,
+  getAuthCvs,
   createCv,
+  settingProfile,
+  cvList,
+  urgentProfile,
   followCv,
   unfollowCv,
   updateCv,
@@ -17,7 +21,8 @@ const {
   chargePoint,
   logout,
   uploadCvCover,
-  uploadCvProfile
+  uploadCvProfile,
+  uploadCvAuth
 } = require("../controller/cvs");
 
 const {getCvPosts} = require("../controller/posts")
@@ -30,8 +35,6 @@ router.route("/logout").get(logout);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").post(resetPassword);
 
-
-
 //"/api/v1/cvs"
 router
   .route("/")
@@ -39,23 +42,30 @@ router
   .post(createCv);
   
 router.use(protect);
+router.route("/profile").post(uploadCvProfile);
+router.route("/cover").put(uploadCvCover);
+router.route("/auth-photo").put(uploadCvAuth);
+router.route("/point").put(chargePoint);
+
+router.route("/setting/:id").put(settingProfile);
+router.route("/urgent/:id").put(urgentProfile);
+router.route("/cvlist/:id").put(cvList);
+
 router.route("/:id/follow").get(followCv)  
 router.route("/:id/unfollow").get(unfollowCv)  
 
-
+router.route("/auths").get(getAuthCvs)
 router
   .route("/:id")
   .get(authorize("admin", "operator"), getCv)
-  .put(authorize("admin"), updateCv)
+  .put( updateCv)
   .delete(authorize("admin"), deleteCv);
 
 router
   .route("/:id/posts")
   .get(authorize("admin", "operator", "user"), getCvPosts);
 
-router.route("/:id/profile").put(uploadCvProfile);
-router.route("/:id/cover").put(uploadCvCover);
-router.route("/:id/point").put(protect, chargePoint);
+
 router.route("/:id/follower").get(getCvFollower);
 router.route("/:id/following").get(getCvFollowing);
 

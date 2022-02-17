@@ -5,6 +5,8 @@ const asyncHandler = require("express-async-handler");
 const paginate = require("../utils/paginate");
 const sendEmail = require("../utils/email");
 const crypto = require("crypto");
+const path = require("path");
+const sharp = require("sharp");
 
 // register
 exports.register = asyncHandler(async (req, res, next) => {
@@ -156,6 +158,47 @@ exports.specialProfile = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.cvList = asyncHandler(async (req, res, next) => {
+  const profile = await Profile.findById(req.userId);
+
+  if (!profile) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+
+  if(!req.body.cv) {
+    throw new MyError(" Анкет сан үзэх хугацаагаа сонгоно уу?", 400);
+  }
+
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  if(profile.point < req.body.cv) {
+    throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  } else {
+    if(profile.cvList < Date.now() ) {
+        const date = new Date()
+        profile.point -= req.body.cv
+        profile.cvList = date.addDays(req.body.cv) 
+        profile.isCvList = true
+    } else {
+        let date = profile.cvList
+        profile.point -= req.body.cv
+        profile.cvList = date.addDays(req.body.cv)
+        profile.isCvList = true
+    }
+  }
+
+  profile.save()
+
+  res.status(200).json({
+    success: true,
+    profile: profile
+  });
+});
+
 exports.urgentProfile = asyncHandler(async (req, res, next) => {
   const profile = await Profile.findById(req.userId);
 
@@ -200,15 +243,15 @@ exports.urgentProfile = asyncHandler(async (req, res, next) => {
 exports.chargePoint = asyncHandler(async (req, res, next) => {
   const profile = await Profile.findById(req.userId);
 
-  if(!req.body.wallet) {
+  if(!req.body.point) {
     throw new MyError(" Point хэмжээ оруулна уу?", 400);
   }
 
-  if(profile.point < req.body.wallet) {
+  if(profile.point < req.body.point) {
     throw new MyError(" Point оноо хүрэхгүй байна", 400);
   } else {
-    profile.point += req.body.wallet
-    profile.wallet -= req.body.wallet * 1000
+    profile.point += req.body.point
+    profile.wallet -= req.body.point * 1000
   }
 
   profile.save()
@@ -265,6 +308,7 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateProfile = asyncHandler(async (req, res, next) => {
+  
   const profile = await Profile.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -273,11 +317,15 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
   }
+  if (req.userId == req.params.id || req.userRole == "admin") {
+    res.status(200).json({
+      success: true,
+      data: profile,
+    });
+  } else {
+    throw new MyError ("Засах боломжгүй", 400)
+  }
 
-  res.status(200).json({
-    success: true,
-    data: profile,
-  });
 });
 
 exports.deleteProfile = asyncHandler(async (req, res, next) => {
@@ -361,4 +409,67 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     token,
     profile: profile,
   });
+});
+
+exports.uploadProfile = asyncHandler(async (req, res, next) => {
+  const profile = await Profile.findById(req.params.id);
+
+  if (!profile) {
+    throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
+  }
+
+  // image upload
+  const file = req.files.file;
+  if (!file.mimetype.startsWith("image")) {
+    throw new MyError("Та зураг upload хийнэ үү.", 400);
+  }
+
+  if (file.size > process.env.MAX_UPLOAD_FILE_SIZE) {
+    throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
+  }
+
+  file.name = `profile_${req.params.id}${path.parse(file.name).ext}`;
+  
+  const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
+    profile.profile = file.name;
+    profile.save();
+
+    res.status(200).json({
+      success: true,
+      data: file.name,
+    });
+  
+});
+
+// PUT: api/v1/profiles/:id/cover
+exports.uploadCover = asyncHandler(async (req, res, next) => {
+  const profile = await Profile.findById(req.params.id);
+
+  if (!profile) {
+    throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
+  }
+
+  // image upload
+  const file = req.files.file;
+  if (!file.mimetype.startsWith("image")) {
+    throw new MyError("Та зураг upload хийнэ үү.", 400);
+  }
+
+  if (file.size > process.env.MAX_UPLOAD_FILE_SIZE) {
+    throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
+  }
+
+  file.name = `cover_${req.params.id}${path.parse(file.name).ext}`;
+  
+  const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
+    profile.cover = file.name;
+    profile.save();
+
+    res.status(200).json({
+      success: true,
+      data: file.name,
+    });
+  
 });

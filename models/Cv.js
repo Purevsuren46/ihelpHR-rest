@@ -30,11 +30,15 @@ const CvSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
-  profile: {
+  profile: [{
+    type: String,
+    default: null
+  }],
+  cover: {
     type: String,
     default: null
   },
-  cover: {
+  authPhoto: {
     type: String,
     default: null
   },
@@ -60,6 +64,10 @@ const CvSchema = new mongoose.Schema({
     default: false,
   },
   working: {
+    type: Boolean,
+    default: false,
+  },
+  isApproved: {
     type: Boolean,
     default: false,
   },
@@ -112,6 +120,9 @@ const CvSchema = new mongoose.Schema({
     ref: 'Comment',
     default: null
   }],
+  isEmployer: {
+    type: Boolean
+  },
   following: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',

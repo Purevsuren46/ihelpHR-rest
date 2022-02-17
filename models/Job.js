@@ -58,6 +58,9 @@ const JobSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Profile',
   },
+  score: {
+    type: Number,
+  },
   isSpecial: {
     type: Boolean,
     default: false,
