@@ -40,9 +40,7 @@ exports.getExperience = asyncHandler( async (req, res, next) => {
 exports.getCvExperiences = asyncHandler(async (req, res, next) => {
         req.query.experience = req.params.cvId;
         return this.getExperiences(req, res, next);
-      });
-      
-
+});
 
 exports.createExperience = asyncHandler(async (req, res, next) => {
     console.log("data: ", req.body)

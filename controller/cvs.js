@@ -100,7 +100,6 @@ exports.getAuthCvs = asyncHandler(async (req, res, next) => {
   return this.getCvs(req, res, next);
 });
 
-
 exports.getCvFollower = asyncHandler(async (req, res, next) => {
 
   req.query.follower = req.params.id;

@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 
 const JobSchema = new mongoose.Schema({
   
-  employer: {
-      type: String,
-      // required: [true, "Ажил олгогчийн нэрийг оруулна уу"]
-  },
   description: {
     type: String,
     required: [true, "Тайлбар оруулна уу"]

@@ -104,10 +104,35 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
 
 exports.createAnnouncement = asyncHandler(async (req, res, next) => {
   const occupation = await Occupation.findById(req.body.occupation);
+  const profile = await Profile.findById(req.userId);
 
   if (!occupation) {
     throw new MyError(req.body.occupation + " ID-тэй категори байхгүй!", 400);
   }
+
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  if(profile.point < req.body.special + req.body.urgent + req.body.order) {
+    throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  } else {
+    const date = new Date()
+    profile.point -= req.body.order
+    req.body.order = date.addDays(req.body.order)
+  
+    const date1 = new Date()
+    profile.point -= req.body.urgent
+    req.body.urgent = date1.addDays(req.body.urgent)
+  
+    const date2 = new Date()
+    profile.point -= req.body.special
+    req.body.special = date2.addDays(req.body.special)
+  }
+
+  profile.save()
 
   req.body.createUser = req.userId;
 

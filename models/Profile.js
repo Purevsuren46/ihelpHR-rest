@@ -61,11 +61,9 @@ const ProfileSchema = new mongoose.Schema({
   },
   location: {
     type: String,
-    required: [true, "Ажил олгогчийн байршлыг оруулна уу"]
   },
   register: {
     type: String,
-    required: [true, "Ажил олгогчийн регистер оруулна уу"]
   },
   about: {
     type: String,
