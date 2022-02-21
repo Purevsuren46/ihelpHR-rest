@@ -52,7 +52,6 @@ const CvSchema = new mongoose.Schema({
         /([Ё-Ө]{2}[0-9]{8})/,
         "Регистэр буруу байна.",
     ],
-    required: [true, "Хэрэглэгчийн регистер оруулна уу"],
     unique: true,
   },
   about: {
