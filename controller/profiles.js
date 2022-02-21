@@ -440,7 +440,7 @@ exports.uploadProfile = asyncHandler(async (req, res, next) => {
 
   file.name = `profile_${req.params.id}${path.parse(file.name).ext}`;
   
-  const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
     profile.profile = file.name;
     profile.save();
@@ -472,7 +472,7 @@ exports.uploadCover = asyncHandler(async (req, res, next) => {
 
   file.name = `cover_${req.params.id}${path.parse(file.name).ext}`;
   
-  const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
     profile.cover = file.name;
     profile.save();

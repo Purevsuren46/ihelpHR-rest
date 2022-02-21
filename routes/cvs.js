@@ -57,13 +57,13 @@ router.route("/:id/unfollow").get(unfollowCv)
 router.route("/auths").get(getAuthCvs)
 router
   .route("/:id")
-  .get(authorize("admin", "operator"), getCv)
+  .get( getCv)
   .put( updateCv)
   .delete(authorize("admin"), deleteCv);
 
 router
   .route("/:id/posts")
-  .get(authorize("admin", "operator", "user"), getCvPosts);
+  .get(getCvPosts);
 
 
 router.route("/:id/follower").get(getCvFollower);

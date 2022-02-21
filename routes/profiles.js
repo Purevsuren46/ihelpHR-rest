@@ -53,8 +53,8 @@ router.route("/cvlist").put(cvList);
 //"/api/v1/profiles"
 router
   .route("/")
-  .get(authorize("admin"), getProfiles)
-  .post(authorize("admin"), createProfile);
+  .get(getProfiles)
+  .post(createProfile);
 
 router
   .route("/:id")

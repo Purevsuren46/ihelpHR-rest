@@ -432,7 +432,7 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
 
   file.name = `profile_${req.userId}${path.parse(file.name).ext}`;
   
-  const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
     cv.profile = file.name;
     cv.save();
@@ -464,7 +464,7 @@ exports.uploadCvCover = asyncHandler(async (req, res, next) => {
 
   file.name = `cover_${req.userId}${path.parse(file.name).ext}`;
   
-  const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
     cv.cover = file.name;
     cv.save();
@@ -496,7 +496,7 @@ exports.uploadCvAuth = asyncHandler(async (req, res, next) => {
 
   file.name = `auth_${req.userId}${path.parse(file.name).ext}`;
   
-  const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
     cv.authPhoto = file.name;
     cv.save();

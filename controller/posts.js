@@ -270,7 +270,7 @@ exports.uploadPostPhoto = asyncHandler(async (req, res, next) => {
 
   file.name = `photo_${req.params.id}${path.parse(file.name).ext}`;
   
-  const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
     post.photo = file.name;
     post.save();
