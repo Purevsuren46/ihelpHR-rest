@@ -30,10 +30,10 @@ const CvSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
-  profile: [{
+  profile: {
     type: String,
     default: null
-  }],
+  },
   cover: {
     type: String,
     default: null
