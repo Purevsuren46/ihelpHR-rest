@@ -23,6 +23,9 @@ const ProfileSchema = new mongoose.Schema({
   isEmployer: {
     type: Boolean
   },
+  isEmployee: {
+    type: Boolean
+  },
   photo: {
     type: String,
     default: null

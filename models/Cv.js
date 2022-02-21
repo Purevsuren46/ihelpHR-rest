@@ -123,6 +123,9 @@ const CvSchema = new mongoose.Schema({
   isEmployer: {
     type: Boolean
   },
+  isEmployee: {
+    type: Boolean
+  },
   following: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
