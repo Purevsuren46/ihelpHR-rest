@@ -42,7 +42,7 @@ router
   .post(createCv);
   
 router.use(protect);
-router.route("/profile").post(uploadCvProfile);
+router.route("/profile").put(uploadCvProfile);
 router.route("/cover").put(uploadCvCover);
 router.route("/auth-photo").put(uploadCvAuth);
 router.route("/point").put(chargePoint);
