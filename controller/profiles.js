@@ -262,6 +262,16 @@ exports.chargePoint = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.chargeWallet = asyncHandler(async (req, res, next) => {
+
+  console.log(req.body)
+
+  res.status(200).json({
+    success: true,
+    data: profile,
+  });
+});
+
 exports.followProfile = asyncHandler(async (req, res, next) => {
   const profile = await Profile.findById(req.params.id);
   const cv = await Cv.findById(req.userId);
