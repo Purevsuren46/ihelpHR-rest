@@ -434,7 +434,7 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
   
   const picture = await sharp(file.data).resize({width: 300}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
-    cv.profile.push(file.name);
+    cv.profile = file.name;
     cv.save();
 
     res.status(200).json({
