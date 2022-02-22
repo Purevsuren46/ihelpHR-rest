@@ -7,7 +7,6 @@ const sendEmail = require("../utils/email");
 const crypto = require("crypto");
 const path = require("path");
 const sharp = require("sharp");
-const got = require("got")
 
 // register
 exports.register = asyncHandler(async (req, res, next) => {
@@ -266,19 +265,8 @@ exports.chargePoint = asyncHandler(async (req, res, next) => {
 exports.chargeWallet = asyncHandler(async (req, res, next) => {
 
   const charge = req.query
-  const {data} = await got.post("https://merchant.qpay.mn/v2/payment/check", {
-    json: {
-      "object_type": "INVOICE",
-	    "object_id"  : "8b3cbee2-312c-45d5-9598-059be5d77cbe",
-	    "offset"     : {
-	    "page_number": 1,
-	    "page_limit" : 100
-	  }
-    }
-  }).json()
-  console.log(charge)
-  console.log(data)
 
+  console.log(charge)
   res.status(200).json({
     success: true,
   });
