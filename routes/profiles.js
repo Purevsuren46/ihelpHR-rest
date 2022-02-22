@@ -35,10 +35,15 @@ const router = express.Router();
 
 //"/api/v1/profiles"
 router.route("/register").post(register);
+
 router.route("/login").post(login);
 router.route("/logout").get(logout);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").post(resetPassword);
+router
+  .route("/")
+  .get(getProfiles)
+  .post(createProfile);
 
 
 router.route("/profile/:id").put(uploadProfile);
@@ -51,10 +56,7 @@ router.route("/special").put(specialProfile);
 router.route("/urgent").put(urgentProfile);
 router.route("/cvlist").put(cvList);
 //"/api/v1/profiles"
-router
-  .route("/")
-  .get(getProfiles)
-  .post(createProfile);
+
 
 router
   .route("/:id")
