@@ -48,10 +48,11 @@ router
 
 router.route("/profile/:id").put(uploadProfile);
 router.route("/cover/:id").put(uploadCover);
+router.route("/callbacks").post(chargeWallet);
 router.use(protect);
 
 router.route("/point").put(chargePoint);
-router.route("/callbacks").post(chargeWallet);
+
 router.route("/special").put(specialProfile);
 router.route("/urgent").put(urgentProfile);
 router.route("/cvlist").put(cvList);
