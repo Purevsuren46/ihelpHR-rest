@@ -7,6 +7,7 @@ const sendEmail = require("../utils/email");
 const crypto = require("crypto");
 const path = require("path");
 const sharp = require("sharp");
+const got = require("got")
 
 // register
 exports.register = asyncHandler(async (req, res, next) => {
@@ -28,20 +29,20 @@ exports.login = asyncHandler(async (req, res, next) => {
   // Оролтыгоо шалгана
 
   if (!email || !password) {
-    throw new MyError("Утас болон нууц үгээ дамжуулна уу", 400);
+    throw new MyError("Email болон нууц үгээ дамжуулна уу", 400);
   }
 
   // Тухайн хэрэглэгчийн хайна
   const profile = await Profile.findOne({ email }).select("+password");
 
   if (!profile) {
-    throw new MyError("Утасны дугаар болон нууц үгээ зөв оруулна уу", 401);
+    throw new MyError("Email болон нууц үгээ зөв оруулна уу", 401);
   }
 
   const ok = await profile.checkPassword(password);
 
   if (!ok) {
-    throw new MyError("Утасны дугаар болон нууц үгээ зөв оруулна уу", 401);
+    throw new MyError("Email болон нууц үгээ зөв оруулна уу", 401);
   }
 
   const token = profile.getJsonWebToken();
@@ -265,8 +266,18 @@ exports.chargePoint = asyncHandler(async (req, res, next) => {
 exports.chargeWallet = asyncHandler(async (req, res, next) => {
 
   const charge = req.query
-
+  const {data} = await got.post("https://merchant.qpay.mn/v2/payment/check", {
+    json: {
+      "object_type": "INVOICE",
+	    "object_id"  : "8b3cbee2-312c-45d5-9598-059be5d77cbe",
+	    "offset"     : {
+	    "page_number": 1,
+	    "page_limit" : 100
+	  }
+    }
+  }).json()
   console.log(charge)
+  console.log(data)
 
   res.status(200).json({
     success: true,
