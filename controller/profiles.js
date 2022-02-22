@@ -264,7 +264,7 @@ exports.chargePoint = asyncHandler(async (req, res, next) => {
 
 exports.chargeWallet = asyncHandler(async (req, res, next) => {
 
-  const charge = req.body
+  const charge = req.query
   console.log(charge)
 
   res.status(200).json({
