@@ -264,7 +264,8 @@ exports.chargePoint = asyncHandler(async (req, res, next) => {
 
 exports.chargeWallet = asyncHandler(async (req, res, next) => {
 
-  const charge = req.query
+  const charge = req.query.gpay_payment_id
+
   console.log(charge)
 
   res.status(200).json({
