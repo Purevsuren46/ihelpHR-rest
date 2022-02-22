@@ -51,7 +51,7 @@ router.route("/cover/:id").put(uploadCover);
 router.use(protect);
 
 router.route("/point").put(chargePoint);
-router.route("/wallet").put(chargeWallet);
+router.route("/callbacks").post(chargeWallet);
 router.route("/special").put(specialProfile);
 router.route("/urgent").put(urgentProfile);
 router.route("/cvlist").put(cvList);

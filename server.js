@@ -8,6 +8,7 @@ const logger = require("./middleware/logger");
 const fileupload = require("express-fileupload");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser")
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
 const xss = require("xss-clean");
@@ -99,6 +100,8 @@ app.use(mongoSanitize());
 // Сэрвэр рүү upload хийсэн файлтай ажиллана
 app.use(fileupload());
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 // Morgan logger-ийн тохиргоо
 var accessLogStream = rfs.createStream("access.log", {
   interval: "1d", // rotate daily

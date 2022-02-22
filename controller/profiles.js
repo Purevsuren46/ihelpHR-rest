@@ -264,11 +264,11 @@ exports.chargePoint = asyncHandler(async (req, res, next) => {
 
 exports.chargeWallet = asyncHandler(async (req, res, next) => {
 
-  console.log(req.body)
+  const charge = req.body
+  console.log(charge)
 
   res.status(200).json({
     success: true,
-    data: profile,
   });
 });
 
