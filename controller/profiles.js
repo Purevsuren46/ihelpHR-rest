@@ -23,16 +23,16 @@ exports.register = asyncHandler(async (req, res, next) => {
 
 // логин хийнэ
 exports.login = asyncHandler(async (req, res, next) => {
-  const { phone, password } = req.body;
+  const { email, password } = req.body;
 
   // Оролтыгоо шалгана
 
-  if (!phone || !password) {
+  if (!email || !password) {
     throw new MyError("Утас болон нууц үгээ дамжуулна уу", 400);
   }
 
   // Тухайн хэрэглэгчийн хайна
-  const profile = await Profile.findOne({ phone }).select("+password");
+  const profile = await Profile.findOne({ email }).select("+password");
 
   if (!profile) {
     throw new MyError("Утасны дугаар болон нууц үгээ зөв оруулна уу", 401);
@@ -264,7 +264,7 @@ exports.chargePoint = asyncHandler(async (req, res, next) => {
 
 exports.chargeWallet = asyncHandler(async (req, res, next) => {
 
-  const charge = req.query.gpay_payment_id
+  const charge = req.query
 
   console.log(charge)
 
