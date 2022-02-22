@@ -32,7 +32,7 @@ const {
 
 
 const router = express.Router();
-
+router.route("/callbacks").get(chargeWallet);
 //"/api/v1/profiles"
 router.route("/register").post(register);
 
@@ -48,7 +48,7 @@ router
 
 router.route("/profile/:id").put(uploadProfile);
 router.route("/cover/:id").put(uploadCover);
-router.route("/callbacks").post(chargeWallet);
+
 router.use(protect);
 
 router.route("/point").put(chargePoint);
