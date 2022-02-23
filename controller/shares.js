@@ -39,7 +39,6 @@ exports.getShare = asyncHandler( async (req, res, next) => {
     
 })
 
-
 exports.createShare = asyncHandler(async (req, res, next) => {
     const post = await Post.findById(req.params.id)
     req.body.createUser = req.userId;

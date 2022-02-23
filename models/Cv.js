@@ -42,6 +42,14 @@ const CvSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  invoiceId: {
+    type: String,
+    default: null
+  },
+  qrImage: {
+    type: String,
+    default: null
+  },
   location: {
     type: String,
     default: null

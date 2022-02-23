@@ -22,18 +22,22 @@ const {
   logout,
   uploadCvCover,
   uploadCvProfile,
-  uploadCvAuth
+  uploadCvAuth,
+  invoiceWallet,
+  chargeWallet
 } = require("../controller/cvs");
 
 const {getCvPosts} = require("../controller/posts")
 
 const router = express.Router();
-
+router.route("/invoice/:id").post(invoiceWallet);
+router.route("/callbacks/:id").get(chargeWallet);
 //"/api/v1/cvs"
 router.route("/login").post(login);
 router.route("/logout").get(logout);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").post(resetPassword);
+
 
 //"/api/v1/cvs"
 router

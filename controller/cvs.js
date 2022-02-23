@@ -7,6 +7,7 @@ const sendEmail = require("../utils/email");
 const crypto = require("crypto");
 const path = require("path");
 const sharp = require("sharp");
+const axios = require("axios")
 
 // логин хийнэ
 exports.login = asyncHandler(async (req, res, next) => {
@@ -227,6 +228,100 @@ exports.settingProfile = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     profile: profile
+  });
+});
+
+exports.invoiceWallet = asyncHandler(async (req, res, next) => {
+  const cv = await Cv.findById(req.params.id);
+
+  await axios({
+    method: 'post',
+    url: 'https://merchant.qpay.mn/v2/auth/token',
+    headers: {
+      Authorization: `Basic SUhFTFA6NXNEdkVRazM=`
+    },
+
+  }).then(response => {
+    const token = response.data.access_token;
+
+    axios({
+      method: 'post',
+      url: 'https://merchant.qpay.mn/v2/invoice',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      data: {
+        invoice_code: "IHELP_INVOICE",
+        sender_invoice_no: "12345678",
+        invoice_receiver_code: `${cv.phone}`,
+        invoice_description:`iHelp wallet charge ${cv.email}`,
+        
+        amount:req.body.amount,
+        callback_url:`http://128.199.128.37/api/v1/cvs/callbacks/${req.params.id}`
+      }
+    }).then(response => {
+      cv.qrImage = response.data.qr_image
+      cv.invoiceId = response.data.invoice_id
+      cv.save()
+    })
+    .catch(error => {
+      console.log(error.response.data);
+    });
+  })
+  .catch(error => {
+    console.log(error.response.data);
+  });
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
+exports.chargeWallet = asyncHandler(async (req, res, next) => {
+  const cv = await Cv.findById(req.params.id);
+  const charge = req.query
+
+  await axios({
+    method: 'post',
+    url: 'https://merchant.qpay.mn/v2/auth/token',
+    headers: {
+      Authorization: `Basic SUhFTFA6NXNEdkVRazM=`
+    },
+
+  }).then(response => {
+    const token = response.data.access_token;
+
+    axios({
+      method: 'post',
+      url: 'https://merchant.qpay.mn/v2/payment/check',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      data: {
+        object_type: "INVOICE",
+        object_id  : `${cv.invoiceId}`,
+        offset     : {
+            page_number: 1,
+            page_limit : 100
+          }
+      }
+    }).then(response => {
+      cv.qrImage = null
+      cv.wallet += response.data.paid_amount
+      cv.save()
+    })
+    .catch(error => {
+      console.log(error.response.data);
+    });
+  })
+  .catch(error => {
+    console.log(error.response.data);
+  });
+
+
+  res.status(200).json({
+    success: true,
+    data: cv
   });
 });
 
