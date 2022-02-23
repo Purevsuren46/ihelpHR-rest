@@ -30,6 +30,14 @@ const ProfileSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  invoiceId: {
+    type: String,
+    default: null
+  },
+  qrImage: {
+    type: String,
+    default: null
+  },
   profile: {
     type: String,
     default: null

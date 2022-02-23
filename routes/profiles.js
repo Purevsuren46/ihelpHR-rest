@@ -11,6 +11,7 @@ const {
   createProfile,
   chargePoint,
   chargeWallet,
+  invoiceWallet,
   updateProfile,
   urgentProfile,
   specialProfile,
@@ -32,7 +33,8 @@ const {
 
 
 const router = express.Router();
-router.route("/callbacks").get(chargeWallet);
+router.route("/invoice/:id").post(invoiceWallet);
+router.route("/callbacks/:id").get(chargeWallet);
 //"/api/v1/profiles"
 router.route("/register").post(register);
 
