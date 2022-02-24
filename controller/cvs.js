@@ -396,6 +396,8 @@ exports.urgentProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.createCv = asyncHandler(async (req, res, next) => {
+  req.body.wallet = 0,
+  req.body.point = 0
   const cv = await Cv.create(req.body);
   res.status(200).json({
     success: true,
@@ -412,7 +414,12 @@ exports.updateCv = asyncHandler(async (req, res, next) => {
   if (!cv) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
   }
-
+  console.log(req.params.id, req.userId, req.body, req._startTime )
+  if (req.userId == req.params.id) {
+    cv.wallet = 0,
+    cv.point = 0
+    cv.save()
+  }
   if (req.userId == req.params.id || req.userRole == "admin") {
     res.status(200).json({
       success: true,

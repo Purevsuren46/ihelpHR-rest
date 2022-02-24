@@ -118,6 +118,21 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.getSpecialProfiles = asyncHandler(async (req, res, next) => {
+  req.query.isSpecial = true;
+  return this.getProfiles(req, res, next);
+});
+
+exports.getUrgentProfiles = asyncHandler(async (req, res, next) => {
+  req.query.isUrgent = true;
+  return this.getProfiles(req, res, next);
+});
+
+exports.getCvListProfiles = asyncHandler(async (req, res, next) => {
+  req.query.isCvList = true;
+  return this.getProfiles(req, res, next);
+});
+
 exports.specialProfile = asyncHandler(async (req, res, next) => {
   const profile = await Profile.findById(req.userId);
 
@@ -394,6 +409,8 @@ exports.unfollowProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.createProfile = asyncHandler(async (req, res, next) => {
+  req.body.wallet = 0,
+  req.body.point = 0
   const profile = await Profile.create(req.body);
 
   res.status(200).json({
@@ -411,6 +428,11 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+  if (req.userId == req.params.id) {
+    profile.wallet = 0,
+    profile.point = 0
+    profile.save()
   }
   if (req.userId == req.params.id || req.userRole == "admin") {
     res.status(200).json({

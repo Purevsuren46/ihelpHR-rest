@@ -6,6 +6,9 @@ const {
   login,
   getProfiles,
   getProfile,
+  getSpecialProfiles,
+  getUrgentProfiles,
+  getCvListProfiles,
   followProfile,
   unfollowProfile,
   createProfile,
@@ -42,6 +45,10 @@ router.route("/login").post(login);
 router.route("/logout").get(logout);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").post(resetPassword);
+router.route("/specials").get(getSpecialProfiles);
+router.route("/urgents").get(getUrgentProfiles);
+router.route("/cvlists").get(getCvListProfiles);
+
 router
   .route("/")
   .get(getProfiles)
