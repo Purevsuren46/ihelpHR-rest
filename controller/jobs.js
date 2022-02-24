@@ -68,8 +68,7 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
 
 exports.getProfileJobs = asyncHandler(async (req, res, next) => {
 
-  req.query.createUser = req.userId;
-  console.log(req.query)
+  req.query.createUser = req.params.id;
   return this.getJobs(req, res, next);
 });
 

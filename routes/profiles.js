@@ -57,6 +57,9 @@ router
 
 router.route("/profile/:id").put(uploadProfile);
 router.route("/cover/:id").put(uploadCover);
+router
+  .route("/:id/jobs")
+  .get( getProfileJobs);
 
 router.use(protect);
 
@@ -77,9 +80,7 @@ router
 router.route("/:id/follow").get(followProfile)  
 router.route("/:id/unfollow").get(unfollowProfile)  
 
-router
-  .route("/:id/jobs")
-  .get( getProfileJobs);
+
 
 router
   .route("/:id/announcements")
