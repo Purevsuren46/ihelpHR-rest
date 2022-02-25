@@ -1,4 +1,5 @@
 const Cv = require("../models/Cv");
+const History = require("../models/History");
 const Profile = require("../models/Profile");
 const MyError = require("../utils/myError");
 const asyncHandler = require("express-async-handler");
@@ -411,6 +412,7 @@ exports.updateCv = asyncHandler(async (req, res, next) => {
     runValidators: true,
   });
 
+
   if (!cv) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
   }
@@ -421,9 +423,13 @@ exports.updateCv = asyncHandler(async (req, res, next) => {
     cv.save()
   }
   if (req.userId == req.params.id || req.userRole == "admin") {
+    req.body.updateByUser = req.userId;
+    req.body.updateUser = req.params.id;
+    const history = await History.create(req.body)
     res.status(200).json({
       success: true,
       data: cv,
+      history: history
     });
   } else {
     throw new MyError ("Засах боломжгүй", 400)

@@ -18,6 +18,7 @@ const hpp = require("hpp");
 // Router оруулж ирэх
 const profilesRoutes = require("./routes/profiles");
 const cvsRoutes = require("./routes/cvs");
+const historiesRoutes = require("./routes/histories");
 const jobsRoutes = require("./routes/jobs");
 const postsRoutes = require("./routes/posts");
 const commentsRoutes = require("./routes/comments");
@@ -113,6 +114,7 @@ app.use(morgan("combined", { stream: accessLogStream }));
 
 app.use("/api/v1/profiles", profilesRoutes);
 app.use("/api/v1/cvs", cvsRoutes);
+app.use("/api/v1/histories", historiesRoutes);
 app.use("/api/v1/jobs", jobsRoutes);
 app.use("/api/v1/posts", postsRoutes);
 app.use("/api/v1/comments", commentsRoutes);

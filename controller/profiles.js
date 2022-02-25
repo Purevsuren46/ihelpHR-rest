@@ -1,5 +1,6 @@
 const Profile = require("../models/Profile");
 const Cv = require("../models/Cv");
+const History = require("../models/History");
 const MyError = require("../utils/myError");
 const asyncHandler = require("express-async-handler");
 const paginate = require("../utils/paginate");
@@ -498,6 +499,9 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
     profile.save()
   }
   if (req.userId == req.params.id || req.userRole == "admin") {
+    req.body.updateByUser = req.userId;
+    req.body.updateUser = req.params.id;
+    const history = await History.create(req.body)
     res.status(200).json({
       success: true,
       data: profile,
