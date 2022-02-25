@@ -111,6 +111,14 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
   } else {
     profile.isUrgent = false
   }
+
+  if (profile.cvList > String(Date.now())) {
+    profile.isCvList = true
+  } else {
+    profile.isCvList = false
+  }
+  
+
   profile.save()
 
   res.status(200).json({
