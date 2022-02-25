@@ -111,6 +111,7 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
   } else {
     profile.isUrgent = false
   }
+  profile.save()
 
   res.status(200).json({
     success: true,
