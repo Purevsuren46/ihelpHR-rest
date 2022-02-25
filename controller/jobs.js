@@ -345,11 +345,10 @@ exports.createJob = asyncHandler(async (req, res, next) => {
     req.body.special = date2.addDays(req.body.special)
   }
 
-  profile.save()
   req.body.createUser = req.userId;
   const job = await Job.create(req.body);
-  // profile.job.addToSet(req.body.createUser);
-  // profile.save()
+  profile.job.addToSet(job._id)
+  profile.save()
   res.status(200).json({
     success: true,
     data: job,

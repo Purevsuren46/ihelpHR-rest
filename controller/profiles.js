@@ -120,17 +120,71 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
 
 exports.getSpecialProfiles = asyncHandler(async (req, res, next) => {
   req.query.isSpecial = true;
-  return this.getProfiles(req, res, next);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Profile);
+
+  const profiles = await Profile.find(req.query, select).populate("job")
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+
+  res.status(200).json({
+    success: true,
+    data: profiles,
+    pagination,
+  });
 });
 
 exports.getUrgentProfiles = asyncHandler(async (req, res, next) => {
   req.query.isUrgent = true;
-  return this.getProfiles(req, res, next);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Profile);
+
+  const profiles = await Profile.find(req.query, select).populate("job")
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+
+  res.status(200).json({
+    success: true,
+    data: profiles,
+    pagination,
+  });
 });
 
 exports.getCvListProfiles = asyncHandler(async (req, res, next) => {
   req.query.isCvList = true;
-  return this.getProfiles(req, res, next);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Profile);
+
+  const profiles = await Profile.find(req.query, select).populate("job")
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+
+  res.status(200).json({
+    success: true,
+    data: profiles,
+    pagination,
+  });
 });
 
 exports.specialProfile = asyncHandler(async (req, res, next) => {

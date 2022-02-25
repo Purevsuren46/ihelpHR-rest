@@ -137,7 +137,7 @@ const ProfileSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
+}, {toJSON: { virtuals: true}, toObject: {virtuals: true}});
 
 ProfileSchema.pre("save", async function (next) {
   // Нууц үг өөрчлөгдөөгүй бол дараачийн middleware рүү шилж
