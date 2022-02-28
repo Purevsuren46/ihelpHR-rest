@@ -42,6 +42,10 @@ const CvSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  portfolio: [{
+    type: String,
+    default: null
+  }],
   invoiceId: {
     type: String,
     default: null

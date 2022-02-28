@@ -22,6 +22,7 @@ const {
   logout,
   uploadCvCover,
   uploadCvProfile,
+  uploadCvPortfolio,
   uploadCvAuth,
   invoiceWallet,
   chargeWallet
@@ -48,6 +49,7 @@ router
 router.use(protect);
 router.route("/profile").put(uploadCvProfile);
 router.route("/cover").put(uploadCvCover);
+router.route("/portfolio").put(uploadCvPortfolio);
 router.route("/auth-photo").put(uploadCvAuth);
 router.route("/point").put(chargePoint);
 

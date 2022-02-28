@@ -46,7 +46,7 @@ exports.login = asyncHandler(async (req, res, next) => {
     cv: cv,
   });
 });
-
+// logout хийнэ
 exports.logout = asyncHandler(async (req, res, next) => {
   const cookieOption = {
     expires: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000),
@@ -58,7 +58,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
     data: "logged out...",
   });
 });
-
+// Хэрэглэгчид авах
 exports.getCvs = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -80,7 +80,7 @@ exports.getCvs = asyncHandler(async (req, res, next) => {
     pagination,
   });
 });
-
+// Хэрэглэгчийг iD гаар авна
 exports.getCv = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.params.id);
 
@@ -93,7 +93,7 @@ exports.getCv = asyncHandler(async (req, res, next) => {
     data: cv,
   });
 });
-
+// Үнэмлэхний зургаа явуулцан, гэрээгээ зөвшөөрцөн хэрэглэгчдийг авах
 exports.getAuthCvs = asyncHandler(async (req, res, next) => {
 
   req.query.authPhoto = {$ne: null};
@@ -101,19 +101,19 @@ exports.getAuthCvs = asyncHandler(async (req, res, next) => {
   req.query.authentication = false;
   return this.getCvs(req, res, next);
 });
-
+// Дагагчдийг авах
 exports.getCvFollower = asyncHandler(async (req, res, next) => {
 
   req.query.follower = req.params.id;
   return this.getCvs(req, res, next);
 });
-
+// Дагадаг хэрэглэгдчийг авах
 exports.getCvFollowing = asyncHandler(async (req, res, next) => {
 
   req.query.following = req.params.id;
   return this.getCvs(req, res, next);
 });
-
+// Хэрэглэгч дагах 
 exports.followCv = asyncHandler(async (req, res, next) => {
   const cvs = await Cv.findById(req.params.id);
   const cv = await Cv.findById(req.userId);
@@ -131,7 +131,7 @@ exports.followCv = asyncHandler(async (req, res, next) => {
     data: cv
   });
 });
-
+// Хэрэглэгч дагахаа болих
 exports.unfollowCv = asyncHandler(async (req, res, next) => {
   const cvs = await Cv.findById(req.params.id);
   const cv = await Cv.findById(req.userId);
@@ -149,7 +149,7 @@ exports.unfollowCv = asyncHandler(async (req, res, next) => {
     data: cv
   });
 });
-
+// Wallet оос Point шилжүүлэх
 exports.chargePoint = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.userId);
 
@@ -171,7 +171,7 @@ exports.chargePoint = asyncHandler(async (req, res, next) => {
     data: cv,
   });
 });
-
+// Company urgent, special, cvlist өгөх 
 exports.settingProfile = asyncHandler(async (req, res, next) => {
   const profile = await Profile.findById(req.params.id);
 
@@ -231,7 +231,7 @@ exports.settingProfile = asyncHandler(async (req, res, next) => {
     profile: profile
   });
 });
-
+// Wallet цэнэглэх хүсэлт
 exports.invoiceWallet = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.params.id);
 
@@ -277,7 +277,7 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
-
+// Wallet цэнэглэх 
 exports.chargeWallet = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.params.id);
   const charge = req.query
@@ -395,7 +395,7 @@ exports.urgentProfile = asyncHandler(async (req, res, next) => {
     profile: profile
   });
 });
-
+// шинээр хэрэглэгч үүсгэх
 exports.createCv = asyncHandler(async (req, res, next) => {
   req.body.wallet = 0,
   req.body.point = 0
@@ -429,14 +429,13 @@ exports.updateCv = asyncHandler(async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: cv,
-      history: history
     });
   } else {
     throw new MyError ("Засах боломжгүй", 400)
   }
 
 });
-
+// хэрэглэгч засах, history д хадгалах
 exports.deleteCv = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.params.id);
 
@@ -612,6 +611,37 @@ exports.uploadCvAuth = asyncHandler(async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: file.name,
+    });
+  
+});
+
+exports.uploadCvPortfolio = asyncHandler(async (req, res, next) => {
+  const cv = await Cv.findById(req.userId);
+
+  if (!cv) {
+    throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
+  }
+
+  // image upload
+  const file = req.files.file;
+  if (!file.mimetype.startsWith("image")) {
+    throw new MyError("Та зураг upload хийнэ үү.", 400);
+  }
+
+  if (file.size > process.env.MAX_UPLOAD_FILE_SIZE) {
+    throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
+  }
+
+  file.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file.name).ext}`;
+  
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
+    cv.portfolio.addToSet(file.name);
+    cv.save();
+
+    res.status(200).json({
+      success: true,
+      data: cv
     });
   
 });
