@@ -12,7 +12,7 @@ const axios = require('axios');
 
 // register
 exports.register = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.create(req.body);
+  const profile = await Cv.create(req.body);
 
   const token = profile.getJsonWebToken();
 
@@ -34,7 +34,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   // Тухайн хэрэглэгчийн хайна
-  const profile = await Profile.findOne({ email }).select("+password");
+  const profile = await Cv.findOne({ email }).select("+password");
 
   if (!profile) {
     throw new MyError("Email болон нууц үгээ зөв оруулна уу", 401);
@@ -77,12 +77,12 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
   const select = req.query.select;
-
+  req.query.organization = true;
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
   const pagination = await paginate(page, limit, Profile);
 
-  const profiles = await Profile.find(req.query, select)
+  const profiles = await Cv.find(req.query, select)
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -95,7 +95,7 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
 });
 
 exports.getProfile = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
@@ -139,7 +139,7 @@ exports.getSpecialProfiles = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Profile);
 
-  const profiles = await Profile.find(req.query, select).populate("job")
+  const profiles = await Cv.find(req.query, select).populate("job")
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -162,7 +162,7 @@ exports.getUrgentProfiles = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Profile);
 
-  const profiles = await Profile.find(req.query, select).populate("job")
+  const profiles = await Cv.find(req.query, select).populate("job")
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -185,7 +185,7 @@ exports.getCvListProfiles = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Profile);
 
-  const profiles = await Profile.find(req.query, select).populate("job")
+  const profiles = await Cv.find(req.query, select).populate("job")
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -198,7 +198,7 @@ exports.getCvListProfiles = asyncHandler(async (req, res, next) => {
 });
 
 exports.specialProfile = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.userId);
+  const profile = await Cv.findById(req.userId);
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
@@ -239,7 +239,7 @@ exports.specialProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.cvList = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.userId);
+  const profile = await Cv.findById(req.userId);
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
@@ -280,7 +280,7 @@ exports.cvList = asyncHandler(async (req, res, next) => {
 });
 
 exports.urgentProfile = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.userId);
+  const profile = await Cv.findById(req.userId);
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
@@ -321,7 +321,7 @@ exports.urgentProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.chargePoint = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.userId);
+  const profile = await Cv.findById(req.userId);
 
   if(!req.body.point) {
     throw new MyError(" Point хэмжээ оруулна уу?", 400);
@@ -343,7 +343,7 @@ exports.chargePoint = asyncHandler(async (req, res, next) => {
 });
 
 exports.invoiceWallet = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
 
   await axios({
     method: 'post',
@@ -389,7 +389,7 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
 });
 
 exports.chargeWallet = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
   const charge = req.query
 
   await axios({
@@ -437,7 +437,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
 });
 
 exports.followProfile = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
   const cv = await Cv.findById(req.userId);
 
   if (!profile) {
@@ -455,7 +455,7 @@ exports.followProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.unfollowProfile = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
   const cv = await Cv.findById(req.userId);
 
   if (!profile) {
@@ -474,8 +474,9 @@ exports.unfollowProfile = asyncHandler(async (req, res, next) => {
 
 exports.createProfile = asyncHandler(async (req, res, next) => {
   req.body.wallet = 0,
-  req.body.point = 0
-  const profile = await Profile.create(req.body);
+  req.body.point = 0,
+  req.body.organization = true
+  const profile = await Cv.create(req.body);
 
   res.status(200).json({
     success: true,
@@ -485,7 +486,7 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
 
 exports.updateProfile = asyncHandler(async (req, res, next) => {
   
-  const profile = await Profile.findByIdAndUpdate(req.params.id, req.body, {
+  const profile = await Cv.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
   });
@@ -513,7 +514,7 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.deleteProfile = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
@@ -532,7 +533,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     throw new MyError("Та нууц үг сэргээх имэйл хаягаа дамжуулна уу", 400);
   }
 
-  const profile = await Profile.findOne({ email: req.body.email });
+  const profile = await Cv.findOne({ email: req.body.email });
 
   if (!profile) {
     throw new MyError(req.body.email + " имэйлтэй хэрэглэгч олдсонгүй!", 400);
@@ -572,7 +573,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     .update(req.body.resetToken)
     .digest("hex");
 
-  const profile = await Profile.findOne({
+  const profile = await Cv.findOne({
     resetPasswordToken: encrypted,
     resetPasswordExpire: { $gt: Date.now() },
   });
@@ -596,7 +597,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 });
 
 exports.uploadProfile = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
 
   if (!profile) {
     throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
@@ -628,7 +629,7 @@ exports.uploadProfile = asyncHandler(async (req, res, next) => {
 
 // PUT: api/v1/profiles/:id/cover
 exports.uploadCover = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
 
   if (!profile) {
     throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);

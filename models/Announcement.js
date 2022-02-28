@@ -40,11 +40,11 @@ const AnnouncementSchema = new mongoose.Schema({
   },
   saved: [{
     type: mongoose.Schema.ObjectId,
-    ref: 'Profile',
+    ref: 'Cv',
   }],
   createUser: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Profile',
+    ref: 'Cv',
   },
   isSpecial: {
     type: Boolean,

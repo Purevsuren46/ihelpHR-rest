@@ -1,4 +1,5 @@
 const Course = require('../models/Course')
+const Cv = require('../models/Cv')
 const MyError = require("../utils/myError")
 const asyncHandler = require("express-async-handler")
 const paginate = require("../utils/paginate")
@@ -43,10 +44,11 @@ exports.getCvCourses = asyncHandler(async (req, res, next) => {
 });
       
 exports.createCourse = asyncHandler(async (req, res, next) => {
-    
+        const cv = await Cv.findById(req.userId)
     req.body.createUser = req.userId;
     const course = await Course.create(req.body)
-
+    cv.course.addToSet(course._id)
+    cv.save()
     res.status(200).json({ success: true, data: course, })
     
     

@@ -173,7 +173,7 @@ exports.chargePoint = asyncHandler(async (req, res, next) => {
 });
 // Company urgent, special, cvlist өгөх 
 exports.settingProfile = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
@@ -327,7 +327,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
 });
 
 exports.cvList = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
@@ -362,7 +362,7 @@ exports.cvList = asyncHandler(async (req, res, next) => {
 });
 
 exports.urgentProfile = asyncHandler(async (req, res, next) => {
-  const profile = await Profile.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);

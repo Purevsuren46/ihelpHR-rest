@@ -7,7 +7,7 @@ const ExperienceSchema = new mongoose.Schema({
     },
     createUser: {
         type: mongoose.Schema.ObjectId,
-        ref: 'Profile',
+        ref: 'Cv',
     },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 

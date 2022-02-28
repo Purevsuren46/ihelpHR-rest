@@ -177,7 +177,7 @@ exports.unlikeJob = asyncHandler(async (req, res, next) => {
 
 exports.specialJob = asyncHandler(async (req, res, next) => {
   const job = await Job.findById(req.params.id);
-  const profile = await Profile.findById(req.userId);
+  const profile = await Cv.findById(req.userId);
 
   if (!job) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
@@ -221,7 +221,7 @@ exports.specialJob = asyncHandler(async (req, res, next) => {
 
 exports.urgentJob = asyncHandler(async (req, res, next) => {
   const job = await Job.findById(req.params.id);
-  const profile = await Profile.findById(req.userId);
+  const profile = await Cv.findById(req.userId);
 
   if (!job) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
@@ -264,7 +264,7 @@ exports.urgentJob = asyncHandler(async (req, res, next) => {
 });
 
 exports.createProfile = asyncHandler(async (req, res, next) => {
-  const jobCat = await Profile.create(req.body);
+  const jobCat = await Cv.create(req.body);
 
   res.status(200).json({
     success: true,
@@ -316,7 +316,7 @@ exports.evalCand = asyncHandler(async (req, res, next) => {
 
 exports.createJob = asyncHandler(async (req, res, next) => {
   const occupation = await Occupation.findById(req.body.occupation);
-  const profile = await Profile.findById(req.userId);
+  const profile = await Cv.findById(req.userId);
 
   
   if (!occupation) {
@@ -370,7 +370,7 @@ exports.deleteJob = asyncHandler(async (req, res, next) => {
     throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
   }
 
-  const user = await Profile.findById(req.userId);
+  const user = await Cv.findById(req.userId);
 
   job.remove();
 

@@ -3,7 +3,7 @@ const path = require("path");
 const MyError = require("../utils/myError");
 const asyncHandler = require("express-async-handler");
 const paginate = require("../utils/paginate");
-const Profile = require("../models/Profile");
+const Cv = require("../models/Cv");
 const Occupation = require("../models/Occupation");
 
 // api/v1/Announcements
@@ -94,7 +94,7 @@ exports.getAnnouncement = asyncHandler(async (req, res, next) => {
 });
 
 exports.createProfile = asyncHandler(async (req, res, next) => {
-  const announcementCat = await Profile.create(req.body);
+  const announcementCat = await Cv.create(req.body);
 
   res.status(200).json({
     success: true,
@@ -104,7 +104,7 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
 
 exports.createAnnouncement = asyncHandler(async (req, res, next) => {
   const occupation = await Occupation.findById(req.body.occupation);
-  const profile = await Profile.findById(req.userId);
+  const profile = await Cv.findById(req.userId);
 
   if (!occupation) {
     throw new MyError(req.body.occupation + " ID-тэй категори байхгүй!", 400);
@@ -158,7 +158,7 @@ exports.deleteAnnouncement = asyncHandler(async (req, res, next) => {
     throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
   }
 
-  const user = await Profile.findById(req.userId);
+  const user = await Cv.findById(req.userId);
 
   announcement.remove();
 

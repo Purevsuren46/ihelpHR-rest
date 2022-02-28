@@ -1,4 +1,5 @@
 const Experience = require('../models/Experience')
+const Cv = require('../models/Cv')
 const MyError = require("../utils/myError")
 const asyncHandler = require("express-async-handler")
 const paginate = require("../utils/paginate")
@@ -22,7 +23,7 @@ exports.getExperiences = asyncHandler(async (req, res, next) => {
 
 exports.getExperience = asyncHandler( async (req, res, next) => {
     
-        const experience = await Experience.findById(req.params.id).populate('books')
+        const experience = await Experience.findById(req.params.id)
         
         if(!experience) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)
@@ -43,10 +44,12 @@ exports.getCvExperiences = asyncHandler(async (req, res, next) => {
 });
 
 exports.createExperience = asyncHandler(async (req, res, next) => {
-    console.log("data: ", req.body)
+        const cv = await Cv.findById(req.userId)
     
     req.body.createUser = req.userId;
     const experience = await Experience.create(req.body)
+    cv.experience.addToSet(experience._id)
+    cv.save()
 
     res.status(200).json({ success: true, data: experience, })
     

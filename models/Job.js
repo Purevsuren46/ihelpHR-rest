@@ -48,11 +48,11 @@ const JobSchema = new mongoose.Schema({
   }],
   createUser: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Profile',
+    ref: 'Cv',
   },
   updateUser: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Profile',
+    ref: 'Cv',
   },
   score: {
     type: Number,

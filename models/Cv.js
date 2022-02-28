@@ -18,13 +18,14 @@ const CvSchema = new mongoose.Schema({
     required: [true, "Хэрэглэгчийн имэйл оруулна уу"],
     unique: true,
   },
+  name: {
+    type: String,
+  },
   firstName: {
       type: String,
-      required: [true, "Нэрээ оруулна уу"]
   },
   lastName: {
     type: String,
-    required: [true, "Овгоо оруулна уу"]
   },
   birth: {
     type: Date,
@@ -66,6 +67,10 @@ const CvSchema = new mongoose.Schema({
     ],
     unique: true,
   },
+  organization: {
+    type: Boolean,
+    default: false,
+  },
   about: {
     type: String,
     default: null
@@ -73,6 +78,10 @@ const CvSchema = new mongoose.Schema({
   authentication: {
     type: Boolean,
     default: false,
+  },
+  photo: {
+    type: String,
+    default: null
   },
   working: {
     type: Boolean,
@@ -84,7 +93,7 @@ const CvSchema = new mongoose.Schema({
   },
   workingCompany: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Profile',
+    ref: 'Cv',
     default: null
   },
   status: {
@@ -111,6 +120,11 @@ const CvSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  job: [{
+    type: mongoose.Schema.ObjectId,
+    ref: 'Job',
+    default: null
+  }],
   category: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Category',
@@ -139,12 +153,12 @@ const CvSchema = new mongoose.Schema({
   },
   following: [{
     type: mongoose.Schema.ObjectId,
-    ref: 'Cv',
+    ref: "Cv",
     default: null
   }],
   follower: [{
     type: mongoose.Schema.ObjectId,
-    ref: 'Cv',
+    ref: "Cv",
     default: null
   }],
   post: [{
@@ -165,13 +179,40 @@ const CvSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  isSpecial: {
+    type: Boolean,
+    default: false,
+  },
+  special: {
+    type: Date,
+    default: Date.now,
+  },
+  isCvList: {
+    type: Boolean,
+    default: false,
+  },
+  cvList: {
+    type: Date,
+    default: Date.now,
+  },
+  isUrgent: {
+    type: Boolean,
+    default: false,
+  },
+  urgent: {
+    type: Date,
+    default: Date.now,
+  },
+  register: {
+    type: String,
+  },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {
     type: Date,
     default: Date.now,
   },
-});
+}, {toJSON: { virtuals: true}, toObject: {virtuals: true}});
 
 CvSchema.pre("save", async function (next) {
   // Нууц үг өөрчлөгдөөгүй бол дараачийн middleware рүү шилж
