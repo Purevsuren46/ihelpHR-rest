@@ -165,6 +165,7 @@ exports.boostPost = asyncHandler(async (req, res, next) => {
         post.isBoost = true
     }
   }
+  const expire = setTimeout(() => {post.isBoost = false, post.save()}, Math.abs(Number(post.boost) - Date.now()))
 
   cv.save()
   post.save()

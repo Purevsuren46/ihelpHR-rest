@@ -77,6 +77,10 @@ const JobSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  isEmployer: {
+    type: Boolean,
+    default: false,
+  },
   count: {
     type: Number,
     default: 0,

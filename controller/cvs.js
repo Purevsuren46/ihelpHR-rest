@@ -88,6 +88,27 @@ exports.getCv = asyncHandler(async (req, res, next) => {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
   }
 
+  if (cv.special > String(Date.now())) {
+    cv.isSpecial = true
+  } else {
+    cv.isSpecial = false
+  }
+
+  if (cv.urgent > String(Date.now())) {
+    cv.isUrgent = true
+  } else {
+    cv.isUrgent = false
+  }
+
+  if (cv.cvList > String(Date.now())) {
+    cv.isCvList = true
+  } else {
+    cv.isCvList = false
+  }
+  
+
+  cv.save()
+
   res.status(200).json({
     success: true,
     data: cv,
@@ -407,6 +428,7 @@ exports.createCv = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateCv = asyncHandler(async (req, res, next) => {
+  const cvv = await Cv.findById(req.params.id);
   const cv = await Cv.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -416,10 +438,14 @@ exports.updateCv = asyncHandler(async (req, res, next) => {
   if (!cv) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
   }
-  console.log(req.params.id, req.userId, req.body, req._startTime )
-  if (req.userId == req.params.id) {
-    cv.wallet = 0,
-    cv.point = 0
+  if (req.userRole == "user") {
+    cv.wallet = cvv.wallet,
+    cv.point = cvv.point,
+    cv.role = "user",
+    cv.special = cvv.special,
+    cv.cvList = cvv.cvList,
+    cv.isSpecial = cvv.isSpecial,
+    cv.isCvList = cvv.isCvList
     cv.save()
   }
   if (req.userId == req.params.id || req.userRole == "admin") {

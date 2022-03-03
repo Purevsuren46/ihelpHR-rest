@@ -10,18 +10,7 @@ const path = require("path");
 const sharp = require("sharp");
 const axios = require('axios');
 
-// register
-exports.register = asyncHandler(async (req, res, next) => {
-  const profile = await Cv.create(req.body);
 
-  const token = profile.getJsonWebToken();
-
-  res.status(200).json({
-    success: true,
-    token,
-    profile: profile,
-  });
-});
 
 // логин хийнэ
 exports.login = asyncHandler(async (req, res, next) => {
@@ -130,6 +119,7 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
 
 exports.getSpecialProfiles = asyncHandler(async (req, res, next) => {
   req.query.isSpecial = true;
+  req.query.organization = true;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
@@ -229,6 +219,7 @@ exports.specialProfile = asyncHandler(async (req, res, next) => {
         profile.isSpecial = true
     }
   }
+  const expire = setTimeout(() => {profile.isSpecial = false, profile.save()}, Math.abs(Number(profile.special) - Date.now()))
 
   profile.save()
 
@@ -270,6 +261,7 @@ exports.cvList = asyncHandler(async (req, res, next) => {
         profile.isCvList = true
     }
   }
+  const expire = setTimeout(() => {profile.isCvList = false, profile.save()}, Math.abs(Number(profile.cvList) - Date.now()))
 
   profile.save()
 
@@ -311,7 +303,8 @@ exports.urgentProfile = asyncHandler(async (req, res, next) => {
         profile.isUrgent = true
     }
   }
-
+  const expire = setTimeout(() => {profile.isUrgent = false, profile.save()}, Math.abs(Number(profile.urgent) - Date.now()))
+  console.log(Math.abs(Number(profile.urgent) - Date.now()))
   profile.save()
 
   res.status(200).json({
@@ -485,7 +478,7 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateProfile = asyncHandler(async (req, res, next) => {
-  
+  const cvv = await Cv.findById(req.params.id);
   const profile = await Cv.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -494,9 +487,14 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
   }
-  if (req.userId == req.params.id) {
-    profile.wallet = 0,
-    profile.point = 0
+  if (req.userRole == "user") {
+    profile.wallet = cvv.wallet,
+    profile.point = cvv.point,
+    profile.role = "user",
+    profile.special = cvv.special,
+    profile.cvList = cvv.cvList,
+    profile.isSpecial = cvv.isSpecial,
+    profile.isCvList = cvv.isCvList
     profile.save()
   }
   if (req.userId == req.params.id || req.userRole == "admin") {

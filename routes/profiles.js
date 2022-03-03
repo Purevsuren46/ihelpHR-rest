@@ -2,7 +2,6 @@ const express = require("express");
 const { protect, authorize } = require("../middleware/protect");
 
 const {
-  register,
   login,
   getProfiles,
   getProfile,
@@ -39,7 +38,7 @@ const router = express.Router();
 router.route("/invoice/:id").post(invoiceWallet);
 router.route("/callbacks/:id").get(chargeWallet);
 //"/api/v1/profiles"
-router.route("/register").post(register);
+router.route("/register").post(createProfile);
 
 router.route("/login").post(login);
 router.route("/logout").get(logout);

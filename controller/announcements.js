@@ -1,4 +1,5 @@
 const Announcement = require("../models/Announcement");
+const Job = require("../models/Job");
 const path = require("path");
 const MyError = require("../utils/myError");
 const asyncHandler = require("express-async-handler");
@@ -8,6 +9,7 @@ const Occupation = require("../models/Occupation");
 
 // api/v1/Announcements
 exports.getAnnouncements = asyncHandler(async (req, res, next) => {
+  req.query.isEmployer = false;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
   const sort = req.query.sort;
@@ -17,7 +19,7 @@ exports.getAnnouncements = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Announcement);
 
-  const announcements = await Announcement.find(req.query, select)
+  const announcements = await Job.find(req.query, select)
     .populate({
       path: "announcementCat",
       select: "name ",
@@ -51,7 +53,7 @@ exports.getOccupationAnnouncements = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Announcement);
 
   //req.query, select
-  const announcements = await Announcement.find(
+  const announcements = await Job.find(
     { ...req.query, occupation: req.params.occupationId },
     select
   )
@@ -68,8 +70,8 @@ exports.getOccupationAnnouncements = asyncHandler(async (req, res, next) => {
 });
 
 exports.getAnnouncement = asyncHandler(async (req, res, next) => {
-  const announcement = await Announcement.findById(req.params.id);
-
+  const announcement = await Job.findById(req.params.id);
+  
   if (!announcement) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
   }
@@ -135,8 +137,9 @@ exports.createAnnouncement = asyncHandler(async (req, res, next) => {
   profile.save()
 
   req.body.createUser = req.userId;
+  req.body.isEmployer = false;
 
-  const announcement = await Announcement.create(req.body);
+  const announcement = await Job.create(req.body);
 
   res.status(200).json({
     success: true,
@@ -145,7 +148,7 @@ exports.createAnnouncement = asyncHandler(async (req, res, next) => {
 });
 
 exports.deleteAnnouncement = asyncHandler(async (req, res, next) => {
-  const announcement = await Announcement.findById(req.params.id);
+  const announcement = await Job.findById(req.params.id);
 
   if (!announcement) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
@@ -170,7 +173,7 @@ exports.deleteAnnouncement = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateAnnouncement = asyncHandler(async (req, res, next) => {
-  const announcement = await Announcement.findById(req.params.id);
+  const announcement = await Job.findById(req.params.id);
 
   if (!announcement) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүйээээ.", 400);
@@ -199,7 +202,7 @@ exports.updateAnnouncement = asyncHandler(async (req, res, next) => {
 
 // PUT:  api/v1/Announcements/:id/photo
 exports.uploadAnnouncementPhoto = asyncHandler(async (req, res, next) => {
-  const announcement = await Announcement.findById(req.params.id);
+  const announcement = await Job.findById(req.params.id);
 
   if (!announcement) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүйээ.", 400);

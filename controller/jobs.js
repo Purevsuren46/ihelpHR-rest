@@ -17,8 +17,7 @@ exports.getSpecialJobs = asyncHandler(async (req, res, next) => {
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
   const pagination = await paginate(page, limit, Job);
- 
-  // req.query = { special: {$gt: String(Date.now())}}
+  req.query.isSpecial = true
   
   const jobs = await Job.find(req.query, select) 
     .sort(sort)
@@ -208,6 +207,7 @@ exports.specialJob = asyncHandler(async (req, res, next) => {
         job.isSpecial = true
     }
   }
+  const expire = setTimeout(() => {job.isSpecial = false, job.save()}, Math.abs(Number(job.special) - Date.now()))
 
   profile.save()
   job.save()
@@ -252,6 +252,7 @@ exports.urgentJob = asyncHandler(async (req, res, next) => {
         job.isUrgent = true
     }
   }
+  const expire = setTimeout(() => {job.isUrgent = false, job.save()}, Math.abs(Number(job.urgent) - Date.now()))
 
   profile.save()
   job.save()
