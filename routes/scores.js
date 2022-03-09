@@ -15,12 +15,12 @@ const {
 //"/api/v1/scores"
 router
   .route("/")
-  .get(getScores)
-  .post(protect, createScore);
+  .get(getScores);
 
 router
   .route("/:id")
   .get(getScore)
+  .post(protect, createScore)
   .put(protect, authorize("admin", "operator"), updateScore)
   .delete(protect, authorize("admin"), deleteScore);
 

@@ -37,6 +37,34 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.getBoostPosts = asyncHandler(async (req, res, next) => {
+  req.query.isBoost = true;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Post);
+
+  const posts = await Post.find(req.query, select)
+    .populate({
+      path: "postCat",
+      select: "name ",
+    })
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+
+  res.status(200).json({
+    success: true,
+    count: posts.length,
+    data: posts,
+    pagination,
+  });
+});
+
 exports.getCvPosts = asyncHandler(async (req, res, next) => {
   req.query.createUser = req.userId;
   return this.getPosts(req, res, next);

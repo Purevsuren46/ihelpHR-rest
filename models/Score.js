@@ -1,8 +1,8 @@
 const mongoose = require("mongoose")
 const ScoreSchema = new mongoose.Schema({
-    candidate: {
+    apply: {
         type: mongoose.Schema.ObjectId,
-        ref: 'Cv',
+        ref: 'Apply',
     },
     point: {
         type: Number,
@@ -17,36 +17,30 @@ const ScoreSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Cv',
     },
-    job: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'Job',
-    },
     createdAt: {
         type: Date,
         default: Date.now
     }
 }, {toJSON: {virtuals: true}, toObject: {virtuals: true}} )
 
-ScoreSchema.statics.computeCvAveragePoint = async function (jobId, userId, canId, avePoint, id) {
+ScoreSchema.statics.computeCvAveragePoint = async function (applyId, userId, canId, avePoint, id) {
     const obj = await this.aggregate([
-        { $match: {job: jobId, createUser: userId, candidate: canId} },
-        { $group: {_id: "$candidate", avgPoint: {$avg: "$point"}} }
+        { $match: {apply: applyId, createUser: userId} },
+        { $group: {_id: "$apply", avgPoint: {$avg: "$point"}} }
     ])
-    console.log(obj)
     await this.model('Score').findByIdAndUpdate(id, {
         avePoint: obj[0].avgPoint,
 
     })
 
-    await this.model('Score').deleteMany({createUser: userId, job: jobId, candidate: canId, createdAt: {$lt: String(Date.now() - 1000)}}, {
+    await this.model('Score').deleteMany({createUser: userId, apply: applyId, createdAt: {$lt: String(Date.now() - 1000)}}, {
         
     })
     const obje = await this.aggregate([
-        { $match: {job: jobId, candidate: canId} },
-        { $group: {_id: "$candidate", avgPoint: {$avg: "$avePoint"}} }
+        { $match: {apply: applyId} },
+        { $group: {_id: "$apply", avgPoint: {$avg: "$avePoint"}} }
     ])
-    console.log(obje)
-    await this.model('Score').updateMany({job: jobId, candidate: canId}, {
+    await this.model('Score').updateMany({apply: applyId}, {
         candAvg: obje[0].avgPoint,
 
     })
@@ -54,11 +48,11 @@ ScoreSchema.statics.computeCvAveragePoint = async function (jobId, userId, canId
 }
 
 ScoreSchema.post('save', function(){
-    this.constructor.computeCvAveragePoint(this.job, this.createUser, this.candidate, this.avePoint, this._id)
+    this.constructor.computeCvAveragePoint(this.apply, this.createUser, this.candidate, this.avePoint, this._id)
 });
 
 ScoreSchema.pre('remove', function(){
-    this.constructor.computeCvAveragePoint(this.job, this.createUser, this.candidate, this.avePoint, this.createdAt)
+    this.constructor.computeCvAveragePoint(this.apply, this.createUser, this.candidate, this.avePoint, this.createdAt)
 });
 
 

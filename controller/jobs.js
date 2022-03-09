@@ -41,6 +41,39 @@ exports.getSpecialJobs = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.getUrgentJobs = asyncHandler(async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Job);
+  req.query.isUrgent = true
+  
+  const jobs = await Job.find(req.query, select) 
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+  
+
+    // const docs = await Job.aggregate(
+    //   [{$match: {special: {$gt: String(Date.now())}}}]
+    // );
+
+  // if (jobs.special < Date.now()) {
+  //   continue;
+  // }
+  // console.log()
+  res.status(200).json({
+    success: true,
+    count: jobs.length,
+    data: jobs,
+    pagination,
+  });
+});
+
 // api/v1/Jobs
 exports.getJobs = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;

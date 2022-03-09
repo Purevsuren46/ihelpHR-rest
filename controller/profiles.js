@@ -166,6 +166,7 @@ exports.getUrgentProfiles = asyncHandler(async (req, res, next) => {
 
 exports.getCvListProfiles = asyncHandler(async (req, res, next) => {
   req.query.isCvList = true;
+  req.query.organization = true;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
@@ -304,7 +305,7 @@ exports.urgentProfile = asyncHandler(async (req, res, next) => {
     }
   }
   const expire = setTimeout(() => {profile.isUrgent = false, profile.save()}, Math.abs(Number(profile.urgent) - Date.now()))
-  console.log(Math.abs(Number(profile.urgent) - Date.now()))
+  // console.log(Math.abs(Number(profile.urgent) - Date.now()))
   profile.save()
 
   res.status(200).json({
