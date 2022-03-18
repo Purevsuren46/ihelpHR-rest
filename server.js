@@ -31,6 +31,7 @@ const notificationsRoutes = require("./routes/notifications");
 const coursesRoutes = require("./routes/courses");
 const scoresRoutes = require("./routes/scores");
 const appliesRoutes = require("./routes/applies");
+const walletsRoutes = require("./routes/wallets");
 const errorHandler = require("./middleware/error");
 const connectDB = require("./config/db");
 
@@ -128,6 +129,7 @@ app.use("/api/v1/notifications", notificationsRoutes);
 app.use("/api/v1/courses", coursesRoutes);
 app.use("/api/v1/scores", scoresRoutes);
 app.use("/api/v1/applies", appliesRoutes);
+app.use("/api/v1/wallets", walletsRoutes);
 
 // Алдаа үүсэхэд барьж авч алдааны мэдээллийг клиент тал руу автоматаар мэдээлнэ
 app.use(errorHandler);

@@ -10,14 +10,13 @@ const OccupationSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: [true, 'Категорийн тайлбарыг заавал оруулах ёстой.'],
         maxlength: [500, "Категорийн тайлбарын урт 500 тэмдэгт байх ёстой."]
     },
-    category: [{
+    category: {
         type: mongoose.Schema.ObjectId,
         ref: 'Category',
         required: true,
-      }],
+      },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 

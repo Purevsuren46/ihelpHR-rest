@@ -1,4 +1,5 @@
 const Cv = require("../models/Cv");
+const Wallet = require("../models/Wallet");
 const History = require("../models/History");
 const Profile = require("../models/Profile");
 const MyError = require("../utils/myError");
@@ -254,7 +255,7 @@ exports.settingProfile = asyncHandler(async (req, res, next) => {
 });
 // Wallet цэнэглэх хүсэлт
 exports.invoiceWallet = asyncHandler(async (req, res, next) => {
-  const cv = await Cv.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
 
   await axios({
     method: 'post',
@@ -275,16 +276,18 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
       data: {
         invoice_code: "IHELP_INVOICE",
         sender_invoice_no: "12345678",
-        invoice_receiver_code: `${cv.phone}`,
-        invoice_description:`iHelp wallet charge ${cv.email}`,
+        invoice_receiver_code: `${profile.phone}`,
+        invoice_description:`iHelp wallet charge ${profile.email}`,
         
         amount:req.body.amount,
-        callback_url:`http://128.199.128.37/api/v1/cvs/callbacks/${req.params.id}`
+        callback_url:`http://128.199.128.37/api/v1/profiles/callbacks/${req.params.id}`
       }
-    }).then(response => {
-      cv.qrImage = response.data.qr_image
-      cv.invoiceId = response.data.invoice_id
-      cv.save()
+    }).then(async (response) => {
+      req.body.qrImage = response.data.qr_image
+      req.body.invoiceId = response.data.invoice_id
+      const wallet = await Wallet.create(req.body)
+      profile.invoiceId = wallet._id
+      profile.save()
     })
     .catch(error => {
       console.log(error.response.data);
@@ -294,13 +297,15 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
     console.log(error.response.data);
   });
 
+
   res.status(200).json({
     success: true,
   });
 });
-// Wallet цэнэглэх 
+
 exports.chargeWallet = asyncHandler(async (req, res, next) => {
-  const cv = await Cv.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id);
+  const wallet = await Wallet.findById(profile.invoiceId)
   const charge = req.query
 
   await axios({
@@ -321,16 +326,17 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
       },
       data: {
         object_type: "INVOICE",
-        object_id  : `${cv.invoiceId}`,
+        object_id  : `${profile.invoiceId}`,
         offset     : {
             page_number: 1,
             page_limit : 100
           }
       }
     }).then(response => {
-      cv.qrImage = null
-      cv.wallet += response.data.paid_amount
-      cv.save()
+      wallet.qrImage = null
+      wallet.save()
+      profile.wallet += response.data.paid_amount
+      profile.save()
     })
     .catch(error => {
       console.log(error.response.data);
@@ -343,7 +349,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    data: cv
+    data: profile
   });
 });
 

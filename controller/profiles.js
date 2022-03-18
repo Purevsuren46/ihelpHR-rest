@@ -1,4 +1,5 @@
 const Profile = require("../models/Profile");
+const Wallet = require("../models/Wallet");
 const Cv = require("../models/Cv");
 const History = require("../models/History");
 const MyError = require("../utils/myError");
@@ -364,9 +365,11 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
         amount:req.body.amount,
         callback_url:`http://128.199.128.37/api/v1/profiles/callbacks/${req.params.id}`
       }
-    }).then(response => {
-      profile.qrImage = response.data.qr_image
-      profile.invoiceId = response.data.invoice_id
+    }).then(async (response) => {
+      req.body.qrImage = response.data.qr_image
+      req.body.invoiceId = response.data.invoice_id
+      const wallet = await Wallet.create(req.body)
+      profile.invoiceId = wallet._id
       profile.save()
     })
     .catch(error => {
@@ -377,6 +380,7 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
     console.log(error.response.data);
   });
 
+
   res.status(200).json({
     success: true,
   });
@@ -384,6 +388,7 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
 
 exports.chargeWallet = asyncHandler(async (req, res, next) => {
   const profile = await Cv.findById(req.params.id);
+  const wallet = await Wallet.findById(profile.invoiceId)
   const charge = req.query
 
   await axios({
@@ -411,7 +416,8 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
           }
       }
     }).then(response => {
-      profile.qrImage = null
+      wallet.qrImage = null
+      wallet.save()
       profile.wallet += response.data.paid_amount
       profile.save()
     })
