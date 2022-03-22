@@ -83,7 +83,7 @@ exports.getCvs = asyncHandler(async (req, res, next) => {
 });
 // Хэрэглэгчийг iD гаар авна
 exports.getCv = asyncHandler(async (req, res, next) => {
-  const cv = await Cv.findById(req.params.id);
+  const cv = await Cv.findById(req.params.id).populate("experience post course profession");
 
   if (!cv) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);

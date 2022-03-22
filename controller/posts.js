@@ -215,11 +215,12 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.createPost = asyncHandler(async (req, res, next) => {
-
+  const profile = await Cv.findById(req.userId);
   req.body.createUser = req.userId;
 
   const post = await Post.create(req.body);
-
+  profile.post.addToSet(post._id)
+  profile.save()
   res.status(200).json({
     success: true,
     data: post,
@@ -233,21 +234,22 @@ exports.deletePost = asyncHandler(async (req, res, next) => {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
   }
 
-  if (
-    post.createProfile.toString() !== req.userId &&
-    req.userRole !== "admin"
-  ) {
-    throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
-  }
+  // if (
+  //   post.createProfile.toString() !== req.userId &&
+  //   req.userRole !== "admin"
+  // ) {
+  //   throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
+  // }
 
-  const user = await Cv.findById(req.userId);
+  const cv = await Cv.findById(req.userId);
 
   post.remove();
+  cv.post.remove(req.params.id);
+  cv.save()
 
   res.status(200).json({
     success: true,
     data: post,
-    whoDeleted: user.name,
   });
 });
 
@@ -280,11 +282,43 @@ exports.updatePost = asyncHandler(async (req, res, next) => {
 });
 
 // PUT:  api/v1/Posts/:id/photo
-exports.uploadPostPhoto = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.params.id);
+// exports.uploadPostPhoto = asyncHandler(async (req, res, next) => {
+//   const post = await Post.findById(req.params.id);
 
-  if (!post) {
-    throw new MyError(req.params.id + " ID-тэй ном байхгүйээ.", 400);
+//   if (!post) {
+//     throw new MyError(req.params.id + " ID-тэй ном байхгүйээ.", 400);
+//   }
+
+//   // image upload
+//   const file = req.files.file;
+//   if (!file.mimetype.startsWith("image")) {
+//     throw new MyError("Та зураг upload хийнэ үү.", 400);
+//   }
+
+//   if (file.size > process.env.MAX_UPLOAD_FILE_SIZE) {
+//     throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
+//   }
+
+//   file.name = `photo_${req.params.id}${path.parse(file.name).ext}`;
+  
+//   const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
+//     post.photo = file.name;
+//     post.save();
+
+//     res.status(200).json({
+//       success: true,
+//       data: file.name,
+//       piture: picture
+//     });
+  
+// });
+
+exports.uploadPostPhoto = asyncHandler(async (req, res, next) => {
+  const cv = await Post.findById(req.params.id);
+
+  if (!cv) {
+    throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
   }
 
   // image upload
@@ -297,17 +331,16 @@ exports.uploadPostPhoto = asyncHandler(async (req, res, next) => {
     throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
   }
 
-  file.name = `photo_${req.params.id}${path.parse(file.name).ext}`;
+  file.name = `post_${req.params.id}_${cv.photo.length}${path.parse(file.name).ext}`;
   
   const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
-    post.photo = file.name;
-    post.save();
+    cv.photo.addToSet(file.name);
+    cv.save();
 
     res.status(200).json({
       success: true,
-      data: file.name,
-      piture: picture
+      data: cv
     });
   
 });

@@ -20,8 +20,8 @@ router
 router
   .route("/:id")
   .get(getAnnouncement)
-  .delete(protect, authorize("admin", "operator"), deleteAnnouncement)
-  .put(protect, authorize("admin", "operator"), updateAnnouncement);
+  .delete(protect, deleteAnnouncement)
+  .put(protect, updateAnnouncement);
 
 // router.route("/:id/upload-photo").put(uploadAnnouncementPhoto);
 

@@ -16,12 +16,7 @@ const CategorySchema = new mongoose.Schema({
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 
-CategorySchema.pre("remove", async function(next) {
-    console.log("removing ...")
-    await this.model('Occupation').deleteMany({category: this._id})
-    
-    next()
-})
+
 
 
 

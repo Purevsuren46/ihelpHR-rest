@@ -71,11 +71,13 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
 
 exports.deleteCourse = asyncHandler(async (req, res, next) => {
         const course = await Course.findById(req.params.id)
-
+        const cv = await Cv.findById(req.userId);
         if(!course) {
         return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
         } 
         course.remove()
+        cv.course.remove(req.params.id);
+        cv.save()
         res.status(200).json({ success: true, data: course, })
         
 })

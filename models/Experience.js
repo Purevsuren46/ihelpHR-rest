@@ -9,15 +9,27 @@ const ExperienceSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Cv',
     },
+    start: {
+        type: Date,
+    },
+    end: {
+        type: Date,
+    },
+    isWorking: {
+        type: Boolean,
+    },
+    company: {
+        type: String,
+    },
+    occupation: {
+        type: String,
+    },
+    position: {
+        type: String,
+    },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 
-ExperienceSchema.pre("remove", async function(next) {
-    console.log("removing ...")
-    await this.model('Book').deleteMany({experience: this._id})
-    
-    next()
-})
 
 
 

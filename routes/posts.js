@@ -11,6 +11,7 @@ const {
   unlikePost,
   deletePost,
   updatePost,
+  uploadPostPhoto,
 } = require("../controller/posts");
 
 const router = express.Router();
@@ -25,10 +26,11 @@ router.route("/boosts").get(getBoostPosts);
 
 router.route("/:id/like").get(protect, likePost)  
 router.route("/:id/unlike").get(protect, unlikePost)  
+router.route("/:id/photo").put(protect, uploadPostPhoto)  
 router
   .route("/:id")
   .get(getPost)
-  .delete(protect, authorize("admin", "operator"), deletePost)
+  .delete(protect, deletePost)
   .put(protect, authorize("admin", "operator"), updatePost);
 
 router.route("/:id/boost").put(protect, boostPost);

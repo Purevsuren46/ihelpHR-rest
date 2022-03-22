@@ -73,11 +73,13 @@ exports.updateExperience = asyncHandler(async (req, res, next) => {
 
 exports.deleteExperience = asyncHandler(async (req, res, next) => {
         const experience = await Experience.findById(req.params.id)
-
+        const cv = await Cv.findById(req.userId);
         if(!experience) {
         return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
         } 
         experience.remove()
+        cv.experience.remove(req.params.id);
+        cv.save()
         res.status(200).json({ success: true, data: experience, })
         
 })

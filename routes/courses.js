@@ -21,8 +21,8 @@ router
 router
   .route("/:id")
   .get(getCourse)
-  .put(protect, authorize("admin", "operator"), updateCourse)
-  .delete(protect, authorize("admin"), deleteCourse);
+  .put(protect, updateCourse)
+  .delete(protect, deleteCourse);
 
 router.route("/:cvId/course").get(protect, authorize("admin"), getCvCourses)
 module.exports = router;

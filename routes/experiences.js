@@ -21,8 +21,8 @@ router
 router
   .route("/:id")
   .get(getExperience)
-  .put(protect, authorize("admin", "operator"), updateExperience)
-  .delete(protect, authorize("admin"), deleteExperience);
+  .put(protect, updateExperience)
+  .delete(protect, deleteExperience);
 
 router.route("/:cvId/experience").get(protect, authorize("admin"), getCvExperiences)
 module.exports = router;

@@ -35,11 +35,6 @@ const HistorySchema = new mongoose.Schema({
     },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
-HistorySchema.pre("remove", async function(next) {
-    console.log("removing ...")
-    await this.model('Book').deleteMany({history: this._id})
-    
-    next()
-})
+
 
 module.exports = mongoose.model("History", HistorySchema)

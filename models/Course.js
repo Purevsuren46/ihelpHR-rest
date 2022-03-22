@@ -5,8 +5,23 @@ const CourseSchema = new mongoose.Schema({
         required: [true, 'Категорийн тайлбарыг заавал оруулах ёстой.'],
         maxlength: [500, "Категорийн тайлбарын урт 500 тэмдэгт байх ёстой."]
     },
-    length: {
+    field: {
         type: String
+    },
+    school: {
+        type: String
+    },
+    grade: {
+        type: String
+    },
+    isStudying: {
+        type: Boolean
+    },
+    activity: {
+        type: String
+    },
+    start: {
+        type: Date
     },
     end: {
         type: Date
@@ -17,11 +32,6 @@ const CourseSchema = new mongoose.Schema({
     },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
-CourseSchema.pre("remove", async function(next) {
-    console.log("removing ...")
-    await this.model('Book').deleteMany({course: this._id})
-    
-    next()
-})
+
 
 module.exports = mongoose.model("Course", CourseSchema)

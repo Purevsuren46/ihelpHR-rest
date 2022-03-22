@@ -16,10 +16,5 @@ const WalletSchema = new mongoose.Schema({
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 
-WalletSchema.pre("remove", async function(next) {
-    console.log("removing ...")
-    await this.model('Book').deleteMany({wallet: this._id})
-    next()
-})
 
 module.exports = mongoose.model("Wallet", WalletSchema)

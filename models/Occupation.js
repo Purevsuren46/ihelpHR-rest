@@ -20,10 +20,6 @@ const OccupationSchema = new mongoose.Schema({
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 
-OccupationSchema.pre("remove", async function(next) {
-    console.log("removing ...")
-    await this.model('Book').deleteMany({occupation: this._id})
-    next()
-})
+
 
 module.exports = mongoose.model("Occupation", OccupationSchema)
