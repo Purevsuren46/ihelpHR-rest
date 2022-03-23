@@ -91,16 +91,28 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
   }
 
-  if (profile.special > String(Date.now())) {
-    profile.isSpecial = true
+  if (profile.employeeSpecial > String(Date.now())) {
+    profile.isEmployeeSpecial = true
   } else {
-    profile.isSpecial = false
+    profile.isEmployeeSpecial = false
   }
 
-  if (profile.urgent > String(Date.now())) {
-    profile.isUrgent = true
+  if (profile.employerSpecial > String(Date.now())) {
+    profile.isEmployerSpecial = true
   } else {
-    profile.isUrgent = false
+    profile.isEmployerSpecial = false
+  }
+
+  if (profile.employeeUrgent > String(Date.now())) {
+    profile.isEmployeeUrgent = true
+  } else {
+    profile.isEmployeeUrgent = false
+  }
+
+  if (profile.employerUrgent > String(Date.now())) {
+    profile.isEmployerUrgent = true
+  } else {
+    profile.isEmployerUrgent = false
   }
 
   if (profile.cvList > String(Date.now())) {
@@ -118,8 +130,8 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.getSpecialProfiles = asyncHandler(async (req, res, next) => {
-  req.query.isSpecial = true;
+exports.getSpecialEmployeeProfiles = asyncHandler(async (req, res, next) => {
+  req.query.isEmployeeSpecial = true;
   req.query.organization = true;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -142,8 +154,57 @@ exports.getSpecialProfiles = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.getUrgentProfiles = asyncHandler(async (req, res, next) => {
-  req.query.isUrgent = true;
+exports.getSpecialEmployerProfiles = asyncHandler(async (req, res, next) => {
+  req.query.isEmployerSpecial = true;
+  req.query.organization = true;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Profile);
+
+  const profiles = await Cv.find(req.query, select).populate("job")
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+
+  res.status(200).json({
+    success: true,
+    data: profiles,
+    pagination,
+  });
+});
+
+exports.getUrgentEmployeeProfiles = asyncHandler(async (req, res, next) => {
+  req.query.isEmployeeUrgent = true;
+  req.query.organization = true;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Profile);
+
+  const profiles = await Cv.find(req.query, select).populate("job")
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+
+  res.status(200).json({
+    success: true,
+    data: profiles,
+    pagination,
+  });
+});
+
+exports.getUrgentEmployerProfiles = asyncHandler(async (req, res, next) => {
+  req.query.isEmployerUrgent = true;
+  req.query.organization = true;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
@@ -189,14 +250,14 @@ exports.getCvListProfiles = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.specialProfile = asyncHandler(async (req, res, next) => {
+exports.specialEmployerProfile = asyncHandler(async (req, res, next) => {
   const profile = await Cv.findById(req.userId);
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
   }
 
-  if(!req.body.special) {
+  if(!req.body.employerSpecial) {
     throw new MyError(" Special төрлөө сонгоно уу?", 400);
   }
 
@@ -206,22 +267,64 @@ exports.specialProfile = asyncHandler(async (req, res, next) => {
     return date;
   };
 
-  if(profile.point < req.body.special) {
+  if(profile.point < req.body.employerSpecial) {
     throw new MyError(" Point оноо хүрэхгүй байна", 400);
   } else {
-    if(profile.special < Date.now() ) {
+    if(profile.employerSpecial < Date.now() ) {
         const date = new Date()
-        profile.point -= req.body.special
-        profile.special = date.addDays(req.body.special) 
-        profile.isSpecial = true
+        profile.point -= req.body.employerSpecial
+        profile.employerSpecial = date.addDays(req.body.employerSpecial) 
+        profile.isEmployerSpecial = true
     } else {
-        let date = profile.special
-        profile.point -= req.body.special
-        profile.special = date.addDays(req.body.special)
-        profile.isSpecial = true
+        let date = profile.employerSpecial
+        profile.point -= req.body.employerSpecial
+        profile.employerSpecial = date.addDays(req.body.employerSpecial)
+        profile.isEmployerSpecial = true
     }
   }
-  const expire = setTimeout(() => {profile.isSpecial = false, profile.save()}, Math.abs(Number(profile.special) - Date.now()))
+  const expire = setTimeout(() => {profile.isEmployerSpecial = false, profile.save()}, Math.abs(Number(profile.employerSpecial) - Date.now()))
+
+  profile.save()
+
+  res.status(200).json({
+    success: true,
+    profile: profile
+  });
+});
+
+exports.specialEmployeeProfile = asyncHandler(async (req, res, next) => {
+  const profile = await Cv.findById(req.userId);
+
+  if (!profile) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+
+  if(!req.body.employeeSpecial) {
+    throw new MyError(" Special төрлөө сонгоно уу?", 400);
+  }
+
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  if(profile.point < req.body.employeeSpecial) {
+    throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  } else {
+    if(profile.employeeSpecial < Date.now() ) {
+        const date = new Date()
+        profile.point -= req.body.employeeSpecial
+        profile.employeeSpecial = date.addDays(req.body.employeeSpecial) 
+        profile.isEmployeeSpecial = true
+    } else {
+        let date = profile.employeeSpecial
+        profile.point -= req.body.employeeSpecial
+        profile.employeeSpecial = date.addDays(req.body.employeeSpecial)
+        profile.isEmployeeSpecial = true
+    }
+  }
+  const expire = setTimeout(() => {profile.isEmployeeSpecial = false, profile.save()}, Math.abs(Number(profile.employeeSpecial) - Date.now()))
 
   profile.save()
 
@@ -273,14 +376,14 @@ exports.cvList = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.urgentProfile = asyncHandler(async (req, res, next) => {
+exports.urgentEmployerProfile = asyncHandler(async (req, res, next) => {
   const profile = await Cv.findById(req.userId);
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
   }
 
-  if(!req.body.urgent) {
+  if(!req.body.employerUrgent) {
     throw new MyError(" Urgent төрлөө сонгоно уу?", 400);
   }
 
@@ -290,23 +393,65 @@ exports.urgentProfile = asyncHandler(async (req, res, next) => {
     return date;
   };
 
-  if(profile.point < req.body.urgent) {
+  if(profile.point < req.body.employerUrgent) {
     throw new MyError(" Point оноо хүрэхгүй байна", 400);
   } else {
-    if(profile.urgent < Date.now() ) {
+    if(profile.employerUrgent < Date.now() ) {
         const date = new Date()
-        profile.point -= req.body.urgent
-        profile.urgent = date.addDays(req.body.urgent) 
-        profile.isUrgent = true
+        profile.point -= req.body.employerUrgent
+        profile.employerUrgent = date.addDays(req.body.employerUrgent) 
+        profile.isEmployerUrgent = true
     } else {
-        let date = profile.urgent
-        profile.point -= req.body.urgent
-        profile.urgent = date.addDays(req.body.urgent)
-        profile.isUrgent = true
+        let date = profile.employerUrgent
+        profile.point -= req.body.employerUrgent
+        profile.employerUrgent = date.addDays(req.body.employerUrgent)
+        profile.isEmployerUrgent = true
     }
   }
-  const expire = setTimeout(() => {profile.isUrgent = false, profile.save()}, Math.abs(Number(profile.urgent) - Date.now()))
-  // console.log(Math.abs(Number(profile.urgent) - Date.now()))
+  const expire = setTimeout(() => {profile.isEmployerUrgent = false, profile.save()}, Math.abs(Number(profile.employerUrgent) - Date.now()))
+
+  profile.save()
+
+  res.status(200).json({
+    success: true,
+    profile: profile
+  });
+});
+
+exports.urgentEmployeeProfile = asyncHandler(async (req, res, next) => {
+  const profile = await Cv.findById(req.userId);
+
+  if (!profile) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+
+  if(!req.body.employeeUrgent) {
+    throw new MyError(" Urgent төрлөө сонгоно уу?", 400);
+  }
+
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  if(profile.point < req.body.employeeUrgent) {
+    throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  } else {
+    if(profile.employeeUrgent < Date.now() ) {
+        const date = new Date()
+        profile.point -= req.body.employeeUrgent
+        profile.employeeUrgent = date.addDays(req.body.employeeUrgent) 
+        profile.isEmployeeUrgent = true
+    } else {
+        let date = profile.employeeUrgent
+        profile.point -= req.body.employeeUrgent
+        profile.employeeUrgent = date.addDays(req.body.employeeUrgent)
+        profile.isEmployeeUrgent = true
+    }
+  }
+  const expire = setTimeout(() => {profile.isEmployeeUrgent = false, profile.save()}, Math.abs(Number(profile.employeeUrgent) - Date.now()))
+
   profile.save()
 
   res.status(200).json({
@@ -498,9 +643,15 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
     profile.wallet = cvv.wallet,
     profile.point = cvv.point,
     profile.role = "user",
-    profile.special = cvv.special,
+    profile.employeeSpecial = cvv.employeeSpecial,
+    profile.employerSpecial = cvv.employerSpecial,
+    profile.isEmployeeSpecial = cvv.isEmployeeSpecial,
+    profile.isEmployerSpecial = cvv.isEmployerSpecial,
+    profile.employeeUrgent = cvv.employeeUrgent,
+    profile.employerUrgent = cvv.employerUrgent,
+    profile.isEmployeeUrgent = cvv.isEmployeeUrgent,
+    profile.isEmployerUrgent = cvv.isEmployerUrgent,
     profile.cvList = cvv.cvList,
-    profile.isSpecial = cvv.isSpecial,
     profile.isCvList = cvv.isCvList
     profile.save()
   }

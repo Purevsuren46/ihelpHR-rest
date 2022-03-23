@@ -182,11 +182,19 @@ const CvSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  isSpecial: {
+  isEmployeeSpecial: {
     type: Boolean,
     default: false,
   },
-  special: {
+  employeeSpecial: {
+    type: Date,
+    default: Date.now,
+  },
+  isEmployerSpecial: {
+    type: Boolean,
+    default: false,
+  },
+  employerSpecial: {
     type: Date,
     default: Date.now,
   },
@@ -198,11 +206,19 @@ const CvSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  isUrgent: {
+  isEmployeeUrgent: {
     type: Boolean,
     default: false,
   },
-  urgent: {
+  employeeUrgent: {
+    type: Date,
+    default: Date.now,
+  },
+  isEmployerUrgent: {
+    type: Boolean,
+    default: false,
+  },
+  employerUrgent: {
     type: Date,
     default: Date.now,
   },

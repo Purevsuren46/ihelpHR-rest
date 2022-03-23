@@ -5,8 +5,10 @@ const {
   login,
   getProfiles,
   getProfile,
-  getSpecialProfiles,
-  getUrgentProfiles,
+  getSpecialEmployeeProfiles,
+  getSpecialEmployerProfiles,
+  getUrgentEmployeeProfiles,
+  getUrgentEmployerProfiles,
   getCvListProfiles,
   followProfile,
   unfollowProfile,
@@ -15,8 +17,10 @@ const {
   chargeWallet,
   invoiceWallet,
   updateProfile,
-  urgentProfile,
-  specialProfile,
+  specialEmployeeProfile,
+  specialEmployerProfile,
+  urgentEmployeeProfile,
+  urgentEmployerProfile,
   cvList,
   deleteProfile,
   forgotPassword,
@@ -44,8 +48,10 @@ router.route("/login").post(login);
 router.route("/logout").get(logout);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").post(resetPassword);
-router.route("/specials").get(getSpecialProfiles);
-router.route("/urgents").get(getUrgentProfiles);
+router.route("/specials/employee").get(getSpecialEmployeeProfiles);
+router.route("/specials/employer").get(getSpecialEmployerProfiles);
+router.route("/urgents/employee").get(getUrgentEmployeeProfiles);
+router.route("/urgents/employer").get(getUrgentEmployerProfiles);
 router.route("/cvlists").get(getCvListProfiles);
 
 router
@@ -64,8 +70,10 @@ router.use(protect);
 
 router.route("/point").put(chargePoint);
 
-router.route("/special").put(specialProfile);
-router.route("/urgent").put(urgentProfile);
+router.route("/special/employee").put(specialEmployeeProfile);
+router.route("/special/employer").put(specialEmployerProfile);
+router.route("/urgent/employee").put(urgentEmployeeProfile);
+router.route("/urgent/employer").put(urgentEmployerProfile);
 router.route("/cvlist").put(cvList);
 //"/api/v1/profiles"
 
