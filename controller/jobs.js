@@ -372,12 +372,15 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   
     const date1 = new Date()
     profile.point -= req.body.urgent
+    req.body.isUrgent = true
     req.body.urgent = date1.addDays(req.body.urgent)
   
     const date2 = new Date()
     profile.point -= req.body.special
+    req.body.isSpecial = true
     req.body.special = date2.addDays(req.body.special)
   }
+  
 
   req.body.createUser = req.userId;
   const job = await Job.create(req.body);
@@ -392,22 +395,22 @@ exports.createJob = asyncHandler(async (req, res, next) => {
 
 exports.deleteJob = asyncHandler(async (req, res, next) => {
   const job = await Job.findById(req.params.id);
-
+  const cv = await Cv.findById(req.userId);
   if (!job) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
   }
 
-  if (
-    job.createProfile.toString() !== req.userId &&
-    req.userRole !== "admin"
-  ) {
-    throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
-  }
+  // if (
+  //   job.createProfile !== req.userId || req.userRole !== "admin"
+  // ) {
+  //   throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
+  // }
 
   const user = await Cv.findById(req.userId);
 
   job.remove();
-
+  cv.job.remove(req.params.id);
+  cv.save()
   res.status(200).json({
     success: true,
     data: job,

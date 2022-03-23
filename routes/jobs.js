@@ -37,8 +37,8 @@ router.route("/:id/unlike").get(protect, unlikeJob)
 router
   .route("/:id")
   .get(getJob)
-  .delete(protect, authorize("admin", "operator"), deleteJob)
-  .put(protect, authorize("admin", "operator"), updateJob);
+  .delete(protect, deleteJob)
+  .put(protect, updateJob);
 
 router.route("/:id/apply").get(protect, applyJob);
 router.route("/:id/eval").put(protect, evalCand);

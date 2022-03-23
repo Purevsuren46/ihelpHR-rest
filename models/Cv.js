@@ -126,8 +126,7 @@ const CvSchema = new mongoose.Schema({
     default: null
   }],
   profession: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Occupation',
+    type: String,
   },
   category: [{
     type: mongoose.Schema.ObjectId,
