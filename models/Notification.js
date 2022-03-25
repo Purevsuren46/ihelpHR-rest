@@ -14,7 +14,7 @@ const NotificationSchema = new mongoose.Schema(
     },
     createUser: {
       type: mongoose.Schema.ObjectId,
-      ref: "User",
+      ref: "Cv",
     },
     createdAt: {
       type: Date,
