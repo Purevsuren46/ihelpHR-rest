@@ -21,8 +21,8 @@ router
   .route("/:id")
   .get(getScore)
   .post(protect, createScore)
-  .put(protect, authorize("admin", "operator"), updateScore)
-  .delete(protect, authorize("admin"), deleteScore);
+  .put(protect, updateScore)
+  .delete(protect, deleteScore);
 
 router.route("/:cvId/score").get(protect, authorize("admin"), getCvScores)
 module.exports = router;

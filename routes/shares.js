@@ -25,7 +25,7 @@ router
   .route("/:id")
   .get(getShare)
   .put(protect, authorize("admin", "operator"), updateShare)
-  .delete(protect, authorize("admin"), deleteShare);
+  .delete(protect, deleteShare);
 
 router.route("/:id").post(protect, createShare);
 

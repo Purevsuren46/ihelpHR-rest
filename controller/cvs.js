@@ -9,7 +9,9 @@ const sendEmail = require("../utils/email");
 const crypto = require("crypto");
 const path = require("path");
 const sharp = require("sharp");
-const axios = require("axios")
+const axios = require("axios");
+const fs = require("fs");
+
 
 // логин хийнэ
 exports.login = asyncHandler(async (req, res, next) => {
@@ -554,6 +556,9 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 // PUT: api/v1/cvs/:id/profile
 exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.userId);
+  if (cv.profile != null ) {
+    fs.unlinkSync(`${process.env.FILE_UPLOAD_PATH}/${cv.profile}`)
+  }
 
   if (!cv) {
     throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
@@ -586,6 +591,9 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
 // PUT: api/v1/cvs/:id/cover
 exports.uploadCvCover = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.userId);
+  if (cv.cover != null ) {
+    fs.unlinkSync(`${process.env.FILE_UPLOAD_PATH}/${cv.cover}`)
+  }
 
   if (!cv) {
     throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
@@ -618,6 +626,9 @@ exports.uploadCvCover = asyncHandler(async (req, res, next) => {
 // PUT: api/v1/cvs/:id/auth-photo
 exports.uploadCvAuth = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.userId);
+  if (cv.authPhoto != null ) {
+    fs.unlinkSync(`${process.env.FILE_UPLOAD_PATH}/${cv.authPhoto}`)
+  }
 
   if (!cv) {
     throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
@@ -654,22 +665,184 @@ exports.uploadCvPortfolio = asyncHandler(async (req, res, next) => {
     throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
   }
 
-  // image upload
-  const file = req.files.file;
-  if (!file.mimetype.startsWith("image")) {
-    throw new MyError("Та зураг upload хийнэ үү.", 400);
-  }
-
-  if (file.size > process.env.MAX_UPLOAD_FILE_SIZE) {
-    throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
-  }
+  if (req.files.file.length == undefined) {
+    const file = req.files.file;
+  
+    file.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file.name).ext}`;
+    
+    const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+    
+      cv.portfolio.addToSet(file.name);
+      cv.save()
+  } else if (req.files.file.length == 2) {
+    const file = req.files.file[0];
 
   file.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file.name).ext}`;
   
   const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
     cv.portfolio.addToSet(file.name);
-    cv.save();
+
+    const file1 = req.files.file[1];
+  
+    file1.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file1.name).ext}`;
+    
+    const picture1 = await sharp(file1.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file1.name}`);
+    
+      cv.portfolio.addToSet(file1.name);
+      cv.save();
+  } else if (req.files.file.length == 3) {
+    const file = req.files.file[0];
+
+  file.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file.name).ext}`;
+  
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
+    cv.portfolio.addToSet(file.name);
+
+    const file1 = req.files.file[1];
+  
+    file1.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file1.name).ext}`;
+    
+    const picture1 = await sharp(file1.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file1.name}`);
+    
+      cv.portfolio.addToSet(file1.name);
+
+      const file2 = req.files.file[2];
+  
+      file2.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file2.name).ext}`;
+      
+      const picture2 = await sharp(file2.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file2.name}`);
+      
+        cv.portfolio.addToSet(file2.name);
+        cv.save();
+  } else if (req.files.file.length == 4) {
+    const file = req.files.file[0];
+
+  file.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file.name).ext}`;
+  
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
+    cv.portfolio.addToSet(file.name);
+
+    const file1 = req.files.file[1];
+  
+    file1.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file1.name).ext}`;
+    
+    const picture1 = await sharp(file1.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file1.name}`);
+    
+      cv.portfolio.addToSet(file1.name);
+
+      const file2 = req.files.file[2];
+  
+      file2.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file2.name).ext}`;
+      
+      const picture2 = await sharp(file2.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file2.name}`);
+      
+        cv.portfolio.addToSet(file2.name);
+
+        const file3 = req.files.file[3];
+  
+        file3.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file3.name).ext}`;
+        
+        const picture3 = await sharp(file3.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file3.name}`);
+        
+          cv.portfolio.addToSet(file3.name);
+          cv.save();
+  } else if (req.files.file.length == 5) {
+    const file = req.files.file[0];
+
+  file.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file.name).ext}`;
+  
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
+    cv.portfolio.addToSet(file.name);
+
+    const file1 = req.files.file[1];
+  
+    file1.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file1.name).ext}`;
+    
+    const picture1 = await sharp(file1.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file1.name}`);
+    
+      cv.portfolio.addToSet(file1.name);
+
+      const file2 = req.files.file[2];
+  
+      file2.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file2.name).ext}`;
+      
+      const picture2 = await sharp(file2.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file2.name}`);
+      
+        cv.portfolio.addToSet(file2.name);
+
+        const file3 = req.files.file[3];
+  
+        file3.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file3.name).ext}`;
+        
+        const picture3 = await sharp(file3.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file3.name}`);
+        
+          cv.portfolio.addToSet(file3.name);
+
+          const file4 = req.files.file[4];
+  
+          file4.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file4.name).ext}`;
+          
+          const picture4 = await sharp(file4.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file4.name}`);
+          
+            cv.portfolio.addToSet(file4.name);
+            cv.save();
+  } else if (req.files.file.length == 6) {
+    const file = req.files.file[0];
+
+  file.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file.name).ext}`;
+  
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
+    cv.portfolio.addToSet(file.name);
+
+    const file1 = req.files.file[1];
+  
+    file1.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file1.name).ext}`;
+    
+    const picture1 = await sharp(file1.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file1.name}`);
+    
+      cv.portfolio.addToSet(file1.name);
+
+      const file2 = req.files.file[2];
+  
+      file2.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file2.name).ext}`;
+      
+      const picture2 = await sharp(file2.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file2.name}`);
+      
+        cv.portfolio.addToSet(file2.name);
+
+        const file3 = req.files.file[3];
+  
+        file3.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file3.name).ext}`;
+        
+        const picture3 = await sharp(file3.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file3.name}`);
+        
+          cv.portfolio.addToSet(file3.name);
+
+          const file4 = req.files.file[4];
+  
+          file4.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file4.name).ext}`;
+          
+          const picture4 = await sharp(file4.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file4.name}`);
+          
+            cv.portfolio.addToSet(file4.name);
+
+            const file5 = req.files.file[5];
+  
+            file5.name = `portfolio_${req.userId}_${cv.portfolio.length}${path.parse(file5.name).ext}`;
+            
+            const picture5 = await sharp(file5.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file5.name}`);
+            
+              cv.portfolio.addToSet(file5.name);
+              cv.save();
+  } 
+  // image upload
+  
+  
 
     res.status(200).json({
       success: true,

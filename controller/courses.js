@@ -79,5 +79,4 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
         cv.course.remove(req.params.id);
         cv.save()
         res.status(200).json({ success: true, data: course, })
-        
 })
