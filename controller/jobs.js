@@ -85,10 +85,11 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Job);
 
-  const jobs = await Job.find(req.query, select)
+  const jobs = await Job.find(req.query, select).populate("occupation")
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit)
+    
 
   res.status(200).json({
     success: true,

@@ -142,7 +142,10 @@ exports.getSpecialEmployeeProfiles = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Profile);
 
-  const profiles = await Cv.find(req.query, select).populate("job")
+  const profiles = await Cv.find(req.query, select).populate({
+    path: 'job',
+    populate: { path: 'occupation', select: 'name' }
+  })
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -166,7 +169,10 @@ exports.getSpecialEmployerProfiles = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Profile);
 
-  const profiles = await Cv.find(req.query, select).populate("job")
+  const profiles = await Cv.find(req.query, select).populate({
+    path: 'job',
+    populate: { path: 'occupation', select: 'name' }
+  })
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -190,7 +196,10 @@ exports.getUrgentEmployeeProfiles = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Profile);
 
-  const profiles = await Cv.find(req.query, select).populate("job")
+  const profiles = await Cv.find(req.query, select).populate({
+    path: 'job',
+    populate: { path: 'occupation', select: 'name' }
+  })
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -214,7 +223,10 @@ exports.getUrgentEmployerProfiles = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Profile);
 
-  const profiles = await Cv.find(req.query, select).populate("job")
+  const profiles = await Cv.find(req.query, select).populate({
+    path: 'job',
+    populate: { path: 'occupation', select: 'name' }
+  })
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);

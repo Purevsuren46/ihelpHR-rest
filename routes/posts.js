@@ -4,6 +4,7 @@ const { protect, authorize } = require("../middleware/protect");
 const {
   getPosts,
   getBoostPosts,
+  getUnboostPosts,
   getPost,
   createPost,
   boostPost,
@@ -22,6 +23,7 @@ router
   .get(getPosts)
   .post(protect, createPost);
 router.route("/boosts").get(getBoostPosts);
+router.route("/unboosts").get(getUnboostPosts);
 
 
 router.route("/:id/like").get(protect, likePost)  

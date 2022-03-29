@@ -20,11 +20,7 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Post);
 
-  const posts = await Post.find(req.query, select)
-    .populate({
-      path: "postCat",
-      select: "name ",
-    })
+  const posts = await Post.find(req.query, select).populate({path: "createUser", select: "firstName lastName profile name"})
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -49,10 +45,32 @@ exports.getBoostPosts = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Post);
 
   const posts = await Post.find(req.query, select)
-    .populate({
-      path: "postCat",
-      select: "name ",
-    })
+    .populate({path: "createUser", select: "firstName lastName profile name"})
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+
+  res.status(200).json({
+    success: true,
+    count: posts.length,
+    data: posts,
+    pagination,
+  });
+});
+
+exports.getUnboostPosts = asyncHandler(async (req, res, next) => {
+  req.query.isBoost = false;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Post);
+
+  const posts = await Post.find(req.query, select)
+    .populate({path: "createUser", select: "firstName lastName profile name"})
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -218,14 +236,61 @@ exports.createPost = asyncHandler(async (req, res, next) => {
   const profile = await Cv.findById(req.userId);
   req.body.createUser = req.userId;
 
-  const post = await Post.create(req.body);
-  profile.post.addToSet(post._id)
+  const articl = await Post.create(req.body);
+  profile.post.addToSet(profile._id)
   profile.save()
-  res.status(200).json({
-    success: true,
-    data: post,
-  });
+  
+  // image upload
+  if (req.files != null) {
+    const article = await Post.findById(articl._id);
+
+    if (!article) {
+      throw new MyError(req.params.id + " ID-тэй ном байхгүйээ.", 400);
+    }
+    const file = req.files.file;
+    if (!file.mimetype.startsWith("image")) {
+      throw new MyError("Та зураг upload хийнэ үү.", 400);
+    }
+  
+    if (file.size > process.env.MAX_UPLOAD_FILE_SIZE) {
+      throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
+    }
+  
+    file.name = `post_${req.userId}_${Date.now()}${path.parse(file.name).ext}`;
+  
+    
+    const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+      article.photo = file.name;
+      article.save();
+  
+      res.status(200).json({
+        success: true,
+        article: article,
+        data: file.name,
+      });
+    
+  
+    
+  } else {
+    res.status(200).json({
+      success: true,
+      article: articl,
+    });
+  }
 });
+
+// exports.createPost = asyncHandler(async (req, res, next) => {
+//   const profile = await Cv.findById(req.userId);
+//   req.body.createUser = req.userId;
+
+//   const post = await Post.create(req.body);
+//   profile.post.addToSet(post._id)
+//   profile.save()
+//   res.status(200).json({
+//     success: true,
+//     data: post,
+//   });
+// });
 
 exports.deletePost = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.id);

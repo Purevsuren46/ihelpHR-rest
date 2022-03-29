@@ -4,6 +4,7 @@ const { protect, authorize } = require("../middleware/protect");
 
 const {
   getComments,
+  getPostComments,
   getComment,
   createComment,
   updateComment,
@@ -28,5 +29,6 @@ router
   .delete(protect, authorize("admin"), deleteComment);
 
 router.route("/:id").post(protect, createComment);
+router.route("/:id/post").get(protect, getPostComments);
 
 module.exports = router;

@@ -4,6 +4,8 @@ const { protect, authorize } = require("../middleware/protect");
 
 const {
   getShares,
+  getPostShares,
+  getCvShares,
   getShare,
   createShare,
   updateShare,
@@ -28,5 +30,7 @@ router
   .delete(protect, deleteShare);
 
 router.route("/:id").post(protect, createShare);
+router.route("/:id/post").get(protect, getPostShares);
+router.route("/:id/cv").get(protect, getCvShares);
 
 module.exports = router;
