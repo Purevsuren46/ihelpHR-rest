@@ -4,7 +4,7 @@ const { protect, authorize } = require("../middleware/protect");
 
 const {
   getFollows,
-  getPostFollows,
+  getFollowers,
   getCvFollows,
   getFollow,
   createFollow,
@@ -30,7 +30,7 @@ router
   .delete(protect, deleteFollow);
 
 router.route("/:id").post(protect, createFollow);
-router.route("/:id/post").get(protect, getPostFollows);
+router.route("/:id/post").get(protect, getFollowers);
 router.route("/:id/cv").get(protect, getCvFollows);
 
 module.exports = router;

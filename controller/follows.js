@@ -22,7 +22,7 @@ exports.getFollows = asyncHandler(async (req, res, next) => {
     
 })
 
-exports.getPostFollows = asyncHandler(async (req, res, next) => {
+exports.getFollowers = asyncHandler(async (req, res, next) => {
     req.query.followUser = req.params.id;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 100;
