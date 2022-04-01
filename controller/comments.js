@@ -59,10 +59,13 @@ exports.getComment = asyncHandler( async (req, res, next) => {
 
 
 exports.createComment = asyncHandler(async (req, res, next) => {
-    req.body.createUser = req.userId;
-    req.body.post = req.params.id;
-    const comment = await Comment.create(req.body);
-    res.status(200).json({ success: true, data: comment, })
+        const post = await Post.findById(req.params.id)
+        post.comment += 1
+        post.save()
+        req.body.createUser = req.userId;
+        req.body.post = req.params.id;
+        const comment = await Comment.create(req.body);
+        res.status(200).json({ success: true, data: comment, })
     
 })
 
@@ -83,7 +86,10 @@ exports.updateComment = asyncHandler(async (req, res, next) => {
 
 exports.deleteComment = asyncHandler(async (req, res, next) => {
         const comment = await Comment.findById(req.params.id)
-
+        const post = await Post.findById(comment.post)
+        post.comment -= 1
+        post.save()
+        
         if(!comment) {
         return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
         } 

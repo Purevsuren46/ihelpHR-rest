@@ -76,10 +76,18 @@ exports.getLike = asyncHandler( async (req, res, next) => {
 })
 
 exports.createLike = asyncHandler(async (req, res, next) => {
-    req.body.createUser = req.userId;
-    req.body.post = req.params.id;
+    const likes = await Like.findOne({createUser: `${req.userId}`, post: `${req.params.id}`}).exec()
+    if (likes == null) {
+        const post = await Post.findById(req.params.id)
+        post.like += 1
+        post.save()
+        req.body.createUser = req.userId;
+        req.body.post = req.params.id;
     const like = await Like.create(req.body);
     res.status(200).json({ success: true, data: like, })
+    } else {
+        throw new MyError("Like дарсан байна.", 400)
+    }
     
 })
 
@@ -100,7 +108,9 @@ exports.updateLike = asyncHandler(async (req, res, next) => {
 
 exports.deleteLike = asyncHandler(async (req, res, next) => {
         const like = await Like.findById(req.params.id)
-
+        const post = await Post.findById(like.post)
+        post.like -= 1
+        post.save()
         if(!like) {
         return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
         } 

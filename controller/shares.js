@@ -76,10 +76,13 @@ exports.getShare = asyncHandler( async (req, res, next) => {
 })
 
 exports.createShare = asyncHandler(async (req, res, next) => {
-    req.body.createUser = req.userId;
-    req.body.post = req.params.id;
-    const share = await Share.create(req.body);
-    res.status(200).json({ success: true, data: share, })
+        const post = await Post.findById(req.params.id)
+        post.share += 1
+        post.save()
+        req.body.createUser = req.userId;
+        req.body.post = req.params.id;
+        const share = await Share.create(req.body);
+        res.status(200).json({ success: true, data: share, })
     
 })
 
@@ -100,7 +103,9 @@ exports.updateShare = asyncHandler(async (req, res, next) => {
 
 exports.deleteShare = asyncHandler(async (req, res, next) => {
         const share = await Share.findById(req.params.id)
-
+        const post = await Post.findById(share.post)
+        post.share -= 1
+        post.save()
         if(!share) {
         return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
         } 

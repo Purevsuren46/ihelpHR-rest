@@ -15,18 +15,18 @@ const PostSchema = new mongoose.Schema({
   location: {
       type: String,
   },
-  like: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Cv',
-  }],
-  comment: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Cv',
-  }],
-  share: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Cv',
-  }],
+  like: {
+    type: Number,
+    default: 0,
+  },
+  comment: {
+    type: Number,
+    default: 0,
+  },
+  share: {
+    type: Number,
+    default: 0,
+  },
   category: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',

@@ -26,7 +26,7 @@ router
   .route("/:id")
   .get(getComment)
   .put(protect, authorize("admin", "operator"), updateComment)
-  .delete(protect, authorize("admin"), deleteComment);
+  .delete(protect, deleteComment);
 
 router.route("/:id").post(protect, createComment);
 router.route("/:id/post").get(protect, getPostComments);
