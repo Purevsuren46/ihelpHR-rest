@@ -5,6 +5,7 @@ const {
   getPosts,
   getBoostPosts,
   getUnboostPosts,
+  getFollowingPosts,
   getPost,
   createPost,
   boostPost,
@@ -24,6 +25,7 @@ router
   .post(protect, createPost);
 router.route("/boosts").get(getBoostPosts);
 router.route("/unboosts").get(getUnboostPosts);
+router.route("/:id/following").get(getFollowingPosts);
 
 
 router.route("/:id/like").get(protect, likePost)  

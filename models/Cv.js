@@ -154,16 +154,14 @@ const CvSchema = new mongoose.Schema({
   isEmployee: {
     type: Boolean
   },
-  following: [{
-    type: mongoose.Schema.ObjectId,
-    ref: "Cv",
-    default: null
-  }],
-  follower: [{
-    type: mongoose.Schema.ObjectId,
-    ref: "Cv",
-    default: null
-  }],
+  following: {
+    type: Number,
+    default: 0,
+  },
+  follower: {
+    type: Number,
+    default: 0,
+  },
   post: [{
     type: mongoose.Schema.ObjectId,
     ref: 'Post',

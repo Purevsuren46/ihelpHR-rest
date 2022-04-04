@@ -1,4 +1,5 @@
 const Share = require('../models/Share')
+const Follow = require('../models/Follow')
 const Cv = require('../models/Cv')
 const Post = require('../models/Post')
 const MyError = require("../utils/myError")
@@ -55,6 +56,26 @@ exports.getCvShares = asyncHandler(async (req, res, next) => {
         const shares = await Share.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
 
         res.status(200).json({ success: true, data: shares, pagination, })
+    
+})
+
+exports.getFollowingShares = asyncHandler(async (req, res, next) => {
+        req.query.createUser = req.params.id;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 100;
+        const sort = req.query.sort;
+        const select = req.query.select;
+      
+        ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+      
+        // Pagination
+        const pagination = await paginate(page, limit, Follow)
+      
+        const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
+      
+        const user = follows.map((item)=>item.followUser)
+        const post = await Share.find({createUser: {$in: user } }).populate('post')
+        res.status(200).json({ success: true, data: post, pagination, })
     
 })
 

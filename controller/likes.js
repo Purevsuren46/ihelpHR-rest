@@ -76,7 +76,7 @@ exports.getLike = asyncHandler( async (req, res, next) => {
 })
 
 exports.createLike = asyncHandler(async (req, res, next) => {
-    const likes = await Like.findOne({createUser: `${req.userId}`, post: `${req.params.id}`}).exec()
+    const likes = await Like.findOne({createUser: req.userId, post: req.params.id}).exec()
     if (likes == null) {
         const post = await Post.findById(req.params.id)
         post.like += 1
@@ -107,14 +107,17 @@ exports.updateLike = asyncHandler(async (req, res, next) => {
 })
 
 exports.deleteLike = asyncHandler(async (req, res, next) => {
-        const like = await Like.findById(req.params.id)
-        const post = await Post.findById(like.post)
-        post.like -= 1
-        post.save()
+        const like = await Like.findOne({post: req.params.id, createUser: req.userId})
         if(!like) {
         return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
         } 
-        like.remove()
+        if(like !== null) {
+            const post = await Post.findById(req.params.id)
+            post.like -= 1
+            post.save()
+            like.remove()
+        }
+
         res.status(200).json({ success: true, data: like, })
         
 })

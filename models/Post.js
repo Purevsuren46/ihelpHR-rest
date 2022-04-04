@@ -39,6 +39,10 @@ const PostSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isLiked: {
+    type: Boolean,
+    default: false,
+  },
   boost: {
     type: Date,
     default: Date.now,

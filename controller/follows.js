@@ -53,7 +53,7 @@ exports.getCvFollows = asyncHandler(async (req, res, next) => {
     const pagination = await paginate(page, limit, Follow)
 
     const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
-
+    
     res.status(200).json({ success: true, data: follows, pagination, })
 
 })
@@ -78,9 +78,12 @@ exports.getFollow = asyncHandler( async (req, res, next) => {
 exports.createFollow = asyncHandler(async (req, res, next) => {
     const follows = await Follow.findOne({createUser: `${req.userId}`, followUser: `${req.params.id}`}).exec()
     if (follows == null) {
-        const post = await Post.findById(req.params.id)
-        post.follow += 1
+        const post = await Cv.findById(req.params.id)
+        const posts = await Cv.findById(req.userId)
+        post.follower += 1
         post.save()
+        posts.following += 1
+        posts.save()
         req.body.createUser = req.userId;
         req.body.followUser = req.params.id;
     const follow = await Follow.create(req.body);
@@ -109,8 +112,11 @@ exports.updateFollow = asyncHandler(async (req, res, next) => {
 exports.deleteFollow = asyncHandler(async (req, res, next) => {
         const follow = await Follow.findById(req.params.id)
         const post = await Post.findById(follow.post)
-        post.follow -= 1
+        post.follower -= 1
         post.save()
+        const posts = await Post.findById(req.userId)
+        posts.following -= 1
+        posts.save()
         if(!follow) {
         return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
         } 

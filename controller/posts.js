@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const Follow = require("../models/Follow");
 const Cv = require("../models/Cv");
 const path = require("path");
 
@@ -89,31 +90,23 @@ exports.getCvPosts = asyncHandler(async (req, res, next) => {
 });
 
 // api/v1/categories/:catId/Posts
-exports.getOccupationPosts = asyncHandler(async (req, res, next) => {
+exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
+  req.query.createUser = req.params.id;
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 2;
+  const limit = parseInt(req.query.limit) || 100;
   const sort = req.query.sort;
   const select = req.query.select;
 
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
-  const pagination = await paginate(page, limit, Post);
+  // Pagination
+  const pagination = await paginate(page, limit, Follow)
 
-  //req.query, select
-  const posts = await Post.find(
-    { ...req.query, occupation: req.params.occupationId },
-    select
-  )
-    .sort(sort)
-    .skip(pagination.start - 1)
-    .limit(limit);
+  const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
 
-  res.status(200).json({
-    success: true,
-    count: posts.length,
-    data: posts,
-    pagination,
-  });
+  const user = follows.map((item)=>item.followUser)
+  const post = await Post.find({createUser: {$in: user } })
+  res.status(200).json({ success: true, data: post, pagination, })
 });
 
 exports.getPost = asyncHandler(async (req, res, next) => {
@@ -233,12 +226,9 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.createPost = asyncHandler(async (req, res, next) => {
-  const profile = await Cv.findById(req.userId);
   req.body.createUser = req.userId;
 
   const articl = await Post.create(req.body);
-  profile.post.addToSet(profile._id)
-  profile.save()
   
   // image upload
   if (req.files != null) {

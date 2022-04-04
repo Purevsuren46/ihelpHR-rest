@@ -4,6 +4,7 @@ const { protect, authorize } = require("../middleware/protect");
 
 const {
   getShares,
+  getFollowingShares,
   getPostShares,
   getCvShares,
   getShare,
@@ -22,6 +23,10 @@ const {
 router
   .route("/")
   .get(getShares);
+
+router
+  .route("/:id/following")
+  .get(getFollowingShares);
 
 router
   .route("/:id")

@@ -30,7 +30,7 @@ router
   .delete(protect, deleteFollow);
 
 router.route("/:id").post(protect, createFollow);
-router.route("/:id/post").get(protect, getFollowers);
+router.route("/:id/followers").get(protect, getFollowers);
 router.route("/:id/cv").get(protect, getCvFollows);
 
 module.exports = router;
