@@ -6,7 +6,9 @@ const {
   getProfiles,
   getProfile,
   getSpecialEmployeeProfiles,
+  getUnspecialEmployeeProfiles,
   getSpecialEmployerProfiles,
+  getUnspecialEmployerProfiles,
   getUrgentEmployeeProfiles,
   getUrgentEmployerProfiles,
   getCvListProfiles,
@@ -49,7 +51,9 @@ router.route("/logout").get(logout);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").post(resetPassword);
 router.route("/specials/employee").get(getSpecialEmployeeProfiles);
+router.route("/unspecials/employee").get(getUnspecialEmployeeProfiles);
 router.route("/specials/employer").get(getSpecialEmployerProfiles);
+router.route("/unspecials/employer").get(getUnspecialEmployerProfiles);
 router.route("/urgents/employee").get(getUrgentEmployeeProfiles);
 router.route("/urgents/employer").get(getUrgentEmployerProfiles);
 router.route("/cvlists").get(getCvListProfiles);

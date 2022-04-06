@@ -19,7 +19,10 @@ exports.getSpecialJobs = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Job);
   req.query.isSpecial = true
   
-  const jobs = await Job.find(req.query, select) 
+  const jobs = await Job.find(req.query, select).populate("occupation").populate({
+    path: 'createUser',
+    select: 'name profile'
+  }) 
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -52,7 +55,47 @@ exports.getUrgentJobs = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Job);
   req.query.isUrgent = true
   
-  const jobs = await Job.find(req.query, select) 
+  const jobs = await Job.find(req.query, select).populate("occupation").populate({
+    path: 'createUser',
+    select: 'name profile'
+  }) 
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+  
+
+    // const docs = await Job.aggregate(
+    //   [{$match: {special: {$gt: String(Date.now())}}}]
+    // );
+
+  // if (jobs.special < Date.now()) {
+  //   continue;
+  // }
+  // console.log()
+  res.status(200).json({
+    success: true,
+    count: jobs.length,
+    data: jobs,
+    pagination,
+  });
+});
+
+exports.getUnspecialJobs = asyncHandler(async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Job);
+  req.query.isSpecial = false
+  req.query.isUrgent = false
+  
+  const jobs = await Job.find(req.query, select).populate("occupation").populate({
+    path: 'createUser',
+    select: 'name profile'
+  }) 
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -85,7 +128,10 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Job);
 
-  const jobs = await Job.find(req.query, select).populate("occupation")
+  const jobs = await Job.find(req.query, select).populate("occupation").populate({
+    path: 'createUser',
+    select: 'name profile'
+  })
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit)
@@ -121,6 +167,10 @@ exports.getOccupationJobs = asyncHandler(async (req, res, next) => {
     { ...req.query, occupation: req.params.occupationId },
     select
   )
+  .populate("occupation").populate({
+    path: 'createUser',
+    select: 'name profile'
+  })
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -141,7 +191,10 @@ exports.getCvFilterJobs = asyncHandler(async (req, res, next) => {
 });
 
 exports.getJob = asyncHandler(async (req, res, next) => {
-  const job = await Job.findById(req.params.id)
+  const job = await Job.findById(req.params.id).populate("occupation").populate({
+    path: 'createUser',
+    select: 'name profile'
+  })
 
   if (!job) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);

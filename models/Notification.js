@@ -2,24 +2,39 @@ const mongoose = require("mongoose");
 
 const NotificationSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      trim: true,
-      maxlength: [250, " нэрний урт дээд тал нь 250 тэмдэгт байх ёстой."],
-    },
-    content: {
+    what: {
       type: String,
       trim: true,
       maxlength: [5000, " нэрний урт дээд тал нь 20 тэмдэгт байх ёстой."],
     },
-    createUser: {
+    like: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Like",
+    },
+    comment: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Comment",
+    },
+    share: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Share",
+    },
+    who: {
       type: mongoose.Schema.ObjectId,
       ref: "Cv",
+    },
+    for: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Cv",
+    },
+    isRead: {
+      type: Boolean,
+      default: false
     },
     createdAt: {
       type: Date,
       default: Date.now,
-    },
+  },
   },
 );
 

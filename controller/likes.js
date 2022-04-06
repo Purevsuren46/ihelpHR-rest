@@ -1,4 +1,5 @@
 const Like = require('../models/Like')
+const Notification = require('../models/Notification')
 const Cv = require('../models/Cv')
 const Post = require('../models/Post')
 const MyError = require("../utils/myError")
@@ -84,7 +85,11 @@ exports.createLike = asyncHandler(async (req, res, next) => {
         req.body.createUser = req.userId;
         req.body.post = req.params.id;
     const like = await Like.create(req.body);
-    res.status(200).json({ success: true, data: like, })
+    req.body.like = like._id
+    req.body.who = req.userId
+    req.body.for = post.createUser
+    const notification = await Notification.create(req.body)
+    res.status(200).json({ success: true, data: like, notification: notification, })
     } else {
         throw new MyError("Like дарсан байна.", 400)
     }

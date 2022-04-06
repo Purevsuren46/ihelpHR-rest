@@ -13,13 +13,10 @@ const select = req.query.select;
 ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
 const pagination = await paginate(page, limit, Notification);
-const user = await User.findById(req.userId)
 const notifications = await Notification.find(req.query, select)
-  .populate({
-    path: "category",
-
-    select: "name ",
-  })
+  .populate({ path: 'like', select: 'post' })
+  .populate({ path: 'who', select: 'lastName firstName' })
+  .populate({ path: 'for', select: 'lastName firstName' })
   .sort(sort)
   .skip(pagination.start - 1)
   .limit(limit);
@@ -29,26 +26,27 @@ const notifications = await Notification.find(req.query, select)
 
 res.status(200).json({
   success: true,
-  count: notifications.length - user.readNotif.length,
   data: notifications,
   pagination,
 });
 });
       
 exports.getUserNotifications = asyncHandler(async (req, res, next) => {
-req.query.createUser = req.userId;
+req.query.for = req.params.id;
 return this.getNotifications(req, res, next);
 });
       
 exports.getNotification = asyncHandler(async (req, res, next) => {
 const notification = await Notification.findById(req.params.id);
-const user = await User.findById(req.userId);
-user.readNotif.addToSet(req.params.id);
-user.save()
+
 if (!notification) {
   throw new MyError(req.params.id + " ID-тэй ажил байхгүй байна.", 404);
 }
-console.log(user.readNotif.length)
+
+if (req.userId == notification.for) {
+  notification.isRead = true
+  notification.save()
+}
 res.status(200).json({
   success: true,
   data: notification,

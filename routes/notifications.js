@@ -4,6 +4,7 @@ const { protect, authorize } = require("../middleware/protect");
 
 const {
   getNotifications,
+  getUserNotifications,
   getNotification,
   createNotification,
   updateNotification,
@@ -21,6 +22,8 @@ router
   .route("/:id")
   .get(getNotification)
   .put(protect, authorize("admin", "operator"), updateNotification)
-  .delete(protect, authorize("admin"), deleteNotification);
+  .delete(protect, deleteNotification);
+
+router.route("/:id/user").get(getUserNotifications)
 
 module.exports = router;

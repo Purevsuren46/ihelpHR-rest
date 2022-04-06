@@ -85,7 +85,10 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
 });
 
 exports.getProfile = asyncHandler(async (req, res, next) => {
-  const profile = await Cv.findById(req.params.id);
+  const profile = await Cv.findById(req.params.id).populate({
+    path: 'job',
+    populate: { path: 'occupation', select: 'name' }
+  });
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
@@ -159,6 +162,60 @@ exports.getSpecialEmployeeProfiles = asyncHandler(async (req, res, next) => {
 
 exports.getSpecialEmployerProfiles = asyncHandler(async (req, res, next) => {
   req.query.isEmployerSpecial = true;
+  req.query.organization = true;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Profile);
+
+  const profiles = await Cv.find(req.query, select).populate({
+    path: 'job',
+    populate: { path: 'occupation', select: 'name' }
+  })
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+
+  res.status(200).json({
+    success: true,
+    data: profiles,
+    pagination,
+  });
+});
+
+exports.getUnspecialEmployeeProfiles = asyncHandler(async (req, res, next) => {
+  req.query.isEmployeeSpecial = false;
+  req.query.organization = true;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Profile);
+
+  const profiles = await Cv.find(req.query, select).populate({
+    path: 'job',
+    populate: { path: 'occupation', select: 'name' }
+  })
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+
+  res.status(200).json({
+    success: true,
+    data: profiles,
+    pagination,
+  });
+});
+
+exports.getUnspecialEmployerProfiles = asyncHandler(async (req, res, next) => {
+  req.query.isEmployerSpecial = false;
   req.query.organization = true;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
