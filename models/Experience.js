@@ -27,6 +27,13 @@ const ExperienceSchema = new mongoose.Schema({
     position: {
         type: String,
     },
+    location: {
+        type: String,
+    },
+    type: {
+        type: String,
+        enum: ['Бүтэн цаг', 'Хагас цаг', 'freelancer', 'self-employed', 'contract', 'intern', 'apprentice', 'seasonal' ]
+    },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 

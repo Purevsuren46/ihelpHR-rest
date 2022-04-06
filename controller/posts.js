@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const Share = require("../models/Share");
 const Follow = require("../models/Follow");
 const Cv = require("../models/Cv");
 const path = require("path");
@@ -106,6 +107,9 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
 
   const user = follows.map((item)=>item.followUser)
   const post = await Post.find({createUser: {$in: user } })
+  const share = await Share.find({createUser: {$in: user } })
+  post.push(share[0])
+
   res.status(200).json({ success: true, data: post, pagination, })
 });
 
