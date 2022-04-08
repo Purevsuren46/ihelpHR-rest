@@ -26,7 +26,7 @@ router
 
 router
   .route("/:id/following")
-  .get(getFollowingShares);
+  .get(protect, getFollowingShares);
 
 router
   .route("/:id")

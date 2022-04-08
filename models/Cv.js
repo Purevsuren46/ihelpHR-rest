@@ -178,6 +178,10 @@ const CvSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  notification: {
+    type: Number,
+    default: 0
+  },
   isEmployeeSpecial: {
     type: Boolean,
     default: false,

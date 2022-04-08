@@ -7,7 +7,7 @@ const PostSchema = new mongoose.Schema({
   },
   body: {
     type: String,
-    required: [true, "Тайлбар оруулна уу"]
+    // required: [true, "Тайлбар оруулна уу"]
   },
   photo: {
     type: String
@@ -55,6 +55,18 @@ const PostSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+sharePost: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Post',
+},
+shareDescription: {
+    type: String,
+},
+isShare: {
+    type: Boolean,
+    default: false
+},
+
 });
 
 

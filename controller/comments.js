@@ -16,7 +16,7 @@ exports.getComments = asyncHandler(async (req, res, next) => {
         // Pagination
         const pagination = await paginate(page, limit, Comment)
 
-        const comments = await Comment.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
+        const comments = await Comment.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'createUser', select: 'lastName firstName profile'})
 
         res.status(200).json({ success: true, data: comments, pagination, })
     
@@ -34,7 +34,7 @@ exports.getPostComments = asyncHandler(async (req, res, next) => {
         // Pagination
         const pagination = await paginate(page, limit, Comment)
 
-        const comments = await Comment.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
+        const comments = await Comment.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'createUser', select: 'lastName firstName profile'})
 
         res.status(200).json({ success: true, data: comments, pagination, })
     

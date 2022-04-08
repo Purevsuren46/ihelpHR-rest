@@ -25,7 +25,7 @@ router
   .post(protect, createPost);
 router.route("/boosts").get(getBoostPosts);
 router.route("/unboosts").get(getUnboostPosts);
-router.route("/:id/following").get(getFollowingPosts);
+router.route("/:id/following").get(protect, getFollowingPosts);
 
 
 router.route("/:id/like").get(protect, likePost)  
@@ -33,7 +33,7 @@ router.route("/:id/unlike").get(protect, unlikePost)
 router.route("/:id/photo").put(protect, uploadPostPhoto)  
 router
   .route("/:id")
-  .get(getPost)
+  .get(protect, getPost)
   .delete(protect, deletePost)
   .put(protect, authorize("admin", "operator"), updatePost);
 

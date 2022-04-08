@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const Like = require("../models/Like");
 const Share = require("../models/Share");
 const Follow = require("../models/Follow");
 const Cv = require("../models/Cv");
@@ -22,7 +23,7 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Post);
 
-  const posts = await Post.find(req.query, select).populate({path: "createUser", select: "firstName lastName profile name"})
+  const posts = await Post.find(req.query, select).populate({path: "createUser", select: "firstName lastName profile name"}).populate('sharePost')
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -48,6 +49,7 @@ exports.getBoostPosts = asyncHandler(async (req, res, next) => {
 
   const posts = await Post.find(req.query, select)
     .populate({path: "createUser", select: "firstName lastName profile name"})
+    .populate('sharePost')
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -73,6 +75,7 @@ exports.getUnboostPosts = asyncHandler(async (req, res, next) => {
 
   const posts = await Post.find(req.query, select)
     .populate({path: "createUser", select: "firstName lastName profile name"})
+    .populate('sharePost')
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -94,7 +97,7 @@ exports.getCvPosts = asyncHandler(async (req, res, next) => {
 exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   req.query.createUser = req.params.id;
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 100;
+  const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
   const select = req.query.select;
 
@@ -103,18 +106,28 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   // Pagination
   const pagination = await paginate(page, limit, Follow)
 
-  const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
+  const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1)
 
   const user = follows.map((item)=>item.followUser)
-  const post = await Post.find({createUser: {$in: user } })
-  const share = await Share.find({createUser: {$in: user } })
-  post.push(share[0])
+  user.push(req.params.id)
+  const post = await Post.find({createUser: {$in: user } }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile'}})
+  const like = await Like.find({createUser: req.userId, post: {$ne: null}}).select('post')
+  const likes = like.map((item)=>item.post)
+  const likes1 = likes.map(item=>item.toString())
+
+
+  for (let i = 0; i < post.length; i++) {
+    if (likes1.includes(post[i]._id.toString()) ) {
+      post[i].isLiked = true
+    } 
+  }
+
 
   res.status(200).json({ success: true, data: post, pagination, })
 });
 
 exports.getPost = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.params.id);
+  const post = await Post.findById(req.params.id).populate({path: 'createUser', select: 'lastName firstName profile'}).populate('sharePost');
 
   if (!post) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
@@ -131,7 +144,13 @@ exports.getPost = asyncHandler(async (req, res, next) => {
       post.count += 1;
       post.save()
   }
-  
+  const like = await Like.find({createUser: req.userId, post: req.params.id}).select('post')
+
+  if (like != null ) {
+    post.isLiked = true
+  } else {
+    post.isLiked = false
+  }
 
   res.status(200).json({
     success: true,
@@ -390,11 +409,11 @@ exports.uploadPostPhoto = asyncHandler(async (req, res, next) => {
     throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
   }
 
-  file.name = `post_${req.params.id}_${cv.photo.length}${path.parse(file.name).ext}`;
+  file.name = `post_${req.params.id}_${path.parse(file.name).ext}`;
   
   const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
-    cv.photo.addToSet(file.name);
+    cv.photo = file.name;
     cv.save();
 
     res.status(200).json({

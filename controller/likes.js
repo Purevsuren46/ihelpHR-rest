@@ -1,4 +1,5 @@
 const Like = require('../models/Like')
+const Share = require('../models/Share')
 const Notification = require('../models/Notification')
 const Cv = require('../models/Cv')
 const Post = require('../models/Post')
@@ -89,6 +90,32 @@ exports.createLike = asyncHandler(async (req, res, next) => {
     req.body.who = req.userId
     req.body.for = post.createUser
     const notification = await Notification.create(req.body)
+    const cv = await Cv.findById(post.createUser)
+    cv.notification += 1
+    cv.save()
+    res.status(200).json({ success: true, data: like, notification: notification, })
+    } else {
+        throw new MyError("Like дарсан байна.", 400)
+    }
+    
+})
+
+exports.createShareLike = asyncHandler(async (req, res, next) => {
+    const likes = await Like.findOne({createUser: req.userId, share: req.params.id}).exec()
+    if (likes == null) {
+        const post = await Share.findById(req.params.id)
+        post.like += 1
+        post.save()
+        req.body.createUser = req.userId;
+        req.body.share = req.params.id;
+    const like = await Like.create(req.body);
+    req.body.like = like._id
+    req.body.who = req.userId
+    req.body.for = post.createUser
+    const notification = await Notification.create(req.body)
+    const cv = await Cv.findById(post.createUser)
+    cv.notification += 1
+    cv.save()
     res.status(200).json({ success: true, data: like, notification: notification, })
     } else {
         throw new MyError("Like дарсан байна.", 400)

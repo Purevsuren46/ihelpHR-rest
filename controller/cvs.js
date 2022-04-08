@@ -556,16 +556,12 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 // PUT: api/v1/cvs/:id/profile
 exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.userId);
-  if (cv.profile != null ) {
-    fs.unlinkSync(`${process.env.FILE_UPLOAD_PATH}/${cv.profile}`)
-  }
-
   if (!cv) {
     throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
   }
-
-  // image upload
-  const file = req.files.file;
+  if (cv.profile != null ) {
+    fs.unlinkSync(`${process.env.FILE_UPLOAD_PATH}/${cv.profile}`)
+    const file = req.files.file;
   if (!file.mimetype.startsWith("image")) {
     throw new MyError("Та зураг upload хийнэ үү.", 400);
   }
@@ -586,20 +582,45 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
       data: file.name,
     });
   
+  } else {
+    const file = req.files.file;
+  if (!file.mimetype.startsWith("image")) {
+    throw new MyError("Та зураг upload хийнэ үү.", 400);
+  }
+
+  if (file.size > process.env.MAX_UPLOAD_FILE_SIZE) {
+    throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
+  }
+
+  file.name = `profile_${req.userId}${path.parse(file.name).ext}`;
+  
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
+    cv.profile = file.name;
+    cv.save();
+
+    res.status(200).json({
+      success: true,
+      data: file.name,
+    });
+  
+  }
+
+
+
+  // image upload
+  
 });
 
 // PUT: api/v1/cvs/:id/cover
 exports.uploadCvCover = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.userId);
-  if (cv.cover != null ) {
-    fs.unlinkSync(`${process.env.FILE_UPLOAD_PATH}/${cv.cover}`)
-  }
-
   if (!cv) {
     throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
   }
-
-  // image upload
+  if (cv.cover != null ) {
+    fs.unlinkSync(`${process.env.FILE_UPLOAD_PATH}/${cv.cover}`)
+     // image upload
   const file = req.files.file;
   if (!file.mimetype.startsWith("image")) {
     throw new MyError("Та зураг upload хийнэ үү.", 400);
@@ -620,7 +641,29 @@ exports.uploadCvCover = asyncHandler(async (req, res, next) => {
       success: true,
       data: file.name,
     });
+  } else {
+     // image upload
+  const file = req.files.file;
+  if (!file.mimetype.startsWith("image")) {
+    throw new MyError("Та зураг upload хийнэ үү.", 400);
+  }
+
+  if (file.size > process.env.MAX_UPLOAD_FILE_SIZE) {
+    throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
+  }
+
+  file.name = `cover_${req.userId}${path.parse(file.name).ext}`;
   
+  const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  
+    cv.cover = file.name;
+    cv.save();
+
+    res.status(200).json({
+      success: true,
+      data: file.name,
+    });
+  }
 });
 
 // PUT: api/v1/cvs/:id/auth-photo

@@ -8,6 +8,7 @@ const {
   getCvLikes,
   getLike,
   createLike,
+  createShareLike,
   updateLike,
   deleteLike,
 } = require("../controller/likes");
@@ -30,6 +31,7 @@ router
   .delete(protect, deleteLike);
 
 router.route("/:id").post(protect, createLike);
+router.route("/:id/share").post(protect, createShareLike);
 router.route("/:id/post").get(protect, getPostLikes);
 router.route("/:id/cv").get(protect, getCvLikes);
 
