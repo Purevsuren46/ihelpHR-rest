@@ -87,6 +87,13 @@ exports.createFollow = asyncHandler(async (req, res, next) => {
         req.body.createUser = req.userId;
         req.body.followUser = req.params.id;
     const follow = await Follow.create(req.body);
+    req.body.follow = follow._id
+    req.body.who = req.userId
+    req.body.for = req.params.id
+    const notification = await Notification.create(req.body)
+    const cv = await Cv.findById(req.params.id)
+    cv.notification += 1
+    cv.save()
     res.status(200).json({ success: true, data: follow, })
     } else {
         throw new MyError("Follow дарсан байна.", 400)

@@ -20,7 +20,7 @@ router
 
 router
   .route("/:id")
-  .get(getNotification)
+  .get(protect, getNotification)
   .put(protect, authorize("admin", "operator"), updateNotification)
   .delete(protect, deleteNotification);
 

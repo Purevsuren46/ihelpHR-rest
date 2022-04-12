@@ -30,22 +30,19 @@ const JobSchema = new mongoose.Schema({
   type: {
       type: String,
       required: [true, "Ажлын төрлөө сонгоно уу"],
-      enum: ["full-time", "part-time", "freelancer", "intern"],
-      default: "full-time"
+      enum: ["Бүтэн цагийн", "Цагийн", "Ээлжийн", "Улирлаар", "Гэрээт/Зөвлөх"],
+      default: "Бүтэн цагийн"
   },
+  level: {
+    type: String,
+    required: [true, "Ажлын түвшин сонгоно уу"],
+    enum: ["Мэргэжилтэн", "Дадлага", "Мэргэжил хамаарахгүй", "Дунд шатны удирдлага", "Дээд шатны удирдлага"],
+},
   occupation: {
     type: mongoose.Schema.ObjectId,
     ref: 'Occupation',
     required: [true, "Ажлаа оруулна уу"]
   },
-  apply: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Cv',
-  }],
-  like: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Cv',
-  }],
   createUser: {
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
@@ -86,6 +83,8 @@ const JobSchema = new mongoose.Schema({
     default: 0,
   },
   skill: String,
+  contact: String,
+  location: String,
   experience: String,
   schedule: String,
   benefit: String,

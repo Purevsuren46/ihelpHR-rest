@@ -17,6 +17,10 @@ const LikeSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Share',
     },
+    job: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Job',
+    },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 

@@ -15,6 +15,10 @@ const NotificationSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "Comment",
     },
+    follow: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Follow",
+    },
     share: {
       type: mongoose.Schema.ObjectId,
       ref: "Share",

@@ -38,6 +38,7 @@ return this.getNotifications(req, res, next);
       
 exports.getNotification = asyncHandler(async (req, res, next) => {
 const notification = await Notification.findById(req.params.id);
+const cv = await Cv.findById(req.userId)
 
 if (!notification) {
   throw new MyError(req.params.id + " ID-тэй ажил байхгүй байна.", 404);
@@ -46,6 +47,8 @@ if (!notification) {
 if (req.userId == notification.for) {
   notification.isRead = true
   notification.save()
+  cv.notification -= 1
+  cv.save()
 }
 res.status(200).json({
   success: true,

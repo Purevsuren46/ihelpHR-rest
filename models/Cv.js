@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const Questionnaire = require("./Questionnaire");
 
 const CvSchema = new mongoose.Schema({
   phone: {
@@ -11,10 +12,6 @@ const CvSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        "Имэйл хаяг буруу байна.",
-    ],
     required: [true, "Хэрэглэгчийн имэйл оруулна уу"],
     unique: true,
   },
@@ -131,21 +128,6 @@ const CvSchema = new mongoose.Schema({
   category: {
     type: String,
   },
-  experience: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Experience',
-    default: null
-  }],
-  course: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Course',
-    default: null
-  }],
-  comment: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Comment',
-    default: null
-  }],
   isEmployer: {
     type: Boolean
   },
@@ -160,16 +142,6 @@ const CvSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  post: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Post',
-    default: null
-  }],
-  likePost: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Post',
-    default: null
-  }],
   point: {
     type: Number,
     default: 0
@@ -221,6 +193,10 @@ const CvSchema = new mongoose.Schema({
   employerUrgent: {
     type: Date,
     default: Date.now,
+  },
+  questionnaire: {
+    type: mongoose.Schema.ObjectId,
+    ref: Questionnaire,
   },
   register: {
     type: String,

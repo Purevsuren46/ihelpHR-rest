@@ -1,5 +1,6 @@
 const Share = require('../models/Share')
 const Follow = require('../models/Follow')
+const Notification = require('../models/Notification')
 const Like = require('../models/Like')
 const Cv = require('../models/Cv')
 const Post = require('../models/Post')
@@ -115,6 +116,13 @@ exports.createShare = asyncHandler(async (req, res, next) => {
         req.body.sharePost = req.params.id;
         req.body.isShare = true
         const share = await Post.create(req.body);
+        req.body.share = share._id
+        req.body.who = req.userId
+        req.body.for = post.createUser
+        const notification = await Notification.create(req.body)
+        const cv = await Cv.findById(post.createUser)
+        cv.notification += 1
+        cv.save()
         res.status(200).json({ success: true, data: share, })
     
 })

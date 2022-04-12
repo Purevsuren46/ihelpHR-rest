@@ -65,6 +65,14 @@ exports.createComment = asyncHandler(async (req, res, next) => {
         req.body.createUser = req.userId;
         req.body.post = req.params.id;
         const comment = await Comment.create(req.body);
+        req.body.comment = comment._id
+        req.body.who = req.userId
+        req.body.for = post.createUser
+        const notification = await Notification.create(req.body)
+        const cv = await Cv.findById(post.createUser)
+        cv.notification += 1
+        cv.save()
+
         res.status(200).json({ success: true, data: comment, })
     
 })

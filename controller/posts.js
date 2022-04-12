@@ -111,9 +111,16 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   const user = follows.map((item)=>item.followUser)
   user.push(req.params.id)
   const post = await Post.find({createUser: {$in: user } }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile'}})
-  const like = await Like.find({createUser: req.userId, post: {$ne: null}}).select('post')
+
+  const boost = await Post.find({isBoost: true}).sort({"createdAt": -1})
+  if (boost[page - 1] != null) {
+    post.push(boost[page - 1])
+  }
+  if (boost[page - 1].createdAt <= post[3].createdAt) {
+    const like = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gt: boost[page - 1].createdAt}}).select('post')
   const likes = like.map((item)=>item.post)
   const likes1 = likes.map(item=>item.toString())
+
 
 
   for (let i = 0; i < post.length; i++) {
@@ -121,7 +128,21 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
       post[i].isLiked = true
     } 
   }
+  } else {
+    const like = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gt: post[3].createdAt}}).select('post')
+  const likes = like.map((item)=>item.post)
+  const likes1 = likes.map(item=>item.toString())
 
+
+
+  for (let i = 0; i < post.length; i++) {
+    if (likes1.includes(post[i]._id.toString()) ) {
+      post[i].isLiked = true
+    } 
+  }
+  }
+
+  
 
   res.status(200).json({ success: true, data: post, pagination, })
 });
@@ -339,7 +360,7 @@ exports.updatePost = asyncHandler(async (req, res, next) => {
   }
 
   if (
-    post.createProfile.toString() !== req.userId &&
+    post.createUser.toString() !== req.userId &&
     req.userRole !== "admin"
   ) {
     throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
