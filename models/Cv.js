@@ -8,12 +8,10 @@ const CvSchema = new mongoose.Schema({
   phone: {
     type: Number,
     unique: true,
-    required: [true, "Хэрэглэгчийн утасны дугаар оруулна уу"],
   },
   email: {
     type: String,
     required: [true, "Хэрэглэгчийн имэйл оруулна уу"],
-    unique: true,
   },
   name: {
     type: String,

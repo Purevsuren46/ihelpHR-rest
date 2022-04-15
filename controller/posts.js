@@ -1,6 +1,5 @@
 const Post = require("../models/Post");
 const Like = require("../models/Like");
-const Share = require("../models/Share");
 const Follow = require("../models/Follow");
 const Cv = require("../models/Cv");
 const path = require("path");
@@ -115,32 +114,63 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   const boost = await Post.find({isBoost: true}).sort({"createdAt": -1})
   if (boost[page - 1] != null) {
     post.push(boost[page - 1])
-  }
-  if (boost[page - 1].createdAt <= post[3].createdAt) {
-    const like = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gt: boost[page - 1].createdAt}}).select('post')
-  const likes = like.map((item)=>item.post)
-  const likes1 = likes.map(item=>item.toString())
-
-
-
-  for (let i = 0; i < post.length; i++) {
-    if (likes1.includes(post[i]._id.toString()) ) {
-      post[i].isLiked = true
-    } 
-  }
+    if (boost[page - 1].createdAt <= post[post.length - 1].createdAt) {
+      const like = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gt: boost[page - 1].createdAt}}).select('post')
+    const likes = like.map((item)=>item.post)
+    const likes1 = likes.map(item=>item.toString())
+  
+  
+  
+    for (let i = 0; i < post.length; i++) {
+      if (likes1.includes(post[i]._id.toString()) ) {
+        post[i].isLiked = true
+      } 
+    }
+    } else {
+      const like = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gt: post[3].createdAt}}).select('post')
+    const likes = like.map((item)=>item.post)
+    const likes1 = likes.map(item=>item.toString())
+  
+  
+  
+    for (let i = 0; i < post.length; i++) {
+      if (likes1.includes(post[i]._id.toString()) ) {
+        post[i].isLiked = true
+      } 
+    }
+    }
+    
   } else {
-    const like = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gt: post[3].createdAt}}).select('post')
-  const likes = like.map((item)=>item.post)
-  const likes1 = likes.map(item=>item.toString())
+    if (typeof post == 'undefined' && post.length === 0) {
+      console.log(typeof post !== 'undefined' && post.length === 0)
+      const like = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gt: post[post.length - 1].createdAt}}).select('post')
+      const likes = like.map((item)=>item.post)
+      const likes1 = likes.map(item=>item.toString())
+    
+    
+    
+      for (let i = 0; i < post.length; i++) {
+        if (likes1.includes(post[i]._id.toString()) ) {
+          post[i].isLiked = true
+        } 
+      }
+    } else {
+      const like = await Like.find({createUser: req.userId, post: {$ne: null}}).select('post')
+      const likes = like.map((item)=>item.post)
+      const likes1 = likes.map(item=>item.toString())
+    
+    
+    
+      for (let i = 0; i < post.length; i++) {
+        if (likes1.includes(post[i]._id.toString()) ) {
+          post[i].isLiked = true
+        } 
+      }
+    }
 
-
-
-  for (let i = 0; i < post.length; i++) {
-    if (likes1.includes(post[i]._id.toString()) ) {
-      post[i].isLiked = true
-    } 
   }
-  }
+
+  
 
   
 
@@ -273,6 +303,7 @@ exports.createPost = asyncHandler(async (req, res, next) => {
   req.body.createUser = req.userId;
 
   const articl = await Post.create(req.body);
+
   
   // image upload
   if (req.files != null) {

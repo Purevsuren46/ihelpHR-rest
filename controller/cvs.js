@@ -1,4 +1,6 @@
 const Cv = require("../models/Cv");
+const Follow = require("../models/Follow");
+const Phone = require("../models/Phone");
 const Wallet = require("../models/Wallet");
 const History = require("../models/History");
 const Profile = require("../models/Profile");
@@ -11,6 +13,7 @@ const path = require("path");
 const sharp = require("sharp");
 const axios = require("axios");
 const fs = require("fs");
+const mongoose = require('mongoose');
 
 
 // логин хийнэ
@@ -85,7 +88,8 @@ exports.getCvs = asyncHandler(async (req, res, next) => {
 });
 // Хэрэглэгчийг iD гаар авна
 exports.getCv = asyncHandler(async (req, res, next) => {
-  const cv = await Cv.findById(req.params.id).populate("experience post course");
+  console.log(mongoose.Types.ObjectId.isValid(req.params.id))
+  const cv = await Cv.findById(req.params.id)
 
   if (!cv) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
@@ -426,13 +430,31 @@ exports.urgentProfile = asyncHandler(async (req, res, next) => {
 });
 // шинээр хэрэглэгч үүсгэх
 exports.createCv = asyncHandler(async (req, res, next) => {
-  req.body.wallet = 0,
-  req.body.point = 0
-  const cv = await Cv.create(req.body);
-  res.status(200).json({
-    success: true,
-    data: cv,
-  });
+
+  const random = await Phone.findOne({random: req.body.random})
+  if (random == null) {
+    throw new MyError("Мессежний код буруу байна", 400)
+  } else {
+    req.body.phone = random.phone
+    req.body.wallet = 0,
+    req.body.point = 0
+    const posts = await Cv.create(req.body);
+    const rando = await Phone.deleteOne({random: req.body.random})
+
+    const post = await Cv.findById("625930ead03cd82424c99688")
+    post.follower += 1
+    post.save()
+    posts.following += 1
+    posts.save()
+    req.body.createUser = posts._id;
+    req.body.followUser = "625930ead03cd82424c99688";
+const follow = await Follow.create(req.body);
+    res.status(200).json({
+      success: true,
+      data: posts,
+    });
+  }
+
 });
 
 exports.updateCv = asyncHandler(async (req, res, next) => {
@@ -486,14 +508,14 @@ exports.deleteCv = asyncHandler(async (req, res, next) => {
 });
 
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
-  if (!req.body.email) {
+  if (!req.body.phone) {
     throw new MyError("Та нууц үг сэргээх имэйл хаягаа дамжуулна уу", 400);
   }
 
-  const cv = await Cv.findOne({ email: req.body.email });
+  const cv = await Cv.findOne({ phone: req.body.phone });
 
   if (!cv) {
-    throw new MyError(req.body.email + " имэйлтэй хэрэглэгч олдсонгүй!", 400);
+    throw new MyError(req.body.phone + " утастай хэрэглэгч олдсонгүй!", 400);
   }
 
   const resetToken = cv.generatePasswordChangeToken();
@@ -506,13 +528,16 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
   const message = `Сайн байна уу<br><br>Таны хүсэлтийг илгээлээ.<br> Нууц үг өөрчлөх код:<br><br>${link}<br><br>Өдрийг сайхан өнгөрүүлээрэй!`;
 
-  const info = await sendEmail({
-    email: cv.email,
-    subject: "Нууц үг өөрчлөх хүсэлт",
-    message,
-  });
+  // const info = await sendEmail({
+  //   email: cv.email,
+  //   subject: "Нууц үг өөрчлөх хүсэлт",
+  //   message,
+  // });
 
-  console.log("Message sent: %s", info.messageId);
+    await axios({
+    method: "get",
+    url: `https://api.messagepro.mn/send?key=63053350aa1c4d36e94d0756f4ec160e&from=72773055&to=${req.body.phone}&text=${link}`
+  })
 
   res.status(200).json({
     success: true,
@@ -553,6 +578,68 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.sendPhone = asyncHandler(async (req, res, next) => {
+  const cv = await Cv.findOne({phone: req.body.phone})
+  const phon = await Phone.findOne({phone: req.body.phone})
+
+  if (cv == null) {
+    const random = Math.floor(1000 + Math.random() * 9000);
+  await axios({
+    method: "get",
+    url: `https://api.messagepro.mn/send?key=63053350aa1c4d36e94d0756f4ec160e&from=72773055&to=${req.body.phone}&text=${random}`
+  })
+  req.body.random = random
+  
+  } else {
+    throw new MyError("Утас бүртгүүлсэн байна", 400)
+  }
+  if (phon == null) {
+    const phone = await Phone.create(req.body)
+    res.status(200).json({
+      success: true,
+    });
+  } else {
+    phon.random = req.body.random
+    phon.save()
+    res.status(200).json({
+      success: true,
+    });
+  }
+  
+});
+
+exports.authPhone = asyncHandler(async (req, res, next) => {
+  if (!req.body.resetToken || !req.body.password) {
+    throw new MyError("Та токен болон нууц үгээ дамжуулна уу", 400);
+  }
+
+  const encrypted = crypto
+    .createHash("sha256")
+    .update(req.body.resetToken)
+    .digest("hex");
+
+  const cv = await Cv.findOne({
+    resetPasswordToken: encrypted,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!cv) {
+    throw new MyError("Токен хүчингүй байна!", 400);
+  }
+
+  cv.password = req.body.password;
+  cv.resetPasswordToken = undefined;
+  cv.resetPasswordExpire = undefined;
+  await cv.save();
+
+  const token = cv.getJsonWebToken();
+
+  res.status(200).json({
+    success: true,
+    token,
+    cv: cv,
+  });
+});
 // PUT: api/v1/cvs/:id/profile
 exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.userId);

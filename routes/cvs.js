@@ -10,6 +10,8 @@ const {
   getAuthCvs,
   createCv,
   settingProfile,
+  sendPhone,
+  authPhone,
   cvList,
   urgentProfile,
   followCv,
@@ -38,6 +40,7 @@ router.route("/login").post(login);
 router.route("/logout").get(logout);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").post(resetPassword);
+router.route("/send").post(sendPhone);
 
 
 //"/api/v1/cvs"

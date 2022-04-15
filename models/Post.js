@@ -10,7 +10,8 @@ const PostSchema = new mongoose.Schema({
     // required: [true, "Тайлбар оруулна уу"]
   },
   photo: {
-    type: String
+    type: String,
+    default: "ihelp.jpg"
   },
   location: {
       type: String,

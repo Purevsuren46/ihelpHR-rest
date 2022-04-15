@@ -1,3 +1,4 @@
+const Notification = require('../models/Notification')
 const Comment = require('../models/Comment')
 const Cv = require('../models/Cv')
 const Post = require('../models/Post')
