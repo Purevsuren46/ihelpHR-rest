@@ -351,9 +351,10 @@ exports.specialEmployerProfile = asyncHandler(async (req, res, next) => {
         profile.isEmployerSpecial = true
     }
   }
+  profile.save()
   const expire = setTimeout(() => {profile.isEmployerSpecial = false, profile.save()}, Math.abs(Number(profile.employerSpecial) - Date.now()))
 
-  profile.save()
+  
 
   res.status(200).json({
     success: true,

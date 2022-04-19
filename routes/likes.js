@@ -6,11 +6,13 @@ const {
   getLikes,
   getPostLikes,
   getCvLikes,
+  getCvJobLikes,
   getLike,
   createLike,
-  createShareLike,
+  createJobLike,
   updateLike,
   deleteLike,
+  deleteJobLike,
 } = require("../controller/likes");
 
 // api/v1/likes/:id/books
@@ -31,8 +33,10 @@ router
   .delete(protect, deleteLike);
 
 router.route("/:id").post(protect, createLike);
-router.route("/:id/share").post(protect, createShareLike);
+router.route("/:id/job").post(protect, createJobLike);
 router.route("/:id/post").get(protect, getPostLikes);
 router.route("/:id/cv").get(protect, getCvLikes);
+router.route("/:id/job").get(protect, getCvJobLikes);
+router.route("/:id/job").delete(protect, deleteJobLike);
 
 module.exports = router;

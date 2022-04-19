@@ -42,7 +42,7 @@ exports.getQuestionnaire = asyncHandler(async (req, res, next) => {
 });
 // шинээр хэрэглэгч үүсгэх
 exports.createQuestionnaire = asyncHandler(async (req, res, next) => {
-
+  req.query.createUser = req.userId;
   const questionnaire = await Questionnaire.create(req.body);
   res.status(200).json({
     success: true,

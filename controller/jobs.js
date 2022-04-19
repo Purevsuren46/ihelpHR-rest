@@ -88,7 +88,7 @@ exports.getUnspecialJobs = asyncHandler(async (req, res, next) => {
 
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
-  const pagination = await paginate(page, limit, Job);
+  const pagination = await paginate(page, limit, Job.find({isSpecial: false, isUrgent: false}));
   req.query.isSpecial = false
   req.query.isUrgent = false
   
@@ -132,7 +132,8 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
     path: 'createUser',
     select: 'name profile'
   })
-    .sort(sort)
+  .sort({isUrgent:-1})  
+  .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit)
     
@@ -417,29 +418,61 @@ exports.createJob = asyncHandler(async (req, res, next) => {
     return date;
   };
 
-  if(profile.point < req.body.special + req.body.urgent + req.body.order) {
-    throw new MyError(" Point оноо хүрэхгүй байна", 400);
-  } else {
-    const date = new Date()
-    profile.point -= req.body.order
-    req.body.order = date.addDays(req.body.order)
+  if (req.body.order != undefined) {
+    if (profile.point < req.body.order) {
+      throw new MyError(" Point оноо хүрэхгүй байна", 400);
+    } else {
+        const date = new Date()
+        profile.point -= req.body.order
+        req.body.order = date.addDays(req.body.order)
+    }
+  } 
+
+  if (req.body.urgent != undefined) {
+    if (profile.point < req.body.urgent) {
+      throw new MyError(" Point оноо хүрэхгүй байна", 400);
+    } else {
+        const date = new Date()
+        profile.point -= req.body.urgent
+        req.body.urgent = date.addDays(req.body.urgent)
+        req.body.isUrgent = true
+    }
+  } 
+
+  if (req.body.special != undefined) {
+    if (profile.point < req.body.special) {
+      throw new MyError(" Point оноо хүрэхгүй байна", 400);
+    } else {
+        const date = new Date()
+        profile.point -= req.body.special
+        req.body.special = date.addDays(req.body.special)
+        req.body.isSpecial = true
+    }
+  } 
+
+
+
+  // if(profile.point < req.body.special + req.body.urgent + req.body.order) {
+  //   throw new MyError(" Point оноо хүрэхгүй байна", 400);
+  // } else {
+  //   const date = new Date()
+  //   profile.point -= req.body.order
+  //   req.body.order = date.addDays(req.body.order)
+    
+  //   const date1 = new Date()
+  //   profile.point -= req.body.urgent
+  //   req.body.isUrgent = true
+  //   req.body.urgent = date1.addDays(req.body.urgent)
   
-    const date1 = new Date()
-    profile.point -= req.body.urgent
-    req.body.isUrgent = true
-    req.body.urgent = date1.addDays(req.body.urgent)
-  
-    const date2 = new Date()
-    profile.point -= req.body.special
-    req.body.isSpecial = true
-    req.body.special = date2.addDays(req.body.special)
-  }
+  //   const date2 = new Date()
+  //   profile.point -= req.body.special
+  //   req.body.isSpecial = true
+  //   req.body.special = date2.addDays(req.body.special)
+  // }
   
 
   req.body.createUser = req.userId;
   const job = await Job.create(req.body);
-  profile.job.addToSet(job._id)
-  profile.save()
   res.status(200).json({
     success: true,
     data: job,

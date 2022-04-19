@@ -4,15 +4,30 @@ const JobSchema = new mongoose.Schema({
   
   description: {
     type: String,
-    required: [true, "Тайлбар оруулна уу"]
+    default: null,
+  },
+  title: {
+    type: String,
+    default: null,
   },
   do: {
     type: String,
-    required: [true, "Гүйцэтгэх үүрэг оруулна уу"]
+    default: null,
+  },
+  do1: {
+    type: String,
+    default: null,
+  },
+  do2: {
+    type: String,
+    default: null,
+  },
+  do3: {
+    type: String,
+    default: null,
   },
   salary: {
       type: String,
-      required: [true, "Цалингаа оруулна уу"],
       enum: [
           "400,000 - 600,000", 
           "600,000 - 800,000", 
@@ -29,19 +44,16 @@ const JobSchema = new mongoose.Schema({
   },
   type: {
       type: String,
-      required: [true, "Ажлын төрлөө сонгоно уу"],
       enum: ["Бүтэн цагийн", "Цагийн", "Ээлжийн", "Улирлаар", "Гэрээт/Зөвлөх"],
       default: "Бүтэн цагийн"
   },
   level: {
     type: String,
-    required: [true, "Ажлын түвшин сонгоно уу"],
     enum: ["Мэргэжилтэн", "Дадлага", "Мэргэжил хамаарахгүй", "Дунд шатны удирдлага", "Дээд шатны удирдлага"],
 },
   occupation: {
     type: mongoose.Schema.ObjectId,
     ref: 'Occupation',
-    required: [true, "Ажлаа оруулна уу"]
   },
   createUser: {
     type: mongoose.Schema.ObjectId,
@@ -53,6 +65,10 @@ const JobSchema = new mongoose.Schema({
   },
   score: {
     type: Number,
+  },
+  isLiked: {
+    type: Boolean,
+    default: false,
   },
   isSpecial: {
     type: Boolean,
@@ -76,18 +92,40 @@ const JobSchema = new mongoose.Schema({
   },
   isEmployer: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   count: {
     type: Number,
     default: 0,
   },
-  skill: String,
-  contact: String,
-  location: String,
-  experience: String,
-  schedule: String,
-  benefit: String,
+  skill: {
+    type: String,
+    default: null,
+  },
+  skill1: {
+    type: String,
+    default: null,
+  },
+  skill2: {
+    type: String,
+    default: null,
+  },
+  skill3: {
+    type: String,
+    default: null,
+  },
+  contact: {
+    type: String,
+    default: null,
+  },
+  location: {
+    type: String,
+    default: null,
+  },
+  benefit: {
+    type: String,
+    default: null,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

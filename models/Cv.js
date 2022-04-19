@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const Questionnaire = require("./Questionnaire");
 
 const CvSchema = new mongoose.Schema({
   phone: {
@@ -22,45 +21,28 @@ const CvSchema = new mongoose.Schema({
   lastName: {
     type: String,
   },
-  birth: {
-    type: Date,
-    default: null
-  },
   profile: {
     type: String,
-    default: null
+    default: "ihelp.jpg"
   },
   cover: {
     type: String,
-    default: null
+    default: "ihelp.jpg"
   },
   authPhoto: {
     type: String,
-    default: null
   },
   portfolio: [{
     type: String,
-    default: null
   }],
   invoiceId: {
     type: String,
-    default: null
   },
   qrImage: {
     type: String,
-    default: null
   },
   location: {
     type: String,
-    default: null
-  },
-  humanId: {
-    type: String,
-    match: [
-        /([Ё-Ө]{2}[0-9]{8})/,
-        "Регистэр буруу байна.",
-    ],
-    unique: true,
   },
   organization: {
     type: Boolean,
@@ -68,7 +50,6 @@ const CvSchema = new mongoose.Schema({
   },
   about: {
     type: String,
-    default: null
   },
   authentication: {
     type: Boolean,
@@ -76,28 +57,11 @@ const CvSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
-    default: null
-  },
-  working: {
-    type: Boolean,
-    default: false,
+    default: "ihelp.jpg"
   },
   isApproved: {
     type: Boolean,
     default: false,
-  },
-  workingCompany: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Cv',
-    default: null
-  },
-  status: {
-    type: String,
-    enum: ["opentowork"]
-  },
-  position: {
-    type: String,
-    enum: ["senior", "intern", "junior"]
   },
   role: {
     type: String,
@@ -113,24 +77,6 @@ const CvSchema = new mongoose.Schema({
   },
   filter: {
     type: String,
-    default: null
-  },
-  job: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Job',
-    default: null
-  }],
-  profession: {
-    type: String,
-  },
-  category: {
-    type: String,
-  },
-  isEmployer: {
-    type: Boolean
-  },
-  isEmployee: {
-    type: Boolean
   },
   following: {
     type: Number,
@@ -176,28 +122,20 @@ const CvSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  isEmployeeUrgent: {
-    type: Boolean,
-    default: false,
-  },
-  employeeUrgent: {
-    type: Date,
-    default: Date.now,
-  },
-  isEmployerUrgent: {
-    type: Boolean,
-    default: false,
-  },
-  employerUrgent: {
-    type: Date,
-    default: Date.now,
-  },
   questionnaire: {
     type: mongoose.Schema.ObjectId,
-    ref: Questionnaire,
+    ref: "Questionnaire",
   },
   register: {
     type: String,
+  },
+  isEmployee: {
+    type: Boolean,
+    default: false,
+  },
+  isEmployer: {
+    type: Boolean,
+    default: false,
   },
   resetPasswordToken: String,
   resetPasswordExpire: Date,

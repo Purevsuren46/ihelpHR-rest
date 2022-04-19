@@ -4,10 +4,6 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 
 const QuestionnareSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    default: null
-  },
   firstName: {
       type: String,
       default: null
@@ -24,12 +20,23 @@ const QuestionnareSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  birthPlace: {
+    type: String,
+    default: null
+  },
+  phoneEmergency: {
+    type: Number,
+  },
   humanId: {
     type: String,
     match: [
         /([Ё-Ө]{2}[0-9]{8})/,
         "Регистэр буруу байна.",
     ],
+    unique: true,
+  },
+  driverLicense: {
+    type: String,
     unique: true,
   },
   working: {

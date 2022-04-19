@@ -2,12 +2,23 @@ const mongoose = require("mongoose")
 const ExperienceSchema = new mongoose.Schema({
     description: {
         type: String,
-        required: [true, 'Категорийн тайлбарыг заавал оруулах ёстой.'],
         maxlength: [500, "Категорийн тайлбарын урт 500 тэмдэгт байх ёстой."]
     },
     createUser: {
         type: mongoose.Schema.ObjectId,
         ref: 'Cv',
+    },
+    do: {
+        type: String,
+    },
+    exitCause: {
+        type: String,
+    },
+    achievements: {
+        type: String,
+    },
+    contactInfo: {
+        type: String,
     },
     start: {
         type: Date,
@@ -20,6 +31,10 @@ const ExperienceSchema = new mongoose.Schema({
     },
     company: {
         type: String,
+    },
+    category: {
+        type: mongoose.Schema.ObjectId,
+        ref: "Category",
     },
     occupation: {
         type: String,

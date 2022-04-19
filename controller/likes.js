@@ -1,5 +1,6 @@
 const Like = require('../models/Like')
 const Share = require('../models/Share')
+const Job = require('../models/Job')
 const Notification = require('../models/Notification')
 const Cv = require('../models/Cv')
 const Post = require('../models/Post')
@@ -60,6 +61,26 @@ exports.getCvLikes = asyncHandler(async (req, res, next) => {
 
 })
 
+exports.getCvJobLikes = asyncHandler(async (req, res, next) => {
+    req.query.createUser = req.params.id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 100;
+    const sort = req.query.sort;
+    const select = req.query.select;
+
+    ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+    // Pagination
+    const pagination = await paginate(page, limit, Like)
+
+    const like = await Like.find({createUser: req.params.id, job: {$ne: null}}).sort(sort).skip(pagination.start - 1).limit(limit)
+    const likes = like.map((item)=>item.job)
+    const likes1 = likes.map(item=>item.toString())
+
+    res.status(200).json({ success: true, data: likes1, pagination, })
+
+})
+
 exports.getLike = asyncHandler( async (req, res, next) => {
     
         const like = await Like.findById(req.params.id).populate('books')
@@ -100,14 +121,14 @@ exports.createLike = asyncHandler(async (req, res, next) => {
     
 })
 
-exports.createShareLike = asyncHandler(async (req, res, next) => {
-    const likes = await Like.findOne({createUser: req.userId, share: req.params.id}).exec()
+exports.createJobLike = asyncHandler(async (req, res, next) => {
+    const likes = await Like.findOne({createUser: req.userId, job: req.params.id}).exec()
     if (likes == null) {
-        const post = await Share.findById(req.params.id)
+        const post = await Job.findById(req.params.id)
         post.like += 1
         post.save()
         req.body.createUser = req.userId;
-        req.body.share = req.params.id;
+        req.body.job = req.params.id;
     const like = await Like.create(req.body);
     req.body.like = like._id
     req.body.who = req.userId
@@ -152,4 +173,21 @@ exports.deleteLike = asyncHandler(async (req, res, next) => {
 
         res.status(200).json({ success: true, data: like, })
         
+})
+
+exports.deleteJobLike = asyncHandler(async (req, res, next) => {
+    const like = await Like.findOne({job: req.params.id, createUser: req.userId})
+    if(!like) {
+    return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
+    } 
+    like.remove()
+    // if(like !== null) {
+    //     const post = await Job.findById(req.params.id)
+    //     post.like -= 1
+    //     post.save()
+    //     
+    // }
+
+    res.status(200).json({ success: true, data: like, })
+    
 })
