@@ -1,4 +1,7 @@
 const Apply = require('../models/Apply')
+const Job = require('../models/Job')
+const Cv = require('../models/Cv')
+const Notification = require('../models/Notification')
 const MyError = require("../utils/myError")
 const asyncHandler = require("express-async-handler")
 const paginate = require("../utils/paginate")
@@ -46,12 +49,30 @@ exports.getCvApplies = asyncHandler(async (req, res, next) => {
 });
       
 exports.createApply = asyncHandler(async (req, res, next) => {
-    
-    req.body.createUser = req.userId;
-    req.body.job = req.params.id;
-    const apply = await Apply.create(req.body)
+        const likes = await Apply.findOne({createUser: req.userId, job: req.params.id}).exec()
+        if (likes == null) {
+            const post = await Job.findById(req.params.id)
+            post.apply += 1
+            post.save()
+            req.body.createUser = req.userId;
+            req.body.job = req.params.id;
+        const like = await Apply.create(req.body);
+        req.body.apply = like._id
+        req.body.who = req.userId
+        req.body.for = post.createUser
+        const notification = await Notification.create(req.body)
+        const cv = await Cv.findById(post.createUser)
+        cv.notification += 1
+        cv.save()
+        res.status(200).json({ success: true, data: like, notification: notification, })
+        } else {
+            throw new MyError("Анкет илгээсэн байна.", 400)
+        }
+//     req.body.createUser = req.userId;
+//     req.body.job = req.params.id;
+//     const apply = await Apply.create(req.body)
 
-    res.status(200).json({ success: true, data: apply, })
+//     res.status(200).json({ success: true, data: apply, })
 })
 
 exports.updateApply = asyncHandler(async (req, res, next) => {

@@ -2,29 +2,42 @@ const mongoose = require("mongoose")
 const CourseSchema = new mongoose.Schema({
     description: {
         type: String,
-        required: [true, 'Категорийн тайлбарыг заавал оруулах ёстой.'],
-        maxlength: [500, "Категорийн тайлбарын урт 500 тэмдэгт байх ёстой."]
+        maxlength: [500, "Категорийн тайлбарын урт 500 тэмдэгт байх ёстой."],
+        default: null
     },
     field: {
-        type: String
+        type: String,
+    default: null
     },
     school: {
-        type: String
+        type: String,
+        
+    default: null
     },
     grade: {
-        type: String
+        type: String,
+        
+    default: null
     },
     isStudying: {
-        type: Boolean
+        type: Boolean,
+        
+    default: false
     },
     activity: {
-        type: String
+        type: String,
+        
+    default: null
     },
     start: {
-        type: Date
+        type: Date,
+        
+    default: null
     },
     end: {
-        type: Date
+        type: Date,
+        
+    default: null
     },
     createUser: {
         type: mongoose.Schema.ObjectId,

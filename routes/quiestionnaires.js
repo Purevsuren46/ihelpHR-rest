@@ -8,6 +8,7 @@ const {
   createQuestionnaire,
   updateQuestionnaire,
   deleteQuestionnaire,
+  deleteFamilyQuestionnaire,
 } = require("../controller/questionnaires");
 
 // api/v1/questionnaires/:id/books
@@ -19,14 +20,16 @@ const {
 //"/api/v1/questionnaires"
 router
   .route("/")
-  .get(getQuestionnaires);
+  .get(getQuestionnaires).post(protect, createQuestionnaire);
 
 router
   .route("/:id")
   .get(getQuestionnaire)
   .put(protect, authorize("admin", "operator"), updateQuestionnaire)
   .delete(protect, deleteQuestionnaire);
+router
+  .route("/:id/family")
+  .delete(protect, deleteFamilyQuestionnaire);
 
-router.route("/:id").post(protect, createQuestionnaire);
 
 module.exports = router;

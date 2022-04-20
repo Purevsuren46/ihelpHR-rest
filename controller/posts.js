@@ -303,6 +303,9 @@ exports.createPost = asyncHandler(async (req, res, next) => {
   req.body.createUser = req.userId;
 
   const articl = await Post.create(req.body);
+  const cv = await Cv.findById(req.userId);
+  cv.post += 1
+  cv.save()
 
   
   // image upload

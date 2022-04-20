@@ -27,7 +27,7 @@ const CvSchema = new mongoose.Schema({
   },
   cover: {
     type: String,
-    default: "ihelp.jpg"
+    default: "cover.jpg"
   },
   authPhoto: {
     type: String,
@@ -83,6 +83,10 @@ const CvSchema = new mongoose.Schema({
     default: 0,
   },
   follower: {
+    type: Number,
+    default: 0,
+  },
+  post: {
     type: Number,
     default: 0,
   },

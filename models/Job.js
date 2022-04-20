@@ -98,6 +98,10 @@ const JobSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  apply: {
+    type: Number,
+    default: 0,
+  },
   skill: {
     type: String,
     default: null,

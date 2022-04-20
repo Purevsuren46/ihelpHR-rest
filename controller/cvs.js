@@ -88,7 +88,6 @@ exports.getCvs = asyncHandler(async (req, res, next) => {
 });
 // Хэрэглэгчийг iD гаар авна
 exports.getCv = asyncHandler(async (req, res, next) => {
-  console.log(mongoose.Types.ObjectId.isValid(req.params.id))
   const cv = await Cv.findById(req.params.id)
 
   if (!cv) {
