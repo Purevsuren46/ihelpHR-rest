@@ -40,7 +40,7 @@ const QuestionnareSchema = new mongoose.Schema({
     // ],
   },
   driverLicense: {
-    type: String,
+    type: Boolean,
   },
   working: {
     type: Boolean,
@@ -71,7 +71,7 @@ const QuestionnareSchema = new mongoose.Schema({
   },
   family: [{
     who: {type: String, default: null},
-    name: {type: String,    default: null},
+    firstName: {type: String,    default: null},
     lastName: {type: String,    default: null},
     birthYear: {type: Number,    default: null},
     phone: {type: Number,    default: null},
@@ -101,10 +101,6 @@ const QuestionnareSchema = new mongoose.Schema({
     description: {
       type: String,
       maxlength: [500, "Категорийн тайлбарын урт 500 тэмдэгт байх ёстой."]
-  },
-  createUser: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'Cv',
   },
   do: {
       type: String,
@@ -187,10 +183,6 @@ const QuestionnareSchema = new mongoose.Schema({
       type: Date,
       
   default: null
-  },
-  createUser: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'Cv',
   },
   }],
   resetPasswordToken: String,

@@ -13,6 +13,12 @@ const WalletSchema = new mongoose.Schema({
         type: String,
         default: null
       },
+      urls: [{
+        name: String,
+        description: String,
+        logo: String,
+        link: String
+      }],
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 

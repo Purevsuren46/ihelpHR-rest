@@ -43,20 +43,25 @@ exports.getQuestionnaire = asyncHandler(async (req, res, next) => {
 });
 // шинээр хэрэглэгч үүсгэх
 exports.createQuestionnaire = asyncHandler(async (req, res, next) => {
-  const cv = await Cv.findById(req.userId);
-  req.body.createUser = req.userId;
-  req.body.firstName = cv.firstName;
-  req.body.lastName = cv.lastName;
-  const questionnaire = await Questionnaire.create(req.body);
-  res.status(200).json({
-    success: true,
-    data: questionnaire,
-  });
+  const ques = await Questionnaire.findOne({createUser: req.userId, })
+  if (ques == null) {
+    const cv = await Cv.findById(req.userId);
+    req.body.createUser = req.userId;
+    req.body.firstName = cv.firstName;
+    req.body.lastName = cv.lastName;
+    const questionnaire = await Questionnaire.create(req.body);
+    res.status(200).json({
+      success: true,
+      data: questionnaire,
+    });
+  } else {
+    throw new MyError(" Хэрэглэгч анкет бүртгүүлсэн байна", 400);
+  }
+
 });
 
 exports.updateQuestionnaire = asyncHandler(async (req, res, next) => {
-  const questionnairev = await Questionnaire.findById(req.params.id);
-  const questionnaire = await Questionnaire.findByIdAndUpdate(req.params.id, req.body, {
+  const questionnaire = await Questionnaire.findOneAndUpdate({createUser: req.params.id}, req.body, {
     new: true,
     runValidators: true,
   });
@@ -65,6 +70,7 @@ exports.updateQuestionnaire = asyncHandler(async (req, res, next) => {
   if (!questionnaire) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
   }
+  res.status(200).json({ success: true, data: questionnaire, })
 
 });
 // хэрэглэгч засах, history д хадгалах
@@ -83,6 +89,22 @@ exports.deleteQuestionnaire = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.createFamilyQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  questionnaire.family.push(req.body)
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
 exports.deleteFamilyQuestionnaire = asyncHandler(async (req, res, next) => {
   const questionnaire = await Questionnaire.findOne({createUser: req.userId});
 
@@ -91,6 +113,102 @@ exports.deleteFamilyQuestionnaire = asyncHandler(async (req, res, next) => {
   }
 
   questionnaire.family.pull({_id: req.params.id})
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
+exports.createExperienceQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  questionnaire.experience.push(req.body)
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
+exports.deleteExperienceQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  questionnaire.experience.pull({_id: req.params.id})
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
+exports.createCourseQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  questionnaire.course.push(req.body)
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
+exports.deleteCourseQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  questionnaire.course.pull({_id: req.params.id})
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
+exports.createAchievementQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(" ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  questionnaire.achievement.push(req.body)
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
+exports.deleteAchievementQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  questionnaire.achievement.pull({_id: req.params.id})
   questionnaire.save()
 
   res.status(200).json({

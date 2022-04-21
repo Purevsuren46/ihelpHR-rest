@@ -575,12 +575,13 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
         invoice_code: "IHELP_INVOICE",
         sender_invoice_no: "12345678",
         invoice_receiver_code: `${profile.phone}`,
-        invoice_description:`iHelp wallet charge ${profile.email}`,
+        invoice_description:`ihelp Wallet charge ${profile.phone}`,
         
         amount:req.body.amount,
         callback_url:`http://128.199.128.37/api/v1/profiles/callbacks/${req.params.id}`
       }
     }).then(async (response) => {
+      req.body.urls = response.data.urls
       req.body.qrImage = response.data.qr_image
       req.body.invoiceId = response.data.invoice_id
       const wallet = await Wallet.create(req.body)
@@ -603,8 +604,7 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
 
 exports.chargeWallet = asyncHandler(async (req, res, next) => {
   const profile = await Cv.findById(req.params.id);
-  const wallet = await Wallet.findById(profile.invoiceId)
-  const charge = req.query
+  const wallet = await Wallet.findById(profile.invoiceId);
 
   await axios({
     method: 'post',
@@ -633,7 +633,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
     }).then(response => {
       wallet.qrImage = null
       wallet.save()
-      profile.wallet += response.data.paid_amount
+      profile.point += response.data.paid_amount
       profile.save()
     })
     .catch(error => {
