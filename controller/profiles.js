@@ -577,8 +577,8 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
         invoice_receiver_code: `${profile.phone}`,
         invoice_description:`ihelp Wallet charge ${profile.phone}`,
         
-        amount:req.body.amount,
-        callback_url:`http://128.199.128.37/api/v1/profiles/callbacks/${req.params.id}`
+        amount: req.body.amount,
+        callback_url: `http://128.199.128.37/api/v1/profiles/callbacks/${req.params.id}`
       }
     }).then(async (response) => {
       req.body.urls = response.data.urls
@@ -631,6 +631,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
           }
       }
     }).then(response => {
+      console.log(response.data)
       wallet.qrImage = null
       wallet.save()
       profile.point += response.data.paid_amount
