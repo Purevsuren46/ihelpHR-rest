@@ -631,6 +631,8 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
           }
       }
     }).then(response => {
+      console.log(response.data)
+      console.log(typeof(response.data.paid_amount))
       wallet.qrImage = null
       wallet.save()
       profile.point += parseInt(response.data.paid_amount)
