@@ -3,6 +3,7 @@ const { protect, authorize } = require("../middleware/protect");
 
 const {
   getPosts,
+  getCvPosts,
   getBoostPosts,
   getUnboostPosts,
   getFollowingPosts,
@@ -23,6 +24,7 @@ router
   .route("/")
   .get(getPosts)
   .post(protect, createPost);
+router.route("/cv").get(protect, getCvPosts);
 router.route("/boosts").get(getBoostPosts);
 router.route("/unboosts").get(getUnboostPosts);
 router.route("/:id/following").get(protect, getFollowingPosts);
@@ -38,5 +40,6 @@ router
   .put(protect, authorize("admin", "operator"), updatePost);
 
 router.route("/:id/boost").put(protect, boostPost);
+
 
 module.exports = router;

@@ -21,6 +21,9 @@ const CvSchema = new mongoose.Schema({
   lastName: {
     type: String,
   },
+  occupation: {
+    type: String,
+  },
   profile: {
     type: String,
     default: "ihelp.jpg"
