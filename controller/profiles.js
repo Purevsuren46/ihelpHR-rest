@@ -624,18 +624,16 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
       },
       data: {
         object_type: "INVOICE",
-        object_id  : `${profile.invoiceId}`,
+        object_id  : `${wallet.invoiceId}`,
         offset     : {
             page_number: 1,
             page_limit : 100
           }
       }
     }).then(response => {
-      console.log(response.data)
-      console.log(typeof(response.data.paid_amount))
       wallet.qrImage = null
       wallet.save()
-      profile.point += parseInt(response.data.paid_amount)
+      profile.point += (response.data.paid_amount / 1000)
       profile.save()
     })
     .catch(error => {
