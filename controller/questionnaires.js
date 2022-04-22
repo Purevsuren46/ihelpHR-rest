@@ -216,3 +216,17 @@ exports.deleteAchievementQuestionnaire = asyncHandler(async (req, res, next) => 
     data: questionnaire,
   });
 });
+
+exports.getCvQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.params.id});
+// api/v1/jobs?category=61dfcc1792241041a49e811f&salary="2,100,000 - 2,500,000"&type="Бүтэн цагийн"
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});

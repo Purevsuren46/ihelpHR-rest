@@ -304,7 +304,7 @@ exports.createPost = asyncHandler(async (req, res, next) => {
 
   const articl = await Post.create(req.body);
   const cv = await Cv.findById(req.userId);
-  cv.post += 1
+  cv.postNumber += 1
   cv.save()
 
   

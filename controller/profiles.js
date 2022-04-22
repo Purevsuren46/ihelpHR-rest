@@ -635,6 +635,9 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
       wallet.save()
       profile.point += (response.data.paid_amount / 1000)
       profile.save()
+      res.status(200).json({
+        success: true,
+      });
     })
     .catch(error => {
       console.log(error.response.data);
@@ -645,10 +648,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
   });
 
 
-  res.status(200).json({
-    success: true,
-    data: profile
-  });
+
 });
 
 exports.followProfile = asyncHandler(async (req, res, next) => {

@@ -86,7 +86,7 @@ const CvSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  post: {
+  postNumber: {
     type: Number,
     default: 0,
   },
