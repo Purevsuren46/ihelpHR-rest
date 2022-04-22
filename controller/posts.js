@@ -22,7 +22,7 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Post);
 
-  const posts = await Post.find(req.query, select).populate({path: "createUser", select: "firstName lastName profile name"}).populate('sharePost')
+  const posts = await Post.find(req.query, select).populate({path: "createUser", select: "firstName lastName profile name"}).populate({path: 'sharePost', populate: {path: "createUser", select: "firstName lastName profile name"}})
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);

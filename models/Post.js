@@ -11,7 +11,6 @@ const PostSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
-    default: "ihelp.jpg"
   },
   location: {
       type: String,

@@ -5,6 +5,7 @@ const { protect, authorize } = require("../middleware/protect");
 const {
   getQuestionnaires,
   getQuestionnaire,
+  getCvQuestionnaire,
   createQuestionnaire,
   updateQuestionnaire,
   deleteQuestionnaire,
@@ -59,5 +60,7 @@ router
   .get(getQuestionnaire)
   .post(protect, updateQuestionnaire)
   .delete(protect, deleteQuestionnaire);
-
+router
+  .route("/:id/cv")
+  .get(getCvQuestionnaire)
 module.exports = router;
