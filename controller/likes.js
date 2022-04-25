@@ -81,6 +81,26 @@ exports.getCvJobLikes = asyncHandler(async (req, res, next) => {
 
 })
 
+exports.getJobLikes = asyncHandler(async (req, res, next) => {
+    req.query.createUser = req.params.id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 100;
+    const sort = req.query.sort;
+    const select = req.query.select;
+
+    ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+    // Pagination
+    const pagination = await paginate(page, limit, Like)
+
+    const like = await Like.find({createUser: req.params.id, job: {$ne: null}}).sort(sort).skip(pagination.start - 1).limit(limit).populate("job")
+    // const likes = like.map((item)=>item.job)
+    // const likes1 = likes.map(item=>item.toString())
+
+    res.status(200).json({ success: true, data: like, pagination, })
+
+})
+
 exports.getLike = asyncHandler( async (req, res, next) => {
     
         const like = await Like.findById(req.params.id).populate('books')
