@@ -630,11 +630,36 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
             page_limit : 100
           }
       }
-    }).then(response => {
+    }).then(response = async() => {
+      let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+      let messages = [];
+      if (!Expo.isExpoPushToken(profile.expoPushToken)) {
+          console.error(`Push token ${profile.expoPushToken} is not a valid Expo push token`);
+      }
+      messages.push({
+          to: profile.expoPushToken,
+          sound: 'default',
+          body: ` өөр данс цэнэглэгдлээ`,
+          data: { data: "bla" },
+        })
+      let chunks = expo.chunkPushNotifications(messages);
+      let tickets = [];
+      (async () => {
+          for (let chunk of chunks) {
+            try {
+              let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+              console.log(ticketChunk);
+              tickets.push(...ticketChunk);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        })();
+
       wallet.qrImage = null
       wallet.save()
-      profile.point += (response.data.paid_amount / 1000)
-      profile.save()
+      // profile.point += (response.data.paid_amount / 1000)
+      // profile.save()
       res.status(200).json({
         success: true,
       });

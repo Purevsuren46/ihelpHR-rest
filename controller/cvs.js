@@ -337,7 +337,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
       },
       data: {
         object_type: "INVOICE",
-        object_id  : `${profile.invoiceId}`,
+        object_id  : `${wallet.invoiceId}`,
         offset     : {
             page_number: 1,
             page_limit : 100
@@ -358,7 +358,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
           to: profile.expoPushToken,
           sound: 'default',
           body: `${(response.data.paid_amount / 1000)} өөр данс цэнэглэгдлээ`,
-          data: { notificationId: notification._id },
+          data: { data: "notification._id" },
         })
       let chunks = expo.chunkPushNotifications(messages);
       let tickets = [];
