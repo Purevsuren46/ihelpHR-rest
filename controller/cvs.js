@@ -291,7 +291,7 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
         invoice_description:`iHelp wallet charge ${profile.email}`,
         
         amount:req.body.amount,
-        callback_url:`http://128.199.128.37/api/v1/profiles/callbacks/${req.params.id}`
+        callback_url:`http://128.199.128.37/api/v1/cvs/callbacks/${req.params.id}`
       }
     }).then(async (response) => {
       req.body.qrImage = response.data.qr_image
@@ -351,11 +351,11 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
 
       let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
       let messages = [];
-      if (!Expo.isExpoPushToken(cv.expoPushToken)) {
-          console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
+      if (!Expo.isExpoPushToken(profile.expoPushToken)) {
+          console.error(`Push token ${profile.expoPushToken} is not a valid Expo push token`);
       }
       messages.push({
-          to: cv.expoPushToken,
+          to: profile.expoPushToken,
           sound: 'default',
           body: `${(response.data.paid_amount / 1000)} өөр данс цэнэглэгдлээ`,
           data: { notificationId: notification._id },
