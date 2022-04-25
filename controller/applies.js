@@ -5,6 +5,7 @@ const Notification = require('../models/Notification')
 const MyError = require("../utils/myError")
 const asyncHandler = require("express-async-handler")
 const paginate = require("../utils/paginate")
+const Expo = require("expo-server-sdk").Expo
 
 exports.getApplies = asyncHandler(async (req, res, next) => {
         const page = parseInt(req.query.page) || 1;
