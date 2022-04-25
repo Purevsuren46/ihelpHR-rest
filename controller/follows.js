@@ -100,11 +100,11 @@ exports.createFollow = asyncHandler(async (req, res, next) => {
     const cv1 = await Cv.findById(req.userId)
     let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
     let messages = [];
-    if (!Expo.isExpoPushToken(cv.token)) {
-        console.error(`Push token ${cv.token} is not a valid Expo push token`);
+    if (!Expo.isExpoPushToken(cv.expoPushToken)) {
+        console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
     }
     messages.push({
-        to: cv.token,
+        to: cv.expoPushToken,
         sound: 'default',
         body: `Таныг ${cv1.firstName} дагалаа`,
         data: { notificationId: notification._id },

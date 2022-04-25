@@ -140,11 +140,11 @@ exports.createLike = asyncHandler(async (req, res, next) => {
     const cv1 = await Cv.findById(req.userId)
     let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
     let messages = [];
-    if (!Expo.isExpoPushToken(cv.token)) {
-        console.error(`Push token ${cv.token} is not a valid Expo push token`);
+    if (!Expo.isExpoPushToken(cv.expoPushToken)) {
+        console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
     }
     messages.push({
-        to: cv.token,
+        to: cv.expoPushToken,
         sound: 'default',
         body: `Таны постон дээр ${cv1.firstName} лайк дарлаа`,
         data: { notificationId: notification._id, postId: req.params.id, data: "ProfileDetailScreen" },
@@ -191,11 +191,11 @@ exports.createJobLike = asyncHandler(async (req, res, next) => {
     const cv1 = await Cv.findById(req.userId)
     let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
     let messages = [];
-    if (!Expo.isExpoPushToken(cv.token)) {
-        console.error(`Push token ${cv.token} is not a valid Expo push token`);
+    if (!Expo.isExpoPushToken(cv.expoPushToken)) {
+        console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
     }
     messages.push({
-        to: cv.token,
+        to: cv.expoPushToken,
         sound: 'default',
         body: `Таны ажлын зарыг ${cv1.firstName} хадгаллаа`,
         data: { notificationId: notification._id },

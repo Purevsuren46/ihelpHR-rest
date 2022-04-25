@@ -47,8 +47,8 @@ exports.login = asyncHandler(async (req, res, next) => {
     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     httpOnly: true,
   };
-  if (req.body.token) {
-    cv.token = req.body.token
+  if (req.body.expoPushToken) {
+    cv.expoPushToken = req.body.expoPushToken
     cv.save()
   }
 
@@ -351,11 +351,11 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
 
       let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
       let messages = [];
-      if (!Expo.isExpoPushToken(cv.token)) {
-          console.error(`Push token ${cv.token} is not a valid Expo push token`);
+      if (!Expo.isExpoPushToken(cv.expoPushToken)) {
+          console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
       }
       messages.push({
-          to: cv.token,
+          to: cv.expoPushToken,
           sound: 'default',
           body: `${(response.data.paid_amount / 1000)} өөр данс цэнэглэгдлээ`,
           data: { notificationId: notification._id },
