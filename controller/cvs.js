@@ -291,7 +291,7 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
         invoice_description:`iHelp wallet charge ${profile.email}`,
         
         amount:req.body.amount,
-        callback_url:`http://128.199.128.37/api/v1/cvs/callbacks/${req.params.id}`
+        callback_url:`http://128.199.128.37/api/v1/profiles/callbacks/${req.params.id}`
       }
     }).then(async (response) => {
       req.body.qrImage = response.data.qr_image

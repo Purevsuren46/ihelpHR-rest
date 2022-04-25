@@ -578,7 +578,7 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
         invoice_description:`ihelp Wallet charge ${profile.phone}`,
         
         amount: req.body.amount,
-        callback_url: `http://128.199.128.37/api/v1/cvs/callbacks/${req.params.id}`
+        callback_url: `http://128.199.128.37/api/v1/profiles/callbacks/${req.params.id}`
       }
     }).then(async (response) => {
       req.body.urls = response.data.urls
