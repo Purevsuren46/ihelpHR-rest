@@ -291,7 +291,7 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
         invoice_description:`iHelp wallet charge ${profile.email}`,
         
         amount:req.body.amount,
-        callback_url:`http://128.199.128.37/api/v1/profiles/callbacks/${req.params.id}`
+        callback_url:`http://128.199.128.37/api/v1/cvs/callbacks/${req.params.id}`
       }
     }).then(async (response) => {
       req.body.qrImage = response.data.qr_image
@@ -346,8 +346,8 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
     }).then(response = async() => {
       wallet.qrImage = null
       wallet.save()
-      profile.point += (response.data.paid_amount / 1000)
-      profile.save()
+      // profile.point += (response.data.paid_amount / 1000)
+      // profile.save()
 
       let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
       let messages = [];
@@ -357,7 +357,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
       messages.push({
           to: profile.expoPushToken,
           sound: 'default',
-          body: `${(response.data.paid_amount / 1000)} өөр данс цэнэглэгдлээ`,
+          body: `Данс цэнэглэгдлээ`,
           data: { data: "notification._id" },
         })
       let chunks = expo.chunkPushNotifications(messages);
