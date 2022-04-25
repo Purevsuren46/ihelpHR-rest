@@ -76,7 +76,7 @@ exports.createApply = asyncHandler(async (req, res, next) => {
             to: cv.expoPushToken,
             sound: 'default',
             body: `Таны зар дээр ${cv1.firstName} анкет явууллаа`,
-            data: { notificationId: notification._id, рүм: req.params.id, data: "UserProfileScreen" },
+            data: { notificationId: notification._id, postId: req.params.id, data: "UserProfileScreen" },
           })
         let chunks = expo.chunkPushNotifications(messages);
         let tickets = [];

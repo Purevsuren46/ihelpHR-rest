@@ -344,10 +344,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
           }
       }
     }).then(response = async() => {
-      wallet.qrImage = null
-      wallet.save()
-      profile.point += (response.data.paid_amount / 1000)
-      profile.save()
+
 
       let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
       let messages = [];
@@ -373,6 +370,10 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
             }
           }
         })();
+        wallet.qrImage = null
+        wallet.save()
+        profile.point += (response.data.paid_amount / 1000)
+        profile.save()
     })
     .catch(error => {
       console.log(error.response.data);
