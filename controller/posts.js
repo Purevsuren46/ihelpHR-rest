@@ -309,42 +309,43 @@ exports.createPost = asyncHandler(async (req, res, next) => {
 
   
   // image upload
-  if (req.files != null) {
-    const article = await Post.findById(articl._id);
+  // if (req.files != null) {
+  //   const article = await Post.findById(articl._id);
 
-    if (!article) {
-      throw new MyError(req.params.id + " ID-тэй ном байхгүйээ.", 400);
-    }
-    const file = req.files.file;
-    if (!file.mimetype.startsWith("image")) {
-      throw new MyError("Та зураг upload хийнэ үү.", 400);
-    }
+  //   if (!article) {
+  //     throw new MyError(req.params.id + " ID-тэй ном байхгүйээ.", 400);
+  //   }
+  //   const file = req.files.file;
+  //   if (!file.mimetype.startsWith("image")) {
+  //     throw new MyError("Та зураг upload хийнэ үү.", 400);
+  //   }
   
-    if (file.size > process.env.MAX_UPLOAD_FILE_SIZE) {
-      throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
-    }
+  //   if (file.size > process.env.MAX_UPLOAD_FILE_SIZE) {
+  //     throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
+  //   }
   
-    file.name = `post_${req.userId}_${Date.now()}${path.parse(file.name).ext}`;
-  
-    
-    const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
-      article.photo = file.name;
-      article.save();
-  
-      res.status(200).json({
-        success: true,
-        article: article,
-        data: file.name,
-      });
-    
+  //   file.name = `post_${req.userId}_${Date.now()}${path.parse(file.name).ext}`;
   
     
-  } else {
-    res.status(200).json({
-      success: true,
-      article: articl,
-    });
-  }
+  //   const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
+  //     article.photo = file.name;
+  //     article.save();
+  
+  //     res.status(200).json({
+  //       success: true,
+  //       article: article,
+  //       data: file.name,
+  //     });
+    
+  
+    
+  // } else {
+
+  // }
+  res.status(200).json({
+    success: true,
+    article: articl,
+  });
 });
 
 // exports.createPost = asyncHandler(async (req, res, next) => {

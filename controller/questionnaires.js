@@ -222,25 +222,24 @@ exports.getCvQuestionnaire = asyncHandler(async (req, res, next) => {
   if (!questionnaire) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
   }
-  const link = "http://128.199.128.37/api/v1/jobs"
+  let link = "http://128.199.128.37/api/v1/jobs"
   if (questionnaire.category !== null) {
-    const link1 = link + `?category=${questionnaire.category}`
-    res.status(200).json({
-      success: true,
-      data: link1,
-    });
+     link += `?category=${questionnaire.category}`
   }
   if (questionnaire.salary !== null) {
-    link + `&salary=${questionnaire.salary}`
+    link += `&salary=${questionnaire.salary}`
   }
   if (questionnaire.type !== null) {
-    link + `&type=${questionnaire.type}`
+    link += `&type=${questionnaire.type}`
   }
   if (questionnaire.location !== null) {
-    link + `&location=${questionnaire.location}`
+    link += `&location=${questionnaire.location}`
   }
 // api/v1/jobs?category=61dfcc1792241041a49e811f&salary="2,100,000 - 2,500,000"&type="Бүтэн цагийн"
-
+res.status(200).json({
+  success: true,
+  data: link,
+});
 
 
 });

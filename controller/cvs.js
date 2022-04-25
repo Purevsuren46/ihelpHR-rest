@@ -1,4 +1,5 @@
 const Cv = require("../models/Cv");
+const Questionnaire = require("../models/Questionnaire");
 const Follow = require("../models/Follow");
 const Phone = require("../models/Phone");
 const Wallet = require("../models/Wallet");
@@ -448,6 +449,8 @@ exports.createCv = asyncHandler(async (req, res, next) => {
     req.body.createUser = posts._id;
     req.body.followUser = "625930ead03cd82424c99688";
 const follow = await Follow.create(req.body);
+req.body.createUser = posts._id;
+const questionnaire = await Questionnaire.create(req.body);
     res.status(200).json({
       success: true,
       data: posts,

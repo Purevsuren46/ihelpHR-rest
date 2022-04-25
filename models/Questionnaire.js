@@ -41,6 +41,7 @@ const QuestionnareSchema = new mongoose.Schema({
   },
   driverLicense: {
     type: Boolean,
+    default: false
   },
   working: {
     type: Boolean,

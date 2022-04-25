@@ -185,6 +185,19 @@ exports.getOccupationJobs = asyncHandler(async (req, res, next) => {
 });
 
 exports.getCvFilterJobs = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.params.id});
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+  }
+  if (questionnaire.category !== null) {
+    req.query.category = questionnaire.category
+ }
+ if (questionnaire.salary !== null) {
+   link += `&salary=${questionnaire.salary}`
+ }
+ if (questionnaire.location !== null) {
+   link += `&location=${questionnaire.location}`
+ }
   const cv = await Cv.findById(req.userId)
   const data = queryString.parse(cv.filter)
   req.query = data;
@@ -449,7 +462,7 @@ exports.createJob = asyncHandler(async (req, res, next) => {
         req.body.isSpecial = true
     }
   } 
-
+  profile.save()
 
 
   // if(profile.point < req.body.special + req.body.urgent + req.body.order) {
