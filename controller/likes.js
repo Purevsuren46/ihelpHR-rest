@@ -146,7 +146,7 @@ exports.createLike = asyncHandler(async (req, res, next) => {
     messages.push({
         to: cv.token,
         sound: 'default',
-        body: `Таний постон дээр ${cv1.firstName} лайк дарлаа`,
+        body: `Таны постон дээр ${cv1.firstName} лайк дарлаа`,
         data: { notificationId: notification._id, postId: req.params.id, data: "ProfileDetailScreen" },
       })
     let chunks = expo.chunkPushNotifications(messages);
@@ -197,7 +197,7 @@ exports.createJobLike = asyncHandler(async (req, res, next) => {
     messages.push({
         to: cv.token,
         sound: 'default',
-        body: `Таний ажлын зарыг ${cv1.firstName} хадгаллаа`,
+        body: `Таны ажлын зарыг ${cv1.firstName} хадгаллаа`,
         data: { notificationId: notification._id },
       })
     let chunks = expo.chunkPushNotifications(messages);
