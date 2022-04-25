@@ -1,9 +1,11 @@
 const Follow = require('../models/Follow')
 const Cv = require('../models/Cv')
 const Post = require('../models/Post')
+const Notification = require('../models/Notification')
 const MyError = require("../utils/myError")
 const asyncHandler = require("express-async-handler")
 const paginate = require("../utils/paginate")
+const Expo = require("expo-server-sdk").Expo
 
 exports.getFollows = asyncHandler(async (req, res, next) => {
         const page = parseInt(req.query.page) || 1;
@@ -94,6 +96,34 @@ exports.createFollow = asyncHandler(async (req, res, next) => {
     const cv = await Cv.findById(req.params.id)
     cv.notification += 1
     cv.save()
+
+    const cv1 = await Cv.findById(req.userId)
+    let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+    let messages = [];
+    if (!Expo.isExpoPushToken(cv.token)) {
+        console.error(`Push token ${cv.token} is not a valid Expo push token`);
+    }
+    messages.push({
+        to: cv.token,
+        sound: 'default',
+        body: `Таныг ${cv1.firstName} дагалаа`,
+        data: { notificationId: notification._id },
+      })
+    let chunks = expo.chunkPushNotifications(messages);
+    let tickets = [];
+    (async () => {
+        for (let chunk of chunks) {
+          try {
+            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+            console.log(ticketChunk);
+            tickets.push(...ticketChunk);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      })();
+
+    
     res.status(200).json({ success: true, data: follow, })
     } else {
         throw new MyError("Follow дарсан байна.", 400)

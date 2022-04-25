@@ -136,6 +136,9 @@ const CvSchema = new mongoose.Schema({
   register: {
     type: String,
   },
+  token: {
+    type: String,
+  },
   isEmployee: {
     type: Boolean,
     default: false,

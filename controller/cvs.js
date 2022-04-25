@@ -15,6 +15,7 @@ const sharp = require("sharp");
 const axios = require("axios");
 const fs = require("fs");
 const mongoose = require('mongoose');
+const Expo = require("expo-server-sdk").Expo
 
 
 // логин хийнэ
@@ -46,6 +47,10 @@ exports.login = asyncHandler(async (req, res, next) => {
     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     httpOnly: true,
   };
+  if (req.body.token) {
+    cv.token = req.body.token
+    cv.save()
+  }
 
   res.status(200).cookie("amazon-token", token, cookieOption).json({
     success: true,
@@ -338,11 +343,36 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
             page_limit : 100
           }
       }
-    }).then(response => {
+    }).then(response = async() => {
       wallet.qrImage = null
       wallet.save()
-      profile.wallet += response.data.paid_amount
+      profile.point += (response.data.paid_amount / 1000)
       profile.save()
+
+      let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+      let messages = [];
+      if (!Expo.isExpoPushToken(cv.token)) {
+          console.error(`Push token ${cv.token} is not a valid Expo push token`);
+      }
+      messages.push({
+          to: cv.token,
+          sound: 'default',
+          body: `${(response.data.paid_amount / 1000)} өөр данс цэнэглэгдлээ`,
+          data: { notificationId: notification._id },
+        })
+      let chunks = expo.chunkPushNotifications(messages);
+      let tickets = [];
+      (async () => {
+          for (let chunk of chunks) {
+            try {
+              let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+              console.log(ticketChunk);
+              tickets.push(...ticketChunk);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        })();
     })
     .catch(error => {
       console.log(error.response.data);

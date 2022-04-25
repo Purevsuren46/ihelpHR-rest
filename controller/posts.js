@@ -209,41 +209,41 @@ exports.getPost = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.likePost = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.params.id);
-  const cv = await Cv.findById(req.userId);
+// exports.likePost = asyncHandler(async (req, res, next) => {
+//   const post = await Post.findById(req.params.id);
+//   const cv = await Cv.findById(req.userId);
 
-  if (!post) {
-    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
-  }
-  cv.likePost.addToSet(req.params.id);
-  post.like.addToSet(req.userId);
-  cv.save()
-  post.save()
+//   if (!post) {
+//     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+//   }
+//   cv.likePost.addToSet(req.params.id);
+//   post.like.addToSet(req.userId);
+//   cv.save()
+//   post.save()
 
-  res.status(200).json({
-    success: true,
-    data: cv
-  });
-});
+//   res.status(200).json({
+//     success: true,
+//     data: cv
+//   });
+// });
 
-exports.unlikePost = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.params.id);
-  const cv = await Cv.findById(req.userId);
+// exports.unlikePost = asyncHandler(async (req, res, next) => {
+//   const post = await Post.findById(req.params.id);
+//   const cv = await Cv.findById(req.userId);
 
-  if (!post) {
-    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
-  }
-  cv.likePost.remove(req.params.id);
-  post.like.remove(req.userId);
-  cv.save()
-  post.save()
+//   if (!post) {
+//     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
+//   }
+//   cv.likePost.remove(req.params.id);
+//   post.like.remove(req.userId);
+//   cv.save()
+//   post.save()
 
-  res.status(200).json({
-    success: true,
-    data: cv
-  });
-});
+//   res.status(200).json({
+//     success: true,
+//     data: cv
+//   });
+// });
 
 exports.boostPost = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.id);

@@ -37,7 +37,7 @@ return this.getNotifications(req, res, next);
 });
       
 exports.getNotification = asyncHandler(async (req, res, next) => {
-const notification = await Notification.findById(req.params.id);
+const notification = await Notification.findById(req.params.id).populate("for like share comment who");
 const cv = await Cv.findById(req.userId)
 
 if (!notification) {
