@@ -343,7 +343,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
             page_limit : 100
           }
       }
-    }).then(response = async() => {
+    }).then(response = async(response) => {
 
 
       let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
@@ -354,7 +354,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
       messages.push({
           to: profile.expoPushToken,
           sound: 'default',
-          body: `Данс цэнэглэгдлээ`,
+          body: `${(response.data.paid_amount / 1000)} Point-оор цэнэглэгдлээ`,
           data: { data: "notification._id" },
         })
       let chunks = expo.chunkPushNotifications(messages);
@@ -363,7 +363,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
           for (let chunk of chunks) {
             try {
               let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-              console.log(ticketChunk);
+              // console.log(ticketChunk);
               tickets.push(...ticketChunk);
             } catch (error) {
               console.error(error);
