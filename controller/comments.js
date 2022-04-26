@@ -85,7 +85,7 @@ exports.createComment = asyncHandler(async (req, res, next) => {
             to: cv.expoPushToken,
             sound: 'default',
             body: `Таний постон дээр ${cv1.firstName} коммент бичлээ`,
-            data: { notificationId: notification._id },
+            data: { notificationId: notification._id, data1: "NetworkingStack" },
           })
         let chunks = expo.chunkPushNotifications(messages);
         let tickets = [];

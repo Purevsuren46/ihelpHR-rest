@@ -147,7 +147,7 @@ exports.createLike = asyncHandler(async (req, res, next) => {
         to: cv.expoPushToken,
         sound: 'default',
         body: `Таны постон дээр ${cv1.firstName} лайк дарлаа`,
-        data: { notificationId: notification._id, postId: req.params.id, data: "PostDetailScreen" },
+        data: { notificationId: notification._id, postId: req.params.id, data: "PostDetailScreen", data1: "NetworkingStack" },
       })
     let chunks = expo.chunkPushNotifications(messages);
     let tickets = [];

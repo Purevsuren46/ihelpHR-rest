@@ -107,7 +107,7 @@ exports.createFollow = asyncHandler(async (req, res, next) => {
         to: cv.expoPushToken,
         sound: 'default',
         body: `Таныг ${cv1.firstName} дагалаа`,
-        data: { notificationId: notification._id },
+        data: { notificationId: notification._id, data1: "NetworkingStack" },
       })
     let chunks = expo.chunkPushNotifications(messages);
     let tickets = [];

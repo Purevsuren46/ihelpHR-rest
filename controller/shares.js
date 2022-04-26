@@ -135,7 +135,7 @@ exports.createShare = asyncHandler(async (req, res, next) => {
             to: cv.expoPushToken,
             sound: 'default',
             body: `Таны постыг ${cv1.firstName} хуваалцлаа`,
-            data: { notificationId: notification._id },
+            data: { notificationId: notification._id, data1: "NetworkingStack" },
           })
         let chunks = expo.chunkPushNotifications(messages);
         let tickets = [];
