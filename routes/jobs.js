@@ -8,6 +8,7 @@ const {
   getSpecialJobs,
   getUnspecialJobs,
   getUrgentJobs,
+  getProfileJobs,
   getCvFilterJobs,
   specialJob,
   urgentJob,
@@ -46,5 +47,6 @@ router.route("/:id/apply").get(protect, applyJob);
 router.route("/:id/eval").put(protect, evalCand);
 router.route("/:id/special").put(protect, specialJob);
 router.route("/:id/urgent").put(protect, urgentJob);
+router.route("/profile").get(protect, getProfileJobs);
 
 module.exports = router;

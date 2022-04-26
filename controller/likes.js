@@ -57,7 +57,7 @@ exports.getCvLikes = asyncHandler(async (req, res, next) => {
     // Pagination
     const pagination = await paginate(page, limit, Like)
 
-    const likes = await Like.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
+    const likes = await Like.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate("post share").populate({path: "post", populate: {path: "createUser", select: "lastName firstName profile"}}).populate({path: "share", populate: {path: "createUser", select: "lastName firstName profile"}})
 
     res.status(200).json({ success: true, data: likes, pagination, })
 
