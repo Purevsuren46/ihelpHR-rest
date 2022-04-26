@@ -300,8 +300,10 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.createPost = asyncHandler(async (req, res, next) => {
+  if (!req.body) {
+    throw new MyError("Body хоосон байж болохгүй", 400);
+  }
   req.body.createUser = req.userId;
-
   const articl = await Post.create(req.body);
   const cv = await Cv.findById(req.userId);
   cv.postNumber += 1
