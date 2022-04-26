@@ -5,6 +5,7 @@ const asyncHandler = require("express-async-handler");
 const paginate = require("../utils/paginate");
 const Profile = require("../models/Profile");
 const Occupation = require("../models/Occupation");
+const Questionnaire = require("../models/Questionnaire");
 const Cv = require("../models/Cv");
 const queryString = require('query-string');
 
@@ -185,22 +186,27 @@ exports.getOccupationJobs = asyncHandler(async (req, res, next) => {
 });
 
 exports.getCvFilterJobs = asyncHandler(async (req, res, next) => {
-  const questionnaire = await Questionnaire.findOne({createUser: req.params.id});
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
   if (!questionnaire) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
   }
   if (questionnaire.category !== null) {
-    req.query.category = questionnaire.category
- }
- if (questionnaire.salary !== null) {
-   link += `&salary=${questionnaire.salary}`
- }
- if (questionnaire.location !== null) {
-   link += `&location=${questionnaire.location}`
- }
-  const cv = await Cv.findById(req.userId)
-  const data = queryString.parse(cv.filter)
-  req.query = data;
+    const occupation = await Occupation.find({category: questionnaire.category})
+    const occu = []
+    for (let i = 0; i < (occupation.length); i++ ) {
+      occu.push(occupation[i]._id)
+    }
+    req.query.occupation = occu
+  }
+  if (questionnaire.salary !== null) {
+    const salary = ["400,000 - 600,000", "600,000 - 800,000", "800,000 - 1,000,000", "1,000,000 - 1,200,000", "1,200,000 - 1,500,000", "1,500,000 - 1,800,000", "1,800,000 - 2,100,000", "2,100,000 - 2,500,000", "2,500,000 - 3,000,000", "3,000,000 - 4,000,000", "4,000,000 - 5,000,000", "5,000,000 -аас дээш"]
+    const index = salary.indexOf(questionnaire.salary)
+    const sala = []
+    for (let i = index; i < (salary.length); i++ ) {
+      sala.push(salary[i])
+    }
+    req.query.salary = sala
+  }
   return this.getJobs(req, res, next);
 });
 

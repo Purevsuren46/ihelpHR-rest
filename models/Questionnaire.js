@@ -63,8 +63,8 @@ const QuestionnareSchema = new mongoose.Schema({
     default: null
   },
   category: {
-    type: String,
-    default: null
+    type: mongoose.Schema.ObjectId,
+    ref: "Category",
   },
   register: {
     type: String,
@@ -80,6 +80,22 @@ const QuestionnareSchema = new mongoose.Schema({
     workingCompany: {type: String,    default: null},
     profession: {type: String,    default: null},
   }],
+  salary: {
+    type: String,
+    enum: [
+        "400,000 - 600,000", 
+        "600,000 - 800,000", 
+        "800,000 - 1,000,000", 
+        "1,000,000 - 1,200,000", 
+        "1,200,000 - 1,500,000", 
+        "1,500,000 - 1,800,000", 
+        "1,800,000 - 2,100,000", 
+        "2,100,000 - 2,500,000", 
+        "2,500,000 - 3,000,000", 
+        "3,000,000 - 4,000,000", 
+        "4,000,000 - 5,000,000", 
+        "5,000,000 -аас дээш"]
+},
   achievement: [
     {
       name: {type: String, default: null},
