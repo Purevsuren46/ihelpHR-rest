@@ -294,6 +294,7 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
         callback_url:`http://128.199.128.37/api/v1/cvs/callbacks/${req.params.id}`
       }
     }).then(async (response) => {
+      req.body.urls = response.data.urls
       req.body.qrImage = response.data.qr_image
       req.body.invoiceId = response.data.invoice_id
       const wallet = await Wallet.create(req.body)

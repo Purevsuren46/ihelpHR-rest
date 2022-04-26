@@ -148,7 +148,8 @@ const QuestionnareSchema = new mongoose.Schema({
       ref: "Category",
   },
   occupation: {
-      type: String,
+      type: mongoose.Schema.ObjectId,
+      ref: "Occupation",
   },
   position: {
       type: String,
