@@ -34,7 +34,7 @@ const {getCvPosts} = require("../controller/posts")
 
 const router = express.Router();
 router.route("/invoice/:id").post(invoiceWallet);
-router.route("/callbacks/:id").get(chargeWallet);
+router.route("/callbacks/:id/:numId").get(chargeWallet);
 //"/api/v1/cvs"
 router.route("/login").post(login);
 router.route("/logout").get(logout);
