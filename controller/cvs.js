@@ -346,7 +346,6 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
       }
     }).then(response = async(response) => {
 
-
       let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
       let messages = [];
       if (!Expo.isExpoPushToken(profile.expoPushToken)) {
@@ -371,6 +370,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
             }
           }
         })();
+        console.log(response.data)
         wallet.qrImage = null
         wallet.save()
         profile.point += (response.data.paid_amount / 1000)
