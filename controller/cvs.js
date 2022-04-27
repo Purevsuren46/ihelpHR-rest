@@ -319,6 +319,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
   const profile = await Cv.findById(req.params.id);
   const wallet = await Wallet.findById(profile.invoiceId)
   const charge = req.query
+  console.log(charge.qpay_payment_id)
 
   await axios({
     method: 'post',
@@ -328,24 +329,23 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
     },
 
   }).then(response => {
-    const token = response.data.refresh_token;
+    const token = response.data.access_token;
 
     axios({
-      method: 'post',
-      url: 'https://merchant.qpay.mn/v2/payment/check',
+      method: 'get',
+      url: `https://merchant.qpay.mn/v2/invoice/${wallet.invoiceId}`,
       headers: {
         Authorization: `Bearer ${token}`
       },
-      data: {
-        object_type: "INVOICE",
-        object_id  : `${wallet.invoiceId}`,
-        offset     : {
-            page_number: 1,
-            page_limit : 100
-          }
-      }
+      // data: {
+      //   object_type: "INVOICE",
+      //   object_id  : `${wallet.invoiceId}`,
+      //   offset     : {
+      //       page_number: 1,
+      //       page_limit : 100
+      //     }
+      // }
     }).then(response = async(response) => {
-      console.log(response.data)
       let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
       let messages = [];
       if (!Expo.isExpoPushToken(profile.expoPushToken)) {
@@ -354,7 +354,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
       messages.push({
           to: profile.expoPushToken,
           sound: 'default',
-          body: `${(response.data.paid_amount / 1000)} Point-оор цэнэглэгдлээ`,
+          body: `${(parseInt(response.data.payments[0].payment_amount) / 1000)} Point-оор цэнэглэгдлээ`,
           data: { data: "notification._id" },
         })
       let chunks = expo.chunkPushNotifications(messages);
@@ -370,11 +370,10 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
             }
           }
         })();
-        console.log(response.data)
         wallet.qrImage = null
         wallet.save()
-        // profile.point += (response.data.paid_amount / 1000)
-        // profile.save()
+        profile.point += (parseInt(response.data.payments[0].payment_amount) / 1000)
+        profile.save()
     })
     .catch(error => {
       console.log(error.response.data);
