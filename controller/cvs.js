@@ -345,7 +345,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
           }
       }
     }).then(response = async(response) => {
-
+      console.log(response)
       let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
       let messages = [];
       if (!Expo.isExpoPushToken(profile.expoPushToken)) {
