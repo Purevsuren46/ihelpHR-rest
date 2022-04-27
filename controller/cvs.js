@@ -328,7 +328,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
     },
 
   }).then(response => {
-    const token = response.data.access_token;
+    const token = response.data.refresh_token;
 
     axios({
       method: 'post',
@@ -345,7 +345,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
           }
       }
     }).then(response = async(response) => {
-      console.log(response)
+      console.log(response.data)
       let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
       let messages = [];
       if (!Expo.isExpoPushToken(profile.expoPushToken)) {
