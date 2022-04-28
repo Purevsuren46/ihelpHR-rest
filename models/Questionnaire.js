@@ -62,10 +62,6 @@ const QuestionnareSchema = new mongoose.Schema({
     type: String,
     default: null
   },
-  category: {
-    type: mongoose.Schema.ObjectId,
-    ref: "Category",
-  },
   register: {
     type: String,
     default: null

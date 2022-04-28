@@ -494,17 +494,18 @@ exports.createCv = asyncHandler(async (req, res, next) => {
   } else {
     req.body.phone = random.phone
     req.body.wallet = 0,
-    req.body.point = 0
+    req.body.point = 0,
+    req.body.role = "user"
     const posts = await Cv.create(req.body);
     const rando = await Phone.deleteOne({random: req.body.random})
 
-    const post = await Cv.findById("625930ead03cd82424c99688")
+    const post = await Cv.findById("6268f4795c8249342cd4ed22")
     post.follower += 1
     post.save()
     posts.following += 1
     posts.save()
     req.body.createUser = posts._id;
-    req.body.followUser = "625930ead03cd82424c99688";
+    req.body.followUser = "6268f4795c8249342cd4ed22";
 const follow = await Follow.create(req.body);
 req.body.createUser = posts._id;
 const questionnaire = await Questionnaire.create(req.body);
