@@ -26,6 +26,26 @@ const JobSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  gender: {
+    type: String,
+    enum: ["эр", "эм", "хоёул"],
+  },
+  age: {
+    type: String,
+    enum: ["18-25", "26-30", "31-36", "37-45", "45+", "хамаагүй"]
+  },
+  experience: {
+    type: String,
+    enum: ["0-1", "1-3", "3-5", "5-10", "10+", "хамаагүй"]
+  },
+  education: {
+    type: String,
+    enum: ["Бүрэн дунд", "Бакалавр", "Магистр", "Доктор"]
+  },
+  percent: {
+    type: Number,
+    default: 0,
+  },
   salary: {
       type: String,
       enum: [
@@ -43,14 +63,13 @@ const JobSchema = new mongoose.Schema({
           "5,000,000 -аас дээш"]
   },
   type: {
-      type: String,
-      enum: ["Бүтэн цагийн", "Цагийн", "Ээлжийн", "Улирлаар", "Гэрээт/Зөвлөх"],
-      default: "Бүтэн цагийн"
+    type: String,
+    enum: ['Бүтэн цаг', 'Хагас цаг', 'freelancer', 'self-employed', 'contract', 'intern', 'apprentice', 'seasonal' ]
   },
   level: {
     type: String,
     enum: ["Мэргэжилтэн", "Дадлага", "Мэргэжил хамаарахгүй", "Дунд шатны удирдлага", "Дээд шатны удирдлага"],
-},
+  },
   occupation: {
     type: mongoose.Schema.ObjectId,
     ref: 'Occupation',

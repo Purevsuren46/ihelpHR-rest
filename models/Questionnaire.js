@@ -66,6 +66,10 @@ const QuestionnareSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  level: {
+    type: String,
+    enum: ["Мэргэжилтэн", "Дадлага", "Мэргэжил хамаарахгүй", "Дунд шатны удирдлага", "Дээд шатны удирдлага"],
+  },
   family: [{
     who: {type: String, default: null},
     firstName: {type: String,    default: null},
@@ -199,6 +203,14 @@ const QuestionnareSchema = new mongoose.Schema({
   default: null
   },
   }],
+  education: {
+    type: String,
+    enum: ["Бүрэн дунд", "Бакалавр", "Магистр", "Доктор"]
+  },
+  experiences: {
+    type: Number,
+    default: 0
+  },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {

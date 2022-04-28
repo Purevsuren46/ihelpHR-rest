@@ -137,7 +137,69 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
   .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit)
-    
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+  const age = Math.floor(Math.abs(new Date(Date.now()) - questionnaire.birth) / 1000 / 60 / 60 / 24 / 365)
+  const percent = 10
+  const gender = questionnaire.gender
+  const education = questionnaire.education
+  const experience = questionnaire.experiences
+  const occupation = questionnaire.occupation
+  const level = questionnaire.level
+  const type = questionnaire.type
+  for (let i = 0; i < jobs.length; i++) {
+    if (jobs[i].age == "18-25" && age >= 18 && age <= 25) {
+      jobs[i].percent += percent
+    } else if (jobs[i].age == "26-30" && age >= 26 && age <= 30) {
+      jobs[i].percent += percent
+    } else if (jobs[i].age == "31-36" && age >= 31 && age <= 36) {
+      jobs[i].percent += percent
+    } else if (jobs[i].age == "37-45" && age >= 37 && age <= 45) {
+      jobs[i].percent += percent
+    } else if (jobs[i].age == "45+" && age >= 45) {
+      jobs[i].percent += percent
+    } else if (jobs[i].age == "хамаагүй") {
+      jobs[i].percent += percent
+    }
+
+    if (jobs[i].gender == "хоёул") {
+      jobs[i].percent += percent
+    } else if (jobs[i].gender == gender) {
+      jobs[i].percent += percent
+    } 
+
+    if (jobs[i].education == education) {
+      jobs[i].percent += percent
+    }
+
+    if (jobs[i].experience == "0-1" && experience >= 0 && experience <= 1) {
+      jobs[i].percent += percent
+    } else if (jobs[i].experience == "1-3" && experience > 1 && experience <= 3) {
+      jobs[i].percent += percent
+    } else if (jobs[i].experience == "3-5" && experience > 3 && experience <= 5) {
+      jobs[i].percent += percent
+    } else if (jobs[i].experience == "5-10" && experience > 5 && experience <= 10) {
+      jobs[i].percent += percent
+    } else if (jobs[i].experience == "10+" && experience > 10) {
+      jobs[i].percent += percent
+    } else if (jobs[i].experience == "хамаагүй") {
+      jobs[i].percent += percent
+    }
+
+    if (jobs[i].occupation == occupation) {
+      jobs[i].percent += percent
+    }
+
+    if (jobs[i].level == level) {
+      jobs[i].percent += percent
+    }
+    if (jobs[i].type == type) {
+      jobs[i].percent += percent
+    }
+    if (jobs[i].salary == questionnaire.salary) {
+      jobs[i].percent += percent
+    }
+
+  }
 
   res.status(200).json({
     success: true,
@@ -468,7 +530,6 @@ exports.createJob = asyncHandler(async (req, res, next) => {
         req.body.isSpecial = true
     }
   } 
-  profile.save()
 
 
   // if(profile.point < req.body.special + req.body.urgent + req.body.order) {

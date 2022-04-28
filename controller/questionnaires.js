@@ -55,7 +55,14 @@ exports.createQuestionnaire = asyncHandler(async (req, res, next) => {
       data: questionnaire,
     });
   } else {
-    throw new MyError(" Хэрэглэгч анкет бүртгүүлсэн байна", 400);
+    const quest = await Questionnaire.findOneAndUpdate({createUser: req.userId}, req.body, {
+      new: true,
+      runValidators: true,
+    })
+    res.status(200).json({
+      success: true,
+      data: quest,
+    });
   }
 
 });
