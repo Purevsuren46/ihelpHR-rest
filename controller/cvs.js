@@ -706,8 +706,8 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
   if (!cv) {
     throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
   }
-  if (cv.profile != "ihelp.jpg" ) {
-    fs.unlinkSync(`${process.env.FILE_UPLOAD_PATH}/${cv.profile}`)
+  if (cv.profile == "ihelp.jpg" ) {
+    
     const file = req.files.file;
 
   if (!file.mimetype.startsWith("image")) {
@@ -731,6 +731,7 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
     });
   
   } else {
+    fs.unlinkSync(`${process.env.FILE_UPLOAD_PATH}/${cv.profile}`)
     const file = req.files.file;
   if (!file.mimetype.startsWith("image")) {
     throw new MyError("Та зураг upload хийнэ үү.", 400);
@@ -766,8 +767,8 @@ exports.uploadCvCover = asyncHandler(async (req, res, next) => {
   if (!cv) {
     throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
   }
-  if (cv.cover != "cover.jpg" ) {
-    fs.unlinkSync(`${process.env.FILE_UPLOAD_PATH}/${cv.cover}`)
+  if (cv.cover == "cover.jpg" ) {
+    
      // image upload
   const file = req.files.file;
   if (!file.mimetype.startsWith("image")) {
@@ -790,6 +791,7 @@ exports.uploadCvCover = asyncHandler(async (req, res, next) => {
       data: file.name,
     });
   } else {
+    fs.unlinkSync(`${process.env.FILE_UPLOAD_PATH}/${cv.cover}`)
      // image upload
   const file = req.files.file;
   if (!file.mimetype.startsWith("image")) {
