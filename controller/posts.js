@@ -101,15 +101,15 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   const select = req.query.select;
 
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
-
-  // Pagination
-  const pagination = await paginate(page, limit, Follow)
-
-  const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1)
+  const follows = await Follow.find(req.query, select).sort(sort).limit(1000)
 
   const user = follows.map((item)=>item.followUser)
   user.push(req.params.id)
-  const post = await Post.find({createUser: {$in: user } }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile'}})
+  // Pagination
+  const pagination = await paginate(page, limit, Post.find({createUser: user  }))
+
+
+  const post = await Post.find({createUser: user  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile'}})
 
   const boost = await Post.find({isBoost: true}).sort({"createdAt": -1})
   if (boost[page - 1] != null) {
@@ -169,11 +169,6 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
     }
 
   }
-
-  
-
-  
-
   res.status(200).json({ success: true, data: post, pagination, })
 });
 
