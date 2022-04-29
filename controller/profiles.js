@@ -335,24 +335,36 @@ exports.specialEmployerProfile = asyncHandler(async (req, res, next) => {
     date.setDate(date.getDate() + days);
     return date;
   };
-
-  if(profile.point < req.body.employerSpecial) {
-    throw new MyError(" Point оноо хүрэхгүй байна", 400);
-  } else {
-    if(profile.employerSpecial < Date.now() ) {
+  
+  if (req.body.employerSpecial != undefined) {
+    if (profile.point < req.body.employerSpecial) {
+      throw new MyError(" Point оноо хүрэхгүй байна", 400);
+    } else if (req.body.employerSpecial == 30) {
+      console.log(req.body.employerSpecial == 30)
         const date = new Date()
-        profile.point -= req.body.employerSpecial
-        profile.employerSpecial = date.addDays(req.body.employerSpecial) 
-        profile.isEmployerSpecial = true
-    } else {
-        let date = profile.employerSpecial
-        profile.point -= req.body.employerSpecial
+        profile.point -= 100
         profile.employerSpecial = date.addDays(req.body.employerSpecial)
         profile.isEmployerSpecial = true
-    }
-  }
+    } else if (req.body.employerSpecial == 90) {
+      const date = new Date()
+      profile.point -= 250
+      profile.employerSpecial = date.addDays(req.body.employerSpecial)
+      profile.isEmployerSpecial = true
+    } else if (req.body.employerSpecial == 180) {
+      const date = new Date()
+      profile.point -= 400
+      profile.employerSpecial = date.addDays(req.body.employerSpecial)
+      profile.isEmployerSpecial = true
+    } else if (req.body.employerSpecial == 365) {
+      const date = new Date()
+      profile.point -= 600
+      profile.employerSpecial = date.addDays(req.body.employerSpecial)
+      profile.isEmployerSpecial = true
+    } 
+    } 
+
   profile.save()
-  const expire = setTimeout(() => {profile.isEmployerSpecial = false, profile.save()}, Math.abs(Number(profile.employerSpecial) - Date.now()))
+  // const expire = setTimeout(() => {profile.isEmployerSpecial = false, profile.save()}, Math.abs(Number(profile.employerSpecial) - Date.now()))
 
   
 
@@ -394,7 +406,34 @@ exports.specialEmployeeProfile = asyncHandler(async (req, res, next) => {
         profile.isEmployeeSpecial = true
     }
   }
-  const expire = setTimeout(() => {profile.isEmployeeSpecial = false, profile.save()}, Math.abs(Number(profile.employeeSpecial) - Date.now()))
+
+  if (req.body.employeeSpecial != undefined) {
+    if (profile.point < req.body.employeeSpecial) {
+      throw new MyError(" Point оноо хүрэхгүй байна", 400);
+    } else if (req.body.employeeSpecial == 30) {
+      console.log(req.body.employeeSpecial == 30)
+        const date = new Date()
+        profile.point -= 100
+        profile.employeeSpecial = date.addDays(req.body.employeeSpecial)
+        profile.isEmployeeSpecial = true
+    } else if (req.body.employeeSpecial == 90) {
+      const date = new Date()
+      profile.point -= 250
+      profile.employeeSpecial = date.addDays(req.body.employeeSpecial)
+      profile.isEmployeeSpecial = true
+    } else if (req.body.employeeSpecial == 180) {
+      const date = new Date()
+      profile.point -= 400
+      profile.employeeSpecial = date.addDays(req.body.employeeSpecial)
+      profile.isEmployeeSpecial = true
+    } else if (req.body.employeeSpecial == 365) {
+      const date = new Date()
+      profile.point -= 600
+      profile.employeeSpecial = date.addDays(req.body.employeeSpecial)
+      profile.isEmployeeSpecial = true
+    } 
+    } 
+  // const expire = setTimeout(() => {profile.isEmployeeSpecial = false, profile.save()}, Math.abs(Number(profile.employeeSpecial) - Date.now()))
 
   profile.save()
 

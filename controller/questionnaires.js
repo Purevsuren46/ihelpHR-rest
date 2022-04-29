@@ -68,6 +68,16 @@ exports.createQuestionnaire = asyncHandler(async (req, res, next) => {
       cv.profession = quest.profession
       cv.save()
     }
+    if(quest.firstName != null) {
+      const cv = await Cv.findById(req.userId);
+      cv.firstName = quest.firstName
+      cv.save()
+    }
+    if(quest.lastName != null) {
+      const cv = await Cv.findById(req.userId);
+      cv.lastName = quest.lastName
+      cv.save()
+    }
     res.status(200).json({
       success: true,
       data: quest,
