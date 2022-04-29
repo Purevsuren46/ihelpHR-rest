@@ -84,7 +84,7 @@ router.route("/cvlist").put(cvList);
 
 router
   .route("/:id")
-  .get(getProfile)
+  .get(protect, getProfile)
   .put( updateProfile)
   .delete(authorize("admin"), deleteProfile);
 

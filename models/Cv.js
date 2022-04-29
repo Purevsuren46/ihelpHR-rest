@@ -110,6 +110,10 @@ const CvSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isFollowing: {
+    type: Boolean,
+    default: false,
+  },
   employeeSpecial: {
     type: Date,
     default: Date.now,
