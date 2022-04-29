@@ -502,10 +502,14 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   if (req.body.order != undefined) {
     if (profile.point < req.body.order) {
       throw new MyError(" Point оноо хүрэхгүй байна", 400);
-    } else {
+    } else if (req.body.order == 30) {
         const date = new Date()
-        profile.point -= req.body.order
-        req.body.order = date.addDays(req.body.order)
+        profile.point -= 10
+        req.body.order = date.addDays(30)
+    } else {
+      const date = new Date()
+      profile.point -= req.body.order
+      req.body.order = date.addDays(req.body.order)
     }
   } 
 
@@ -523,13 +527,23 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   if (req.body.special != undefined) {
     if (profile.point < req.body.special) {
       throw new MyError(" Point оноо хүрэхгүй байна", 400);
-    } else {
+    } else if (req.body.special == 7) {
         const date = new Date()
-        profile.point -= req.body.special
+        profile.point -= 20
         req.body.special = date.addDays(req.body.special)
         req.body.isSpecial = true
-    }
-  } 
+    } else if (req.body.special == 14) {
+      const date = new Date()
+      profile.point -= 30
+      req.body.special = date.addDays(req.body.special)
+      req.body.isSpecial = true
+    } else if (req.body.special == 30) {
+      const date = new Date()
+      profile.point -= 40
+      req.body.special = date.addDays(req.body.special)
+      req.body.isSpecial = true
+    } 
+    } 
 
 
   // if(profile.point < req.body.special + req.body.urgent + req.body.order) {

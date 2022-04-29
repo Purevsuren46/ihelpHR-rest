@@ -130,6 +130,10 @@ const CvSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  profession: {
+    type: String,
+    default: null
+  },
   questionnaire: {
     type: mongoose.Schema.ObjectId,
     ref: "Questionnaire",
@@ -164,6 +168,27 @@ CvSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt(10);
 
   this.password = await bcrypt.hash(this.password, salt);
+});
+
+CvSchema.pre("remove", async function (next) {
+  await this.model('Post').deleteMany({createUser: this._id})
+  const following = await this.model('Follow').find({createUser: this._id})
+  const followList = []
+  for (let i = 0; i < following.length; i++ ) {
+    followList.push(following[i].followUser)
+  }
+  const follow = await this.model('Cv').find({_id: followList})
+  for (let i = 0; i < follow.length; i++ ) {
+    follow[i].follower -= 1
+    follow[i].save()
+  }
+
+  await this.model('Follow').deleteMany({createUser: this._id})
+  await this.model('Job').deleteMany({createUser: this._id})
+  await this.model('Notification').deleteMany({for: this._id})
+  await this.model('Comment').deleteMany({createUser: this._id})
+  await this.model('Wallet').deleteMany({createUser: this._id})
+  next()
 });
 
 CvSchema.methods.getJsonWebToken = function () {
