@@ -88,7 +88,7 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
   const profile = await Cv.findById(req.params.id).populate({
     path: 'job',
     populate: { path: 'occupation', select: 'name' }
-  });
+  }).populate("category");
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
