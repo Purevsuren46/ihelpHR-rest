@@ -212,7 +212,29 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
 exports.getProfileJobs = asyncHandler(async (req, res, next) => {
 
   req.query.createUser = req.params.id;
-  return this.getJobs(req, res, next);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Job);
+
+  const jobs = await Job.find(req.query, select).populate("occupation").populate({
+    path: 'createUser',
+    select: 'name profile'
+  })
+  .sort({isUrgent:-1})  
+  .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit)
+    res.status(200).json({
+      success: true,
+      count: jobs.length,
+      data: jobs,
+      pagination,
+    });
 });
 
 // api/v1/categories/:catId/Jobs
