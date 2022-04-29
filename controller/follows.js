@@ -147,11 +147,12 @@ exports.updateFollow = asyncHandler(async (req, res, next) => {
 })
 
 exports.deleteFollow = asyncHandler(async (req, res, next) => {
-        const follow = await Follow.findById(req.params.id)
-        const post = await Post.findById(follow.post)
+        const follow = await Follow.findOne({followUser: req.params.id, createUser: req.userId})
+        const post = await Cv.findById(req.params.id)
         post.follower -= 1
         post.save()
-        const posts = await Post.findById(req.userId)
+        console.log(follow)
+        const posts = await Cv.findById(req.userId)
         posts.following -= 1
         posts.save()
         if(!follow) {

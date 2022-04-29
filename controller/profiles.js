@@ -102,6 +102,8 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
 
   if (follo.includes(profile._id.toString())) {
     profile.isFollowing = true
+  } else {
+    profile.isFollowing = false
   }
 
   if (profile.employeeSpecial > String(Date.now())) {
