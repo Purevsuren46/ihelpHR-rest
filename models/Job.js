@@ -82,6 +82,12 @@ const JobSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
   },
+  schedule: {
+    type: String,
+  },
+  language: {
+    type: String,
+  },
   score: {
     type: Number,
   },

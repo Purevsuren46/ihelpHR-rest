@@ -138,6 +138,10 @@ const CvSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "Questionnaire",
   },
+  category: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Category",
+  },
   register: {
     type: String,
   },

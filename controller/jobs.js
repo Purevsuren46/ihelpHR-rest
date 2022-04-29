@@ -612,12 +612,12 @@ exports.updateJob = asyncHandler(async (req, res, next) => {
     throw new MyError(req.params.id + " ID-тэй ном байхгүйээээ.", 400);
   }
 
-  if (
-    job.createProfile.toString() !== req.userId &&
-    req.userRole !== "admin"
-  ) {
-    throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
-  }
+  // if (
+  //   job.createProfile.toString() !== req.userId &&
+  //   req.userRole !== "admin"
+  // ) {
+  //   throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
+  // }
 
   req.body.updateProfile = req.userId;
 
