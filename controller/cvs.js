@@ -644,15 +644,18 @@ exports.sendPhone = asyncHandler(async (req, res, next) => {
 
   if (cv == null) {
     const random = Math.floor(1000 + Math.random() * 9000);
-  await axios({
-    method: "get",
-    url: `https://api.messagepro.mn/send?key=63053350aa1c4d36e94d0756f4ec160e&from=72773055&to=${req.body.phone}&text=${random}`
-  })
+    const params = `from=72773055&to=${req.body.phone}&text=Таны бүртгэл үүсгэх нууц код ${random}`
+    const param = encodeURI(params)
+    await axios({
+      method: "get",
+      url: `https://api.messagepro.mn/send?key=63053350aa1c4d36e94d0756f4ec160e&${param}`
+    })
   req.body.random = random
   
   } else {
     throw new MyError("Утас бүртгүүлсэн байна", 400)
   }
+
   if (phon == null) {
     const phone = await Phone.create(req.body)
     res.status(200).json({
