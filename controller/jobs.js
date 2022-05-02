@@ -448,7 +448,7 @@ exports.urgentJob = asyncHandler(async (req, res, next) => {
         job.isUrgent = true
     }
   }
-  const expire = setTimeout(() => {job.isUrgent = false, job.save()}, Math.abs(Number(job.urgent) - Date.now()))
+  // const expire = setTimeout(() => {job.isUrgent = false, job.save()}, Math.abs(Number(job.urgent) - Date.now()))
 
   profile.save()
   job.save()

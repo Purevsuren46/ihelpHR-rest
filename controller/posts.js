@@ -109,67 +109,25 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Post.find({createUser: user  }))
 
 
-  const post = await Post.find({createUser: user  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile'}})
+  const post = await Post.find({createUser: user, isBoost: false  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile'}})
 
   const boost = await Post.find({isBoost: true}).sort({"createdAt": -1})
-  if (boost[page - 1] != null) {
-    post.push(boost[page - 1])
-    if (boost[page - 1].createdAt <= post[post.length - 1].createdAt) {
-      const like = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gt: boost[page - 1].createdAt}}).select('post')
-    const likes = like.map((item)=>item.post)
-    const likes1 = likes.map(item=>item.toString())
-  
-  
-  
-    for (let i = 0; i < post.length; i++) {
-      if (likes1.includes(post[i]._id.toString()) ) {
-        post[i].isLiked = true
-      } 
-    }
-    } else {
-      const like = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gt: post[3].createdAt}}).select('post')
-    const likes = like.map((item)=>item.post)
-    const likes1 = likes.map(item=>item.toString())
-  
-  
-  
-    for (let i = 0; i < post.length; i++) {
-      if (likes1.includes(post[i]._id.toString()) ) {
-        post[i].isLiked = true
-      } 
-    }
-    }
-    
-  } else {
-    if (typeof post == 'undefined' && post.length === 0) {
-      console.log(typeof post !== 'undefined' && post.length === 0)
-      const like = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gt: post[post.length - 1].createdAt}}).select('post')
-      const likes = like.map((item)=>item.post)
-      const likes1 = likes.map(item=>item.toString())
-    
-    
-    
-      for (let i = 0; i < post.length; i++) {
-        if (likes1.includes(post[i]._id.toString()) ) {
-          post[i].isLiked = true
-        } 
-      }
-    } else {
-      const like = await Like.find({createUser: req.userId, post: {$ne: null}}).select('post')
-      const likes = like.map((item)=>item.post)
-      const likes1 = likes.map(item=>item.toString())
-    
-    
-    
-      for (let i = 0; i < post.length; i++) {
-        if (likes1.includes(post[i]._id.toString()) ) {
-          post[i].isLiked = true
-        } 
-      }
-    }
-
+  const lik = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gte: post[post.length - 1].createdAt}}).select('post')
+  const like = []
+  for (let i = 0; i < (lik.length); i++ ) {
+    like.push(lik[i].post.toString())
   }
-  res.status(200).json({ success: true, data: post, pagination, })
+  if (boost != 0) {
+    if (boost[page - 1] != undefined) {
+      post.push(boost[page - 1])
+    }
+  } 
+  for (let i = 0; i < post.length; i++) {
+    if (like.includes(post[i]._id.toString()) ) {
+      post[i].isLiked = true
+    } 
+  }
+  res.status(200).json({ success: true, data: post,boost: boost, pagination, })
 });
 
 exports.getPost = asyncHandler(async (req, res, next) => {
@@ -372,11 +330,7 @@ exports.deletePost = asyncHandler(async (req, res, next) => {
   //   throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
   // }
 
-  const cv = await Cv.findById(req.userId);
-
   post.remove();
-  cv.post.remove(req.params.id);
-  cv.save()
 
   res.status(200).json({
     success: true,
@@ -462,7 +416,7 @@ exports.uploadPostPhoto = asyncHandler(async (req, res, next) => {
     throw new MyError("Таны зурагны хэмжээ хэтэрсэн байна.", 400);
   }
 
-  file.name = `post_${req.params.id}_${path.parse(file.name).ext}`;
+  file.name = `post_${req.params.id}${path.parse(file.name).ext}`;
   
   const picture = await sharp(file.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file.name}`);
   
