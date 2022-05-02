@@ -106,28 +106,31 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   const user = follows.map((item)=>item.followUser)
   user.push(req.params.id)
   // Pagination
-  const pagination = await paginate(page, limit, Post.find({createUser: user  }))
+  const pagination = await paginate(page, limit, Post.find({createUser: user, isBoost: false  }))
 
 
   const post = await Post.find({createUser: user, isBoost: false  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile'}})
 
   const boost = await Post.find({isBoost: true}).sort({"createdAt": -1})
-  const lik = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gte: post[post.length - 1].createdAt}}).select('post')
-  const like = []
-  for (let i = 0; i < (lik.length); i++ ) {
-    like.push(lik[i].post.toString())
-  }
-  if (boost != 0) {
-    if (boost[page - 1] != undefined) {
-      post.push(boost[page - 1])
+  if (post[post.length - 1] != undefined) {
+    const lik = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gte: post[post.length - 1].createdAt}}).select('post')
+    const like = []
+    for (let i = 0; i < (lik.length); i++ ) {
+      like.push(lik[i].post.toString())
     }
-  } 
-  for (let i = 0; i < post.length; i++) {
-    if (like.includes(post[i]._id.toString()) ) {
-      post[i].isLiked = true
+    if (boost != 0) {
+      if (boost[page - 1] != undefined) {
+        post.push(boost[page - 1])
+      }
     } 
+    for (let i = 0; i < post.length; i++) {
+      if (like.includes(post[i]._id.toString()) ) {
+        post[i].isLiked = true
+      } 
+    }
   }
-  res.status(200).json({ success: true, data: post,boost: boost, pagination, })
+
+  res.status(200).json({ success: true, data: post, pagination, })
 });
 
 exports.getPost = asyncHandler(async (req, res, next) => {
@@ -161,42 +164,6 @@ exports.getPost = asyncHandler(async (req, res, next) => {
     data: post,
   });
 });
-
-// exports.likePost = asyncHandler(async (req, res, next) => {
-//   const post = await Post.findById(req.params.id);
-//   const cv = await Cv.findById(req.userId);
-
-//   if (!post) {
-//     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
-//   }
-//   cv.likePost.addToSet(req.params.id);
-//   post.like.addToSet(req.userId);
-//   cv.save()
-//   post.save()
-
-//   res.status(200).json({
-//     success: true,
-//     data: cv
-//   });
-// });
-
-// exports.unlikePost = asyncHandler(async (req, res, next) => {
-//   const post = await Post.findById(req.params.id);
-//   const cv = await Cv.findById(req.userId);
-
-//   if (!post) {
-//     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
-//   }
-//   cv.likePost.remove(req.params.id);
-//   post.like.remove(req.userId);
-//   cv.save()
-//   post.save()
-
-//   res.status(200).json({
-//     success: true,
-//     data: cv
-//   });
-// });
 
 exports.boostPost = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.id);
