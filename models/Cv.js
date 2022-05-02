@@ -160,6 +160,16 @@ const CvSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  createYear: {
+    type: Date,
+  },
+  web: {
+    type: String,
+  },
+  employerNumber: {
+    type: String,
+    enum: ["1-10", "11-20", "21-50", "51-100", "101-500", "501-1000", "1000+"]
+  },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {
