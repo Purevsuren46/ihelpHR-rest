@@ -143,13 +143,14 @@ exports.createLike = asyncHandler(async (req, res, next) => {
     if (!Expo.isExpoPushToken(cv.expoPushToken)) {
         console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
     }
+    console.log(req.userId)
     messages.push({
         to: cv.expoPushToken,
         sound: 'default',
         body: `Таны постон дээр ${cv1.firstName} лайк дарлаа`,
         data: { notificationId: notification._id, postId: req.params.id, data: "PostDetailScreen", data1: "NetworkingStack" },
       })
-    console.log(req.userId)
+    
     let chunks = expo.chunkPushNotifications(messages);
     let tickets = [];
     (async () => {
