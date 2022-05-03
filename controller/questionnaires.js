@@ -147,6 +147,24 @@ exports.deleteFamilyQuestionnaire = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.updateFamilyQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  
+  const number = questionnaire.family.findIndex((obj => obj._id == req.params.id))
+  questionnaire.family[number] = req.body
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
 exports.createExperienceQuestionnaire = asyncHandler(async (req, res, next) => {
   const questionnaire = await Questionnaire.findOne({createUser: req.userId});
 
@@ -171,6 +189,24 @@ exports.deleteExperienceQuestionnaire = asyncHandler(async (req, res, next) => {
   }
 
   questionnaire.experience.pull({_id: req.params.id})
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
+exports.updateExperienceQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  
+  const number = questionnaire.experience.findIndex((obj => obj._id == req.params.id))
+  questionnaire.experience[number] = req.body
   questionnaire.save()
 
   res.status(200).json({
@@ -211,6 +247,24 @@ exports.deleteCourseQuestionnaire = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.updateCourseQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  
+  const number = questionnaire.course.findIndex((obj => obj._id == req.params.id))
+  questionnaire.course[number] = req.body
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
 exports.createAchievementQuestionnaire = asyncHandler(async (req, res, next) => {
   const questionnaire = await Questionnaire.findOne({createUser: req.userId});
 
@@ -235,6 +289,24 @@ exports.deleteAchievementQuestionnaire = asyncHandler(async (req, res, next) => 
   }
 
   questionnaire.achievement.pull({_id: req.params.id})
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
+exports.updateAchievementQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  
+  const number = questionnaire.achievement.findIndex((obj => obj._id == req.params.id))
+  questionnaire.achievement[number] = req.body
   questionnaire.save()
 
   res.status(200).json({

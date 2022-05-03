@@ -11,12 +11,16 @@ const {
   deleteQuestionnaire,
   createFamilyQuestionnaire,
   deleteFamilyQuestionnaire,
+  updateFamilyQuestionnaire,
   createCourseQuestionnaire,
   deleteCourseQuestionnaire,
+  updateCourseQuestionnaire,
   createAchievementQuestionnaire,
   deleteAchievementQuestionnaire,
+  updateAchievementQuestionnaire,
   createExperienceQuestionnaire,
   deleteExperienceQuestionnaire,
+  updateExperienceQuestionnaire,
 } = require("../controller/questionnaires");
 
 // api/v1/questionnaires/:id/books
@@ -29,25 +33,29 @@ const {
 
 router
   .route("/:id/family")
-  .delete(protect, deleteFamilyQuestionnaire);
+  .delete(protect, deleteFamilyQuestionnaire)
+  .put(protect, updateFamilyQuestionnaire);
 router
   .route("/family")
   .post(protect, createFamilyQuestionnaire);
 router
   .route("/:id/achievement")
-  .delete(protect, deleteAchievementQuestionnaire);
+  .delete(protect, deleteAchievementQuestionnaire)
+  .put(protect, updateAchievementQuestionnaire);
 router
   .route("/achievement")
   .post(protect, createAchievementQuestionnaire);
 router
   .route("/:id/course")
-  .delete(protect, deleteCourseQuestionnaire);
+  .delete(protect, deleteCourseQuestionnaire)
+  .put(protect, updateCourseQuestionnaire);
 router
   .route("/course")
   .post(protect, createCourseQuestionnaire);
 router
   .route("/:id/experience")
-  .delete(protect, deleteExperienceQuestionnaire);
+  .delete(protect, deleteExperienceQuestionnaire)
+  .put(protect, updateExperienceQuestionnaire);
 router
   .route("/experience")
   .post(protect, createExperienceQuestionnaire);

@@ -143,7 +143,6 @@ exports.createLike = asyncHandler(async (req, res, next) => {
     if (!Expo.isExpoPushToken(cv.expoPushToken)) {
         console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
     }
-    console.log(cv1.firstName)
     messages.push({
         to: cv.expoPushToken,
         sound: 'default',
