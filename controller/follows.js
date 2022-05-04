@@ -148,10 +148,10 @@ exports.updateFollow = asyncHandler(async (req, res, next) => {
 
 exports.deleteFollow = asyncHandler(async (req, res, next) => {
         const follow = await Follow.findOne({followUser: req.params.id, createUser: req.userId})
-        const post = await Cv.findById(req.params.id)
+        if (follow != null) {
+          const post = await Cv.findById(req.params.id)
         post.follower -= 1
         post.save()
-        console.log(follow)
         const posts = await Cv.findById(req.userId)
         posts.following -= 1
         posts.save()
@@ -160,5 +160,9 @@ exports.deleteFollow = asyncHandler(async (req, res, next) => {
         } 
         follow.remove()
         res.status(200).json({ success: true, data: follow, })
+        } else {
+          throw new MyError("Follow устсан байна.", 400)
+        }
+        
         
 })
