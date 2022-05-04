@@ -32,9 +32,14 @@ const CvSchema = new mongoose.Schema({
   authPhoto: {
     type: String,
   },
-  portfolio: [{
-    type: String,
-  }],
+  portfolio: {
+    image1: {type: String},
+    image2: {type: String},
+    image3: {type: String},
+    image4: {type: String},
+    image5: {type: String},
+    image6: {type: String}
+  },
   invoiceId: {
     type: String,
   },
