@@ -62,46 +62,57 @@ exports.getComment = asyncHandler( async (req, res, next) => {
 
 exports.createComment = asyncHandler(async (req, res, next) => {
         const post = await Post.findById(req.params.id)
-        post.comment += 1
-        post.save()
-        req.body.createUser = req.userId;
-        req.body.post = req.params.id;
-        const comment = await Comment.create(req.body);
-        req.body.comment = comment._id
-        req.body.who = req.userId
-        req.body.for = post.createUser
-        const notification = await Notification.create(req.body)
-        const cv = await Cv.findById(post.createUser)
-        cv.notification += 1
-        cv.save()
 
-        const cv1 = await Cv.findById(req.userId)
-        let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
-        let messages = [];
-        if (!Expo.isExpoPushToken(cv.expoPushToken)) {
-            console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
-        }
-        messages.push({
-            to: cv.expoPushToken,
-            sound: 'default',
-            body: `Таний постон дээр ${cv1.firstName} коммент бичлээ`,
-            data: { notificationId: notification._id, data1: "NetworkingStack" },
-          })
-        let chunks = expo.chunkPushNotifications(messages);
-        let tickets = [];
-        (async () => {
-            for (let chunk of chunks) {
-              try {
-                let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-                console.log(ticketChunk);
-                tickets.push(...ticketChunk);
-              } catch (error) {
-                console.error(error);
+        if(post.createUser == req.userId) {
+                post.comment += 1
+                post.save()
+                req.body.createUser = req.userId;
+                req.body.post = req.params.id;
+            const like = await Comment.create(req.body);
+            res.status(200).json({ success: true, data: like, })
+              } else {
+                post.comment += 1
+                post.save()
+                req.body.createUser = req.userId;
+                req.body.post = req.params.id;
+                const comment = await Comment.create(req.body);
+                req.body.comment = comment._id
+                req.body.who = req.userId
+                req.body.for = post.createUser
+                const notification = await Notification.create(req.body)
+                const cv = await Cv.findById(post.createUser)
+                cv.notification += 1
+                cv.save()
+        
+                const cv1 = await Cv.findById(req.userId)
+                let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+                let messages = [];
+                if (!Expo.isExpoPushToken(cv.expoPushToken)) {
+                    console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
+                }
+                messages.push({
+                    to: cv.expoPushToken,
+                    sound: 'default',
+                    body: `Таний постон дээр ${cv1.firstName} коммент бичлээ`,
+                    data: { notificationId: notification._id, data1: "NetworkingStack" },
+                  })
+                let chunks = expo.chunkPushNotifications(messages);
+                let tickets = [];
+                (async () => {
+                    for (let chunk of chunks) {
+                      try {
+                        let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+                        console.log(ticketChunk);
+                        tickets.push(...ticketChunk);
+                      } catch (error) {
+                        console.error(error);
+                      }
+                    }
+                  })();
+        
+                res.status(200).json({ success: true, data: comment, })
               }
-            }
-          })();
 
-        res.status(200).json({ success: true, data: comment, })
     
 })
 

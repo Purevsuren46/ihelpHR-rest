@@ -124,7 +124,15 @@ exports.createLike = asyncHandler(async (req, res, next) => {
     const likes = await Like.findOne({createUser: req.userId, post: req.params.id}).exec()
     if (likes == null) {
         const post = await Post.findById(req.params.id)
-        post.like += 1
+        if(post.createUser == req.userId) {
+          post.like += 1
+          post.save()
+          req.body.createUser = req.userId;
+          req.body.post = req.params.id;
+      const like = await Like.create(req.body);
+      res.status(200).json({ success: true, data: like, })
+        } else {
+          post.like += 1
         post.save()
         req.body.createUser = req.userId;
         req.body.post = req.params.id;
@@ -166,6 +174,8 @@ exports.createLike = asyncHandler(async (req, res, next) => {
 
 
     res.status(200).json({ success: true, data: like, notification: notification, })
+        }
+        
     } else {
         throw new MyError("Like дарсан байна.", 400)
     }
