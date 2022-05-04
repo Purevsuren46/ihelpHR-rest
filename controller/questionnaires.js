@@ -67,21 +67,17 @@ exports.createQuestionnaire = asyncHandler(async (req, res, next) => {
       new: true,
       runValidators: true,
     })
+    const cv = await Cv.findById(req.userId);
     if(quest.profession != null) {
-      const cv = await Cv.findById(req.userId);
       cv.profession = quest.profession
-      cv.save()
     }
     if(quest.firstName != null) {
-      const cv = await Cv.findById(req.userId);
       cv.firstName = quest.firstName
-      cv.save()
     }
     if(quest.lastName != null) {
-      const cv = await Cv.findById(req.userId);
       cv.lastName = quest.lastName
-      cv.save()
     }
+    cv.save()
     res.status(200).json({
       success: true,
       data: quest,
@@ -91,16 +87,25 @@ exports.createQuestionnaire = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateQuestionnaire = asyncHandler(async (req, res, next) => {
-  const questionnaire = await Questionnaire.findOneAndUpdate({createUser: req.params.id}, req.body, {
+  const quest = await Questionnaire.findOneAndUpdate({createUser: req.params.id}, req.body, {
     new: true,
     runValidators: true,
   });
+  const cv = await Cv.findById(req.userId);
+  if(quest.firstName != null) {
+    cv.firstName = quest.firstName
+  }
+  if(quest.lastName != null) {
+    cv.lastName = quest.lastName
+
+  }
+  cv.save()
 
 
-  if (!questionnaire) {
+  if (!quest) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
   }
-  res.status(200).json({ success: true, data: questionnaire, })
+  res.status(200).json({ success: true, data: quest, })
 
 });
 // хэрэглэгч засах, history д хадгалах
