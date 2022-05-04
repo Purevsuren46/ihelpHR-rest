@@ -8,6 +8,10 @@ const paginate = require("../utils/paginate");
 
 // Хэрэглэгчид авах
 exports.getQuestionnaires = asyncHandler(async (req, res, next) => {
+  const cv = await Cv.findById(req.userId)
+  if (cv.point < 1000) {
+    throw new MyError("Хэрэглэгчийн point 1000 аас дээш байж анкет сан үзэх боломжтой", 400);
+  }
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;

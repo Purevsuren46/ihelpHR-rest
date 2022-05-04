@@ -4,15 +4,12 @@ const AnnouncementSchema = new mongoose.Schema({
   
   description: {
     type: String,
-    required: [true, "Тайлбар оруулна уу"]
   },
   do: {
     type: String,
-    required: [true, "Гүйцэтгэх үүрэг оруулна уу"]
   },
   salary: {
       type: String,
-      required: [true, "Цалингаа оруулна уу"],
       enum: [
           "400,000 - 600,000", 
           "600,000 - 800,000", 
@@ -29,22 +26,23 @@ const AnnouncementSchema = new mongoose.Schema({
   },
   type: {
       type: String,
-      required: [true, "Ажлын төрлөө сонгоно уу"],
       enum: ["full-time", "part-time", "freelancer", "intern"],
       default: "full-time"
   },
   occupation: {
     type: mongoose.Schema.ObjectId,
     ref: 'Occupation',
-    required: [true, "Ажлаа оруулна уу"]
   },
-  saved: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Cv',
-  }],
   createUser: {
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
+  },
+  isCompany: {
+    type: Boolean,
+  },
+  isLiked: {
+    type: Boolean,
+    default: false,
   },
   isSpecial: {
     type: Boolean,
@@ -59,6 +57,10 @@ const AnnouncementSchema = new mongoose.Schema({
     default: false,
   },
   urgent: {
+    type: Date,
+    default: Date.now,
+  },
+  order: {
     type: Date,
     default: Date.now,
   },

@@ -62,7 +62,7 @@ router
   
 router
   .route("/")
-  .get(getQuestionnaires).post(protect, createQuestionnaire);
+  .get(protect, getQuestionnaires).post(protect, createQuestionnaire);
 router
   .route("/:id")
   .get(getQuestionnaire)
