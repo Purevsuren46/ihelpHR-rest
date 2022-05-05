@@ -914,7 +914,7 @@ exports.uploadCvPortfolio = asyncHandler(async (req, res, next) => {
     if (req.files.file6 != undefined) {
       const file6 = req.files.file6;
   
-    file6.name = `portfolio_${req.userId}_image1${path.parse(file6.name).ext}`;
+    file6.name = `portfolio_${req.userId}_image6${path.parse(file6.name).ext}`;
     
     const picture = await sharp(file6.data).resize({width: parseInt(process.env.FILE_SIZE)}).toFile(`${process.env.FILE_UPLOAD_PATH}/${file6.name}`);
     
