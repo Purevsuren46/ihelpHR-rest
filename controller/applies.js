@@ -102,6 +102,58 @@ exports.createApply = asyncHandler(async (req, res, next) => {
 //     res.status(200).json({ success: true, data: apply, })
 })
 
+exports.createProfileApply = asyncHandler(async (req, res, next) => {
+  const likes = await Apply.findOne({createUser: req.userId, company: req.params.id}).exec()
+  if (likes == null) {
+      const post = await Cv.findById(req.params.id)
+      post.apply += 1
+      post.save()
+      req.body.createUser = req.userId;
+      req.body.company = req.params.id;
+  const like = await Apply.create(req.body);
+  req.body.apply = like._id
+  req.body.who = req.userId
+  req.body.for = post.createUser
+  const notification = await Notification.create(req.body)
+  post.notification += 1
+  post.save()
+
+  const cv1 = await Cv.findById(req.userId)
+  let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+  let messages = [];
+  if (!Expo.isExpoPushToken(cv.expoPushToken)) {
+      console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
+  }
+  messages.push({
+      to: cv.expoPushToken,
+      sound: 'default',
+      body: `Танай компани руу ${cv1.firstName} анкет явууллаа`,
+      data: { notificationId: notification._id, postId: req.userId, data: "UserProfileScreen", data1: "ProfileStack" },
+    })
+  let chunks = expo.chunkPushNotifications(messages);
+  let tickets = [];
+  (async () => {
+      for (let chunk of chunks) {
+        try {
+          let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+          console.log(ticketChunk);
+          tickets.push(...ticketChunk);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    })();
+  res.status(200).json({ success: true, data: like, notification: notification, })
+  } else {
+      throw new MyError("Анкет илгээсэн байна.", 400)
+  }
+//     req.body.createUser = req.userId;
+//     req.body.job = req.params.id;
+//     const apply = await Apply.create(req.body)
+
+//     res.status(200).json({ success: true, data: apply, })
+})
+
 exports.updateApply = asyncHandler(async (req, res, next) => {
     
         const apply = await Apply.findByIdAndUpdate(req.params.id, req.body, {
@@ -118,7 +170,7 @@ exports.updateApply = asyncHandler(async (req, res, next) => {
 })
 
 exports.deleteApply = asyncHandler(async (req, res, next) => {
-        const apply = await Apply.findById(req.params.id)
+        const apply = await Apply.findOne({job: req.params.id, createUser: req.userId})
 
         if(!apply) {
         return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
@@ -126,4 +178,15 @@ exports.deleteApply = asyncHandler(async (req, res, next) => {
         apply.remove()
         res.status(200).json({ success: true, data: apply, })
         
+})
+
+exports.deleteProfileApply = asyncHandler(async (req, res, next) => {
+  const apply = await Apply.findOne({company: req.params.id, createUser: req.userId})
+
+  if(!apply) {
+  return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
+  } 
+  apply.remove()
+  res.status(200).json({ success: true, data: apply, })
+  
 })

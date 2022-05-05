@@ -8,6 +8,10 @@ const ApplySchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Job',
     },
+    company: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Cv',
+    },
     createdAt: {
         type: Date,
         default: Date.now

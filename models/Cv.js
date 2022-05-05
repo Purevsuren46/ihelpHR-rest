@@ -68,6 +68,10 @@ const CvSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  apply: {
+    type: Number,
+    default: 0,
+  },
   role: {
     type: String,
     required: [true, "Хэрэглэгчийн эрхийг оруулна уу"],

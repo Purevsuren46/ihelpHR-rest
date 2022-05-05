@@ -7,8 +7,10 @@ const {
   getApply,
   getCvApplies,
   createApply,
+  createProfileApply,
   updateApply,
   deleteApply,
+  deleteProfileApply,
 } = require("../controller/applies");
 
 
@@ -23,6 +25,11 @@ router
   .put(protect, authorize("admin", "operator"), updateApply)
   .delete(protect, authorize("admin"), deleteApply)
   .post(protect, createApply);
+
+router
+  .route("/:id/profile")
+  .post(protect, createProfileApply)
+  .delete(protect, deleteProfileApply);
 
 router.route("/:cvId/apply").get(protect, authorize("admin"), getCvApplies)
 module.exports = router;
