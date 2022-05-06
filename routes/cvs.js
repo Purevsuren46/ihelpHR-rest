@@ -68,7 +68,7 @@ router
   .route("/:id")
   .get( getCv)
   .put( updateCv)
-  .delete(authorize("admin"), deleteCv);
+  .delete( deleteCv);
 
 router
   .route("/:id/posts")

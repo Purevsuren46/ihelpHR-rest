@@ -12,6 +12,10 @@ const ApplySchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Cv',
     },
+    questionnaire: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Questionnaire',
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -25,7 +29,7 @@ const ApplySchema = new mongoose.Schema({
     },
     reminder: {
         type: Boolean,
-    }
+    },
 }, {toJSON: {virtuals: true}, toObject: {virtuals: true}} )
 
 

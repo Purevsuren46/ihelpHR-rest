@@ -1,4 +1,5 @@
 const Apply = require('../models/Apply')
+const Questionnaire = require('../models/Questionnaire')
 const Job = require('../models/Job')
 const Cv = require('../models/Cv')
 const Notification = require('../models/Notification')
@@ -22,6 +23,42 @@ exports.getApplies = asyncHandler(async (req, res, next) => {
 
         res.status(200).json({ success: true, data: applies, pagination, })
     
+})
+
+exports.getProfileApplies = asyncHandler(async (req, res, next) => {
+  req.query.company = req.params.id
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 100;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  // Pagination
+  const pagination = await paginate(page, limit, Apply)
+
+  const applies = await Apply.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate("questionnaire")
+
+  res.status(200).json({ success: true, data: applies, pagination, })
+
+})
+
+exports.getJobApplies = asyncHandler(async (req, res, next) => {
+  req.query.job = req.params.id
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 100;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  // Pagination
+  const pagination = await paginate(page, limit, Apply)
+
+  const applies = await Apply.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate("questionnaire")
+
+  res.status(200).json({ success: true, data: applies, pagination, })
+
 })
 
 exports.getApply = asyncHandler( async (req, res, next) => {
@@ -53,10 +90,13 @@ exports.createApply = asyncHandler(async (req, res, next) => {
         const likes = await Apply.findOne({createUser: req.userId, job: req.params.id}).exec()
         if (likes == null) {
             const post = await Job.findById(req.params.id)
+            const quest = await Questionnaire.findOne({createUser: req.userId})
             post.apply += 1
             post.save()
+            req.body.questionnaire = quest._id;
             req.body.createUser = req.userId;
             req.body.job = req.params.id;
+
         const like = await Apply.create(req.body);
         req.body.apply = like._id
         req.body.who = req.userId
@@ -106,8 +146,11 @@ exports.createProfileApply = asyncHandler(async (req, res, next) => {
   const likes = await Apply.findOne({createUser: req.userId, company: req.params.id}).exec()
   if (likes == null) {
       const post = await Cv.findById(req.params.id)
+      const quest = await Questionnaire.findOne({createUser: req.userId})
+      console.log(quest)
       post.apply += 1
       post.save()
+      req.body.questionnaire = quest._id;
       req.body.createUser = req.userId;
       req.body.company = req.params.id;
   const like = await Apply.create(req.body);
@@ -121,11 +164,11 @@ exports.createProfileApply = asyncHandler(async (req, res, next) => {
   const cv1 = await Cv.findById(req.userId)
   let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
   let messages = [];
-  if (!Expo.isExpoPushToken(cv.expoPushToken)) {
-      console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
+  if (!Expo.isExpoPushToken(post.expoPushToken)) {
+      console.error(`Push token ${post.expoPushToken} is not a valid Expo push token`);
   }
   messages.push({
-      to: cv.expoPushToken,
+      to: post.expoPushToken,
       sound: 'default',
       body: `Танай компани руу ${cv1.firstName} анкет явууллаа`,
       data: { notificationId: notification._id, postId: req.userId, data: "UserProfileScreen", data1: "ProfileStack" },

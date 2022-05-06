@@ -4,6 +4,8 @@ const { protect, authorize } = require("../middleware/protect");
 
 const {
   getApplies,
+  getProfileApplies,
+  getJobApplies,
   getApply,
   getCvApplies,
   createApply,
@@ -20,14 +22,19 @@ router
   .get(getApplies)
 
 router
+  .route("/:id/job")
+  .get(getJobApplies)
+
+router
   .route("/:id")
   .get(protect, getApply)
   .put(protect, authorize("admin", "operator"), updateApply)
-  .delete(protect, authorize("admin"), deleteApply)
+  .delete(protect, deleteApply)
   .post(protect, createApply);
 
 router
   .route("/:id/profile")
+  .get(protect, getProfileApplies)
   .post(protect, createProfileApply)
   .delete(protect, deleteProfileApply);
 

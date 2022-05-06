@@ -554,11 +554,12 @@ exports.updateCv = asyncHandler(async (req, res, next) => {
 // хэрэглэгч засах, history д хадгалах
 exports.deleteCv = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.params.id);
+  const ques = await Questionnaire.findOne({createUser: req.params.id});
 
   if (!cv) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
   }
-
+  ques.remove()
   cv.remove();
 
   res.status(200).json({

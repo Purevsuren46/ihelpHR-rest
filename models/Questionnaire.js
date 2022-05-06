@@ -225,4 +225,4 @@ const QuestionnareSchema = new mongoose.Schema({
 
 
 
-module.exports = mongoose.model("Questionnare", QuestionnareSchema);
+module.exports = mongoose.model("Questionnaire", QuestionnareSchema);
