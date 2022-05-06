@@ -64,10 +64,8 @@ exports.getJobApplies = asyncHandler(async (req, res, next) => {
 exports.getApply = asyncHandler( async (req, res, next) => {
     
         const apply = await Apply.findById(req.params.id).populate('job')
-        if (req.userId == apply.job.createUser) {
-            apply.isViewed = true,
-            apply.save()
-        }
+        apply.isViewed = true,
+        apply.save()
         if(!apply) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)
         } 

@@ -109,7 +109,7 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Post.find({createUser: user, isBoost: false  }))
 
 
-  const post = await Post.find({createUser: user, isBoost: false  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile'}})
+  const post = await Post.find({createUser: user, isBoost: false  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile organization'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile organization'}})
 
   const boost = await Post.find({isBoost: true}).sort({"createdAt": -1})
   if (post[post.length - 1] != undefined) {

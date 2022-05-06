@@ -7,12 +7,16 @@ const InvitationSchema = new mongoose.Schema({
     default: null,
   },
   salary: {
-      type: String,
+      type: Number,
   },
   occupation: {
     type: String,
   },
   createUser: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Cv',
+  },
+  candidate: {
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
   },

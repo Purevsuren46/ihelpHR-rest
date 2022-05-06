@@ -17,6 +17,7 @@ const hpp = require("hpp");
 
 // Router оруулж ирэх
 const profilesRoutes = require("./routes/profiles");
+const invitationsRoutes = require("./routes/invitations");
 const cvsRoutes = require("./routes/cvs");
 const historiesRoutes = require("./routes/histories");
 const jobsRoutes = require("./routes/jobs");
@@ -116,6 +117,7 @@ app.use(morgan("combined", { stream: accessLogStream }));
 // REST API RESOURSE
 
 app.use("/api/v1/profiles", profilesRoutes);
+app.use("/api/v1/invitations", invitationsRoutes);
 app.use("/api/v1/cvs", cvsRoutes);
 app.use("/api/v1/histories", historiesRoutes);
 app.use("/api/v1/jobs", jobsRoutes);

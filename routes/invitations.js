@@ -5,6 +5,7 @@ const { protect, authorize } = require("../middleware/protect");
 const {
   getInvitations,
   getInvitation,
+  createInvitation,
   deleteInvitation,
 } = require("../controller/invitations");
 
@@ -17,6 +18,7 @@ router
 router
   .route("/:id")
   .get(getInvitation)
-  .delete(protect, authorize("admin"), deleteInvitation);
+  .post(protect, createInvitation)
+  .delete(protect, deleteInvitation);
 
 module.exports = router;

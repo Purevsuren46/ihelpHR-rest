@@ -36,6 +36,17 @@ exports.getCvInvitations = asyncHandler(async (req, res, next) => {
         return this.getInvitations(req, res, next);
 });
 
+exports.createInvitation = asyncHandler(async (req, res, next) => {
+    req.body.createUser = req.userId
+    req.body.candidate = req.params.id
+    
+    const category = await Invitation.create(req.body)
+    
+    res.status(200).json({ success: true, data: category, })
+        
+        
+    })
+
 exports.deleteInvitation = asyncHandler(async (req, res, next) => {
         const invitation = await Invitation.findById(req.params.id)
 
