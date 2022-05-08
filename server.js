@@ -30,6 +30,7 @@ const questionnairesRoutes = require("./routes/questionnaires");
 const announcementsRoutes = require("./routes/announcements");
 const categoriesRoutes = require("./routes/categories");
 const occupationsRoutes = require("./routes/occupations");
+const transactionsRoutes = require("./routes/transactions");
 const notificationsRoutes = require("./routes/notifications");
 const scoresRoutes = require("./routes/scores");
 const appliesRoutes = require("./routes/applies");
@@ -134,6 +135,7 @@ app.use("/api/v1/notifications", notificationsRoutes);
 app.use("/api/v1/scores", scoresRoutes);
 app.use("/api/v1/applies", appliesRoutes);
 app.use("/api/v1/wallets", walletsRoutes);
+app.use("/api/v1/transactions", transactionsRoutes);
 
 // Алдаа үүсэхэд барьж авч алдааны мэдээллийг клиент тал руу автоматаар мэдээлнэ
 app.use(errorHandler);

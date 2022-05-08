@@ -1,4 +1,5 @@
 const Cv = require("../models/Cv");
+const Transaction = require("../models/Transaction");
 const Questionnaire = require("../models/Questionnaire");
 const Follow = require("../models/Follow");
 const Phone = require("../models/Phone");
@@ -346,7 +347,9 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
     })();
     profile.point += (req.params.numId / 1000)
     profile.save()
-
+    req.body.point = req.params.numId
+    req.body.createUser = req.params.id
+    const transaction = await Transaction.create(req.body);
   // await axios({
   //   method: 'post',
   //   url: 'https://merchant.qpay.mn/v2/auth/token',
@@ -412,7 +415,8 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    data: profile
+    data: profile,
+    transaction: transaction
   });
 });
 
