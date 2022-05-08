@@ -1,6 +1,8 @@
 const Invitation = require('../models/Invitation')
+const Cv = require('../models/Cv')
 const MyError = require("../utils/myError")
 const asyncHandler = require("express-async-handler")
+const Expo = require("expo-server-sdk").Expo
 const paginate = require("../utils/paginate")
 
 exports.getInvitations = asyncHandler(async (req, res, next) => {
@@ -41,7 +43,33 @@ exports.createInvitation = asyncHandler(async (req, res, next) => {
     req.body.candidate = req.params.id
     
     const category = await Invitation.create(req.body)
+    const cv = await Cv.findById(req.params.id)
+    const cv1 = await Cv.findById(req.userId)
+    let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+    let messages = [];
+    if (!Expo.isExpoPushToken(cv.expoPushToken)) {
+        console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
+    }
+    messages.push({
+        to: cv.expoPushToken,
+        sound: 'default',
+        body: `Таньд ${cv1.name} ажлын санал илгээлээ`,
+        data: { invitationID: category._id, cvId: req.params.id, data: "PostDetailScreen", data1: "NetworkingStack" },
+      })
     
+    let chunks = expo.chunkPushNotifications(messages);
+    let tickets = [];
+    (async () => {
+        for (let chunk of chunks) {
+          try {
+            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+            console.log(ticketChunk);
+            tickets.push(...ticketChunk);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      })();
     res.status(200).json({ success: true, data: category, })
         
         
