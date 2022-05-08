@@ -14,7 +14,7 @@ exports.getInvitations = asyncHandler(async (req, res, next) => {
         // Pagination
         const pagination = await paginate(page, limit, Invitation)
 
-        const invitations = await Invitation.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "createUser", select: "name lastName firstName profile"})
+        const invitations = await Invitation.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "createUser", select: "name lastName firstName profile organization"})
 
         res.status(200).json({ success: true, data: invitations, pagination, })
     
@@ -22,7 +22,7 @@ exports.getInvitations = asyncHandler(async (req, res, next) => {
 
 exports.getInvitation = asyncHandler( async (req, res, next) => {
     
-        const invitation = await Invitation.findById(req.params.id).populate({path: "createUser", select: "name lastName firstName profile"})
+        const invitation = await Invitation.findById(req.params.id).populate({path: "createUser", select: "name lastName firstName profile organization"})
         
         if(!invitation) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)
