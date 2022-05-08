@@ -22,7 +22,7 @@ exports.getInvitations = asyncHandler(async (req, res, next) => {
 
 exports.getInvitation = asyncHandler( async (req, res, next) => {
     
-        const invitation = await Invitation.findById(req.params.id).populate('books')
+        const invitation = await Invitation.findById(req.params.id)
         
         if(!invitation) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)
@@ -32,7 +32,7 @@ exports.getInvitation = asyncHandler( async (req, res, next) => {
 })
 
 exports.getCvInvitations = asyncHandler(async (req, res, next) => {
-        req.query.invitation = req.params.cvId;
+        req.query.candidate = req.params.id;
         return this.getInvitations(req, res, next);
 });
 
