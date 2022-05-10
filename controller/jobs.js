@@ -389,18 +389,18 @@ exports.specialJob = asyncHandler(async (req, res, next) => {
     } else if (req.body.special == 7) {
         const date = new Date()
         profile.point -= 20
-        profile.special = date.addDays(req.body.special)
-        profile.isSpecial = true
+        job.special = date.addDays(req.body.special)
+        job.isSpecial = true
     } else if (req.body.special == 14) {
       const date = new Date()
       profile.point -= 30
-      profile.special = date.addDays(req.body.special)
-      profile.isSpecial = true
+      job.special = date.addDays(req.body.special)
+      job.isSpecial = true
     } else if (req.body.special == 30) {
       const date = new Date()
       profile.point -= 40
-      profile.special = date.addDays(req.body.special)
-      profile.isSpecial = true
+      job.special = date.addDays(req.body.special)
+      job.isSpecial = true
     } 
     } 
   // const expire = setTimeout(() => {job.isSpecial = false, job.save()}, Math.abs(Number(job.special) - Date.now()))
@@ -525,6 +525,16 @@ exports.createJob = asyncHandler(async (req, res, next) => {
     date.setDate(date.getDate() + days);
     return date;
   };
+  if (req.body.urgent != undefined) {
+    if (profile.point < req.body.urgent) {
+      throw new MyError(" Point оноо хүрэхгүй байна", 400);
+    } else {
+        const date = new Date()
+        profile.point -= req.body.urgent
+        req.body.urgent = date.addDays(req.body.urgent)
+        req.body.isUrgent = true
+    }
+  } 
 
   if (req.body.order != undefined) {
     if (profile.point < req.body.order) {
@@ -540,16 +550,7 @@ exports.createJob = asyncHandler(async (req, res, next) => {
     }
   } 
 
-  if (req.body.urgent != undefined) {
-    if (profile.point < req.body.urgent) {
-      throw new MyError(" Point оноо хүрэхгүй байна", 400);
-    } else {
-        const date = new Date()
-        profile.point -= req.body.urgent
-        profile.urgent = date.addDays(req.body.urgent)
-        profile.isUrgent = true
-    }
-  } 
+
 
   if (req.body.special != undefined) {
     if (profile.point < req.body.special) {
@@ -557,18 +558,18 @@ exports.createJob = asyncHandler(async (req, res, next) => {
     } else if (req.body.special == 7) {
         const date = new Date()
         profile.point -= 20
-        profile.special = date.addDays(req.body.special)
-        profile.isSpecial = true
+        req.body.special = date.addDays(req.body.special)
+        req.body.isSpecial = true
     } else if (req.body.special == 14) {
       const date = new Date()
       profile.point -= 30
-      profile.special = date.addDays(req.body.special)
-      profile.isSpecial = true
+      req.body.special += date.addDays(req.body.special)
+      req.body.isSpecial = true
     } else if (req.body.special == 30) {
       const date = new Date()
       profile.point -= 40
-      profile.special = date.addDays(req.body.special)
-      profile.isSpecial = true
+      req.body.special = date.addDays(req.body.special)
+      req.body.isSpecial = true
     } 
     } 
 
