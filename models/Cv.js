@@ -43,6 +43,12 @@ const CvSchema = new mongoose.Schema({
   invoiceId: {
     type: String,
   },
+  invoiceSocialId: {
+    type: String,
+  },
+  transactionId: {
+    type: String,
+  },
   qrImage: {
     type: String,
   },

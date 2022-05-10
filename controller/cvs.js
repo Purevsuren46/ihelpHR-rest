@@ -350,73 +350,104 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
     req.body.point = req.params.numId
     req.body.createUser = req.params.id
     const transaction = await Transaction.create(req.body);
-  // await axios({
-  //   method: 'post',
-  //   url: 'https://merchant.qpay.mn/v2/auth/token',
-  //   headers: {
-  //     Authorization: `Basic SUhFTFA6NXNEdkVRazM=`
-  //   },
-
-  // }).then(response => {
-  //   const token = response.data.access_token;
-
-  //   axios({
-  //     method: 'get',
-  //     url: `https://merchant.qpay.mn/v2/invoice/${wallet.invoiceId}`,
-  //     headers: {
-  //       Authorization: `Bearer ${token}`
-  //     },
-  //     // data: {
-  //     //   object_type: "INVOICE",
-  //     //   object_id  : `${wallet.invoiceId}`,
-  //     //   offset     : {
-  //     //       page_number: 1,
-  //     //       page_limit : 100
-  //     //     }
-  //     // }
-  //   }).then(response = async(response) => {
-  //     let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
-  //     let messages = [];
-  //     if (!Expo.isExpoPushToken(profile.expoPushToken)) {
-  //         console.error(`Push token ${profile.expoPushToken} is not a valid Expo push token`);
-  //     }
-  //     messages.push({
-  //         to: profile.expoPushToken,
-  //         sound: 'default',
-  //         body: `${(parseInt(response.data.payments[0].payment_amount) / 1000)} Point-оор цэнэглэгдлээ`,
-  //         data: { data: "notification._id" },
-  //       })
-  //     let chunks = expo.chunkPushNotifications(messages);
-  //     let tickets = [];
-  //     (async () => {
-  //         for (let chunk of chunks) {
-  //           try {
-  //             let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-  //             // console.log(ticketChunk);
-  //             tickets.push(...ticketChunk);
-  //           } catch (error) {
-  //             console.error(error);
-  //           }
-  //         }
-  //       })();
-  //       wallet.qrImage = null
-  //       wallet.save()
-  //       profile.point += (parseInt(response.data.payments[0].payment_amount) / 1000)
-  //       profile.save()
-  //   })
-  //   .catch(error => {
-  //     console.log(error.response.data);
-  //   });
-  // })
-  // .catch(error => {
-  //   console.log(error.response.data);
-  // });
 
 
   res.status(200).json({
     success: true,
     data: profile,
     transaction: transaction
+  });
+});
+
+exports.chargeSocial = asyncHandler(async (req, res, next) => {
+  const profile = await Cv.findOne({transactionId: req.body.transactionId});
+  // const wallet = await Wallet.findById(profile.invoiceId)
+  // const charge = req.query
+  // console.log(charge.qpay_payment_id)
+  if (!profile) {
+    throw new MyError(" Хэрэглэгч байхгүй!", 400);
+  }
+  if (req.body.errorDesc == "Амжилттай") {
+    let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+  let messages = [];
+  if (!Expo.isExpoPushToken(profile.expoPushToken)) {
+      console.error(`Push token ${profile.expoPushToken} is not a valid Expo push token`);
+  }
+  messages.push({
+      to: profile.expoPushToken,
+      sound: 'default',
+      body: `${(req.body.amount / 1000)} Point-оор цэнэглэгдлээ`,
+      data: { data: "notification._id" },
+    })
+  let chunks = expo.chunkPushNotifications(messages);
+  let tickets = [];
+  (async () => {
+      for (let chunk of chunks) {
+        try {
+          let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+          // console.log(ticketChunk);
+          tickets.push(...ticketChunk);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    })();
+    profile.point += (req.body.amount / 1000)
+    profile.save()
+    req.body.point = req.body.amount
+    req.body.createUser = profile._id
+    const transaction = await Transaction.create(req.body);
+
+
+  res.status(200).json({
+    success: true,
+    data: profile,
+    transaction: transaction
+  });
+  } else {
+    throw new MyError(" Амжилтгүй", 400);
+  }
+  
+});
+
+exports.invoiceSocialpay = asyncHandler(async (req, res, next) => {
+  const profile = await Cv.findById(req.params.id);
+
+  var val = Math.floor(100000000000 + Math.random() * 900000000000);
+
+  function hmac256(key, message) {
+    let hash = crypto.createHmac("sha256", key).update(message);
+    return hash.digest("hex");
+  }
+  const check = hmac256("esx@bo#Dv88#3tJ)", `${val}${req.body.amount}GEThttp://128.199.128.37/api/v1/cvs/callbacks/${req.params.id}/${req.body.amount}`)
+
+  await axios({
+    method: 'post',
+    url: 'https://ecommerce.golomtbank.com/api/invoice',
+    headers: {
+      Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJNRVJDSEFOVF9OT1ZFTElTVF9MTEMiLCJpYXQiOjE2NTIwNTk5NzB9.gGrMufT6mnGKxv3O5vjQs4qNjOqIwclswGMffnAcX9w`
+    },
+    data: {
+      amount: `${req.body.amount}`,
+      callback: `http://128.199.128.37/api/v1/cvs/callbacks/${req.params.id}/${req.body.amount}`,
+      checksum: `${check}`,
+      genToken: "Y",
+      returnType: "GET",
+      transactionId: `${val}`
+    }
+
+  }).then(response => {
+    profile.transactionId = response.data.transactionId
+    profile.invoiceSocialId = response.data.invoice
+    profile.save()
+  })
+  .catch(error => {
+    console.log(error.response.data);
+  });
+
+
+  res.status(200).json({
+    success: true,
   });
 });
 

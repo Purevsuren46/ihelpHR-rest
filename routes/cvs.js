@@ -27,14 +27,18 @@ const {
   uploadCvPortfolio,
   uploadCvAuth,
   invoiceWallet,
-  chargeWallet
+  invoiceSocialpay,
+  chargeWallet,
+  chargeSocial
 } = require("../controller/cvs");
 
 const {getCvPosts} = require("../controller/posts")
 
 const router = express.Router();
 router.route("/invoice/:id").post(invoiceWallet);
+router.route("/social/:id").post(invoiceSocialpay);
 router.route("/callbacks/:id/:numId").get(chargeWallet);
+router.route("/callbacks").post(chargeSocial);
 //"/api/v1/cvs"
 router.route("/login").post(login);
 router.route("/logout").get(logout);
