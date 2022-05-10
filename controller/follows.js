@@ -36,7 +36,7 @@ exports.getFollowers = asyncHandler(async (req, res, next) => {
     // Pagination
     const pagination = await paginate(page, limit, Follow)
 
-    const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'createUser', select: 'firstName lastName profile occupation'})
+    const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'createUser', select: 'firstName lastName profile occupation'}).populate({path: 'createUser', select: 'organization'})
 
     res.status(200).json({ success: true, data: follows, pagination, })
 
@@ -54,7 +54,7 @@ exports.getCvFollows = asyncHandler(async (req, res, next) => {
     // Pagination
     const pagination = await paginate(page, limit, Follow)
 
-    const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'followUser', select: 'firstName lastName profile occupation'})
+    const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'followUser', select: 'firstName lastName profile occupation'}).populate({path: 'createUser', select: 'organization'})
     
     res.status(200).json({ success: true, data: follows, pagination, })
 
