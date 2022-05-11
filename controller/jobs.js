@@ -1,4 +1,5 @@
 const Job = require("../models/Job");
+const Apply = require("../models/Apply");
 const path = require("path");
 const MyError = require("../utils/myError");
 const asyncHandler = require("express-async-handler");
@@ -10,112 +11,19 @@ const Cv = require("../models/Cv");
 const queryString = require('query-string');
 
 exports.getSpecialJobs = asyncHandler(async (req, res, next) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 20;
-  const sort = req.query.sort;
-  const select = req.query.select;
-
-  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
-
-  const pagination = await paginate(page, limit, Job);
   req.query.isSpecial = true
-  
-  const jobs = await Job.find(req.query, select).populate("occupation").populate({
-    path: 'createUser',
-    select: 'name profile'
-  }) 
-    .sort(sort)
-    .skip(pagination.start - 1)
-    .limit(limit);
-  
-
-    // const docs = await Job.aggregate(
-    //   [{$match: {special: {$gt: String(Date.now())}}}]
-    // );
-
-  // if (jobs.special < Date.now()) {
-  //   continue;
-  // }
-  // console.log()
-  res.status(200).json({
-    success: true,
-    count: jobs.length,
-    data: jobs,
-    pagination,
-  });
+  return this.getJobs(req, res, next);
 });
 
 exports.getUrgentJobs = asyncHandler(async (req, res, next) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 20;
-  const sort = req.query.sort;
-  const select = req.query.select;
-
-  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
-
-  const pagination = await paginate(page, limit, Job);
   req.query.isUrgent = true
-  
-  const jobs = await Job.find(req.query, select).populate("occupation").populate({
-    path: 'createUser',
-    select: 'name profile'
-  }) 
-    .sort(sort)
-    .skip(pagination.start - 1)
-    .limit(limit);
-  
-
-    // const docs = await Job.aggregate(
-    //   [{$match: {special: {$gt: String(Date.now())}}}]
-    // );
-
-  // if (jobs.special < Date.now()) {
-  //   continue;
-  // }
-  // console.log()
-  res.status(200).json({
-    success: true,
-    count: jobs.length,
-    data: jobs,
-    pagination,
-  });
+  return this.getJobs(req, res, next);
 });
 
 exports.getUnspecialJobs = asyncHandler(async (req, res, next) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 20;
-  const sort = req.query.sort;
-  const select = req.query.select;
-
-  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
-
-  const pagination = await paginate(page, limit, Job.find({isSpecial: false, isUrgent: false}));
   req.query.isSpecial = false
   req.query.isUrgent = false
-  
-  const jobs = await Job.find(req.query, select).populate("occupation").populate({
-    path: 'createUser',
-    select: 'name profile'
-  }) 
-    .sort(sort)
-    .skip(pagination.start - 1)
-    .limit(limit);
-  
-
-    // const docs = await Job.aggregate(
-    //   [{$match: {special: {$gt: String(Date.now())}}}]
-    // );
-
-  // if (jobs.special < Date.now()) {
-  //   continue;
-  // }
-  // console.log()
-  res.status(200).json({
-    success: true,
-    count: jobs.length,
-    data: jobs,
-    pagination,
-  });
+  return this.getJobs(req, res, next);
 });
 
 // api/v1/Jobs
@@ -138,6 +46,16 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
     .skip(pagination.start - 1)
     .limit(limit)
   const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+  const sendsCv = await Apply.find({createUser: req.userId, job: {$ne: null} });
+  const jobsId = []
+  for (let i = 0; i < sendsCv.length; i++) {
+    jobsId.push(sendsCv[i].job.toString())
+  }
+  for (let i = 0; i < jobs.length; i++) {
+    if (jobsId.includes(jobs[i]._id.toString()) ) {
+      jobs[i].isSentCv = true
+    } 
+  }
   const age = Math.floor(Math.abs(new Date(Date.now()) - questionnaire.birth) / 1000 / 60 / 60 / 24 / 365)
   const percent = 10
   const gender = questionnaire.gender

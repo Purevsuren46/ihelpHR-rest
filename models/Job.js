@@ -62,6 +62,22 @@ const JobSchema = new mongoose.Schema({
           "4,000,000 - 5,000,000", 
           "5,000,000 -аас дээш"]
   },
+  partTimeSalary: {
+    type: String,
+    enum: [
+        "1,000 - 3,000₮", 
+        "3,000 - 5,000₮",
+        "5,000 - 8,000₮"
+        ]
+  },
+  isPartTime: {
+    type: Boolean,
+    default: false
+  },
+  isSentCv: {
+    type: Boolean,
+    default: false
+  },
   type: {
     type: String,
     enum: ['Бүтэн цаг', 'Хагас цаг', 'freelancer', 'self-employed', 'contract', 'intern', 'apprentice', 'seasonal' ]
