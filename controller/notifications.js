@@ -44,7 +44,7 @@ if (!notification) {
   throw new MyError(req.params.id + " ID-тэй ажил байхгүй байна.", 404);
 }
 
-if (req.userId == notification.for) {
+if (req.userId == notification.for._id) {
   notification.isRead = true
   notification.save()
   cv.notification -= 1
