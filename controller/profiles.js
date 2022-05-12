@@ -188,6 +188,7 @@ exports.getSpecialEmployerProfiles = asyncHandler(async (req, res, next) => {
     path: 'job',
     populate: { path: 'occupation', select: 'name' }
   })
+    .populate({path: "category", select: "name"})
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -242,6 +243,7 @@ exports.getUnspecialEmployerProfiles = asyncHandler(async (req, res, next) => {
     path: 'job',
     populate: { path: 'occupation', select: 'name' }
   })
+    .populate({path: "category", select: "name"})
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);

@@ -253,6 +253,13 @@ exports.deleteLike = asyncHandler(async (req, res, next) => {
         } 
         if(like !== null) {
             const post = await Post.findById(req.params.id)
+            const cv = await Cv.findById(post.createUser)
+            const notif = await Notification.findOne({who: req.userId, like: like._id, for: post.createUser})
+            if (notif.isRead == false) {
+              cv.notification -= 1
+              cv.save()
+            }
+            notif.remove()
             post.like -= 1
             post.save()
             like.remove()
