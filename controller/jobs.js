@@ -215,8 +215,13 @@ exports.getCvFilterJobs = asyncHandler(async (req, res, next) => {
 exports.getJob = asyncHandler(async (req, res, next) => {
   const job = await Job.findById(req.params.id).populate("occupation").populate({
     path: 'createUser',
-    select: 'name profile'
+    select: 'name profile category'
+  }).populate({
+    path: 'createUser',
+    select: "category",
+    populate: {path: "category", select: "name"}
   })
+
 
   if (!job) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
