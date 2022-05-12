@@ -86,7 +86,7 @@ exports.getCvApplies = asyncHandler(async (req, res, next) => {
       
 exports.createApply = asyncHandler(async (req, res, next) => {
         const likes = await Apply.findOne({createUser: req.userId, job: req.params.id}).exec()
-        if (likes == null) {
+        if (likes == null || likes == undefined) {
             const quest = await Questionnaire.findOne({createUser: req.userId})
             if (quest.birth || quest.location || quest.birthPlace || quest.profession == null) {
               throw new MyError("Анкет-аа бүрэн оруулна уу", 400)
