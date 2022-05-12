@@ -15,7 +15,7 @@ const select = req.query.select;
 const pagination = await paginate(page, limit, Notification);
 const notifications = await Notification.find(req.query, select)
   .populate({ path: 'like', select: 'post' })
-  .populate({ path: 'who', select: 'lastName firstName' })
+  .populate({ path: 'who', select: 'lastName firstName profile' })
   .populate({ path: 'for', select: 'lastName firstName' })
   .sort(sort)
   .skip(pagination.start - 1)
