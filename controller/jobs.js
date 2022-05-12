@@ -215,10 +215,7 @@ exports.getCvFilterJobs = asyncHandler(async (req, res, next) => {
 exports.getJob = asyncHandler(async (req, res, next) => {
   const job = await Job.findById(req.params.id).populate("occupation").populate({
     path: 'createUser',
-    select: 'name profile category'
-  }).populate({
-    path: 'createUser',
-    select: "category",
+    select: "category name profile jobNumber",
     populate: {path: "category", select: "name"}
   })
 
