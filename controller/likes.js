@@ -262,7 +262,6 @@ exports.deleteLike = asyncHandler(async (req, res, next) => {
                 notif.remove()
               }
             }
-
             post.like -= 1
             post.save()
             like.remove()

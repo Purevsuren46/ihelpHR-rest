@@ -151,7 +151,9 @@ const CvSchema = new mongoose.Schema({
   },
   profession: {
     type: String,
-    default: null
+  },
+  workingCompany: {
+    type: String,
   },
   questionnaire: {
     type: mongoose.Schema.ObjectId,

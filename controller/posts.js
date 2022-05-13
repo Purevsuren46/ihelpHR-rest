@@ -109,9 +109,9 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Post.find({createUser: user, isBoost: false  }))
 
 
-  const post = await Post.find({createUser: user, isBoost: false  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile organization'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile organization'}})
+  const post = await Post.find({createUser: user, isBoost: false  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile organization profession workingCompany'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile organization profession workingCompany'}})
 
-  const boost = await Post.find({isBoost: true}).sort({"createdAt": -1})
+  const boost = await Post.find({isBoost: true}).sort({"createdAt": -1}).populate({path: 'createUser', select: 'lastName firstName profile organization profession workingCompany'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile organization profession workingCompany'}})
   if (post[post.length - 1] != undefined) {
     const lik = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gte: post[post.length - 1].createdAt}}).select('post')
     const like = []

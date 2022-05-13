@@ -217,6 +217,10 @@ const QuestionnareSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  score: {
+    type: Number,
+    default: 0
+  },  
   createUser: {
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',

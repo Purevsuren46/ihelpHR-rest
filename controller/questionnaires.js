@@ -56,8 +56,11 @@ exports.createQuestionnaire = asyncHandler(async (req, res, next) => {
     const questionnaire = await Questionnaire.create(req.body);
     if(questionnaire.profession != null) {
       cv.profession = questionnaire.profession
-      cv.save()
     }
+    if(questionnaire.workingCompany != null) {
+      cv.workingCompany = questionnaire.workingCompany
+    }
+    cv.save()
     res.status(200).json({
       success: true,
       data: questionnaire,
@@ -76,6 +79,9 @@ exports.createQuestionnaire = asyncHandler(async (req, res, next) => {
     }
     if(quest.lastName != null) {
       cv.lastName = quest.lastName
+    }
+    if(quest.workingCompany != null) {
+      cv.workingCompany = quest.workingCompany
     }
     cv.save()
     res.status(200).json({
@@ -97,7 +103,12 @@ exports.updateQuestionnaire = asyncHandler(async (req, res, next) => {
   }
   if(quest.lastName != null) {
     cv.lastName = quest.lastName
-
+  }
+  if(quest.profession != null) {
+    cv.profession = quest.profession
+  }
+  if(quest.workingCompany != null) {
+    cv.workingCompany = quest.workingCompany
   }
   cv.save()
 
