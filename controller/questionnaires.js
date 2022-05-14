@@ -35,10 +35,44 @@ exports.getQuestionnaires = asyncHandler(async (req, res, next) => {
 // Хэрэглэгчийг iD гаар авна
 exports.getQuestionnaire = asyncHandler(async (req, res, next) => {
   const questionnaire = await Questionnaire.findOne({createUser: req.params.id});
-
   if (!questionnaire) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
   }
+  if (questionnaire.birth != null) {
+    questionnaire.score += 10
+  }
+  if (questionnaire.location != null) {
+    questionnaire.score += 10
+  }
+  if (questionnaire.birthPlace != null) {
+    questionnaire.score += 10
+  }
+  if (questionnaire.phoneEmergency != null) {
+    questionnaire.score += 10
+  }
+  if (questionnaire.profession != null) {
+    questionnaire.score += 10
+  }
+  if (questionnaire.register != null) {
+    questionnaire.score += 10
+  }
+  if (questionnaire.education != null) {
+    questionnaire.score += 10
+  }
+  if (questionnaire.experiences != null) {
+    questionnaire.score += 10
+  }
+  if (questionnaire.course.length > 0) {
+    questionnaire.score += 10
+  }
+  if (questionnaire.experience.length > 0) {
+    questionnaire.score += 10
+  }
+  if (questionnaire.achievement.length > 0) {
+    questionnaire.score += 10
+  }
+
+
 
   res.status(200).json({
     success: true,

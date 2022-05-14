@@ -88,7 +88,42 @@ exports.createApply = asyncHandler(async (req, res, next) => {
         const likes = await Apply.findOne({createUser: req.userId, job: req.params.id}).exec()
         if (likes == null || likes == undefined) {
             const quest = await Questionnaire.findOne({createUser: req.userId})
-            if (quest.birth || quest.location || quest.birthPlace || quest.profession == null) {
+            if (quest.birth != null) {
+              quest.score += 10
+            }
+            if (quest.location != null) {
+              quest.score += 10
+            }
+            if (quest.birthPlace != null) {
+              quest.score += 10
+            }
+            if (quest.phoneEmergency != null) {
+              quest.score += 10
+            }
+            if (quest.profession != null) {
+              quest.score += 10
+            }
+            if (quest.register != null) {
+              quest.score += 10
+            }
+            if (quest.education != null) {
+              quest.score += 10
+            }
+            if (quest.experiences != null) {
+              quest.score += 10
+            }
+            if (quest.course.length > 0) {
+              quest.score += 10
+            }
+            if (quest.experience.length > 0) {
+              quest.score += 10
+            }
+            if (quest.achievement.length > 0) {
+              quest.score += 10
+            }
+
+
+            if (quest.score < 70) {
               throw new MyError("Анкет-аа бүрэн оруулна уу", 400)
             }
 

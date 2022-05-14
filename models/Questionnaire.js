@@ -49,6 +49,7 @@ const QuestionnareSchema = new mongoose.Schema({
   },
   workingCompany: {
     type: String,
+    default: null
   },
   status: {
     type: String,
