@@ -144,6 +144,14 @@ const QuestionnareSchema = new mongoose.Schema({
   company: {
       type: String,
   },
+  companyId: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Cv",
+  },
+  companyPhoto: {
+    type: String,
+    default: "cover_620f25f83f2cc51604fadfe0.jpg"
+  },
   category: {
       type: mongoose.Schema.ObjectId,
       ref: "Category",
