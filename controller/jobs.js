@@ -46,7 +46,15 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
     .skip(pagination.start - 1)
     .limit(limit)
   const questionnaire = await Questionnaire.findOne({createUser: req.userId});
-  const sendsCv = await Apply.find({createUser: req.userId, job: {$ne: null} });
+  if (questionnaire == null) {
+    res.status(200).json({
+      success: true,
+      count: jobs.length,
+      data: jobs,
+      pagination,
+    });
+  } else {
+    const sendsCv = await Apply.find({createUser: req.userId, job: {$ne: null} });
   const jobsId = []
   for (let i = 0; i < sendsCv.length; i++) {
     jobsId.push(sendsCv[i].job.toString())
@@ -125,6 +133,8 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
     data: jobs,
     pagination,
   });
+  }
+  
 });
 
 exports.getProfileJobs = asyncHandler(async (req, res, next) => {
