@@ -186,6 +186,14 @@ const QuestionnareSchema = new mongoose.Schema({
       
   default: null
   },
+  schoolId: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Cv",
+  },
+  schoolPhoto: {
+    type: String,
+    default: "cover_620f25f83f2cc51604fadfe0.jpg"
+  },
   grade: {
       type: String,
       
