@@ -25,7 +25,7 @@ const NotificationSchema = new mongoose.Schema(
     },
     share: {
       type: mongoose.Schema.ObjectId,
-      ref: "Share",
+      ref: "Post",
     },
     who: {
       type: mongoose.Schema.ObjectId,

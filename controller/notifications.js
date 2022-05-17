@@ -16,7 +16,7 @@ const pagination = await paginate(page, limit, Notification);
 const notifications = await Notification.find(req.query, select)
   .populate({ path: 'like', select: 'post' })
   .populate({ path: 'comment', select: 'post' })
-  .populate({ path: 'share', select: 'post' })
+  .populate({ path: 'share', select: 'sharePost ' })
   .populate({ path: 'who', select: 'lastName firstName profile' })
   .populate({ path: 'for', select: 'lastName firstName' })
   .sort(sort)
@@ -60,7 +60,6 @@ res.status(200).json({
 });
 
 exports.createNotification = asyncHandler(async (req, res, next) => {
-console.log("data: ", req.body)
 const occupation = await Notification.create(req.body)
 res.status(200).json({ success: true, data: occupation, })
     

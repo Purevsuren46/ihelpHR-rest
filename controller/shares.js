@@ -121,6 +121,8 @@ exports.createShare = asyncHandler(async (req, res, next) => {
         req.body.who = req.userId
         req.body.for = post.createUser
         const notification = await Notification.create(req.body)
+        console.log(notification)
+
         const cv = await Cv.findById(post.createUser)
         cv.notification += 1
         cv.save()
