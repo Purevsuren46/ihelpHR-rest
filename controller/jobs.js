@@ -45,7 +45,7 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
   .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit)
-  const questionnaire = await Questionnaire.findOne({createUser: req.userId});W
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
   if (questionnaire == null) {
     res.status(200).json({
       success: true,

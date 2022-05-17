@@ -23,6 +23,7 @@ const historiesRoutes = require("./routes/histories");
 const jobsRoutes = require("./routes/jobs");
 const postsRoutes = require("./routes/posts");
 const commentsRoutes = require("./routes/comments");
+const schoolsRoutes = require("./routes/schools");
 const sharesRoutes = require("./routes/shares");
 const likesRoutes = require("./routes/likes");
 const followsRoutes = require("./routes/follows");
@@ -136,6 +137,7 @@ app.use("/api/v1/scores", scoresRoutes);
 app.use("/api/v1/applies", appliesRoutes);
 app.use("/api/v1/wallets", walletsRoutes);
 app.use("/api/v1/transactions", transactionsRoutes);
+app.use("/api/v1/schools", schoolsRoutes);
 
 // Алдаа үүсэхэд барьж авч алдааны мэдээллийг клиент тал руу автоматаар мэдээлнэ
 app.use(errorHandler);
