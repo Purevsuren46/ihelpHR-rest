@@ -36,7 +36,7 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
   const pagination = await paginate(page, limit, Job);
-
+Анар
   const jobs = await Job.find(req.query, select).populate("occupation").populate({
     path: 'createUser',
     select: 'name profile'
