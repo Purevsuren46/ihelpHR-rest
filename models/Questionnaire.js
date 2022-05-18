@@ -194,6 +194,9 @@ const QuestionnareSchema = new mongoose.Schema({
     type: String,
     default: "cover_620f25f83f2cc51604fadfe0.jpg"
   },
+  location: {
+    type: String,
+  },
   grade: {
       type: String,
       
