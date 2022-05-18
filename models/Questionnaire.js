@@ -172,11 +172,6 @@ const QuestionnareSchema = new mongoose.Schema({
   },
   }],
   course: [{ 
-    description: {
-      type: String,
-      maxlength: [500, "Категорийн тайлбарын урт 500 тэмдэгт байх ёстой."],
-      default: null
-  },
   field: {
       type: String,
   default: null
