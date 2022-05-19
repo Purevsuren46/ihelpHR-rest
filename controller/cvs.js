@@ -622,7 +622,8 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   // Имэйл илгээнэ
   const link = `${resetToken}`;
 
-  const message = `Сайн байна уу<br><br>Таны хүсэлтийг илгээлээ.<br> Нууц үг өөрчлөх код:<br><br>${link}<br><br>Өдрийг сайхан өнгөрүүлээрэй!`;
+  const message = `Нууц үг өөрчлөх код: ${link}`;
+  const param = encodeURI(message)
 
   // const info = await sendEmail({
   //   email: cv.email,
@@ -632,13 +633,32 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
     await axios({
     method: "get",
-    url: `https://api.messagepro.mn/send?key=63053350aa1c4d36e94d0756f4ec160e&from=72773055&to=${req.body.phone}&text=${link}`
+    url: `https://api.messagepro.mn/send?key=63053350aa1c4d36e94d0756f4ec160e&from=72773055&to=${req.body.phone}&text=${param}`
   })
 
   res.status(200).json({
     success: true,
-    resetToken,
   });
+});
+
+exports.changePhone = asyncHandler(async (req, res, next) => {
+
+  const random = await Phone.findOne({random: req.body.random})
+  if (random == null) {
+    throw new MyError("Мессежний код буруу байна", 400)
+  } else {
+  const cv = await Cv.findOne({phone: random.phone})
+    cv.phone = random.newPhone
+    cv.save()
+    const rando = await Phone.deleteOne({random: req.body.random})
+
+    
+    res.status(200).json({
+      success: true,
+      data: cv,
+    });
+  }
+
 });
 
 exports.resetPassword = asyncHandler(async (req, res, next) => {

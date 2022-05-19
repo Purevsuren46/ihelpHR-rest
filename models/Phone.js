@@ -7,6 +7,9 @@ const PhoneSchema = new mongoose.Schema({
     random: {
         type: Number,
     },
+    newPhone: {
+        type: Number,
+    },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 
