@@ -43,7 +43,6 @@ exports.getCategoryOccupations = asyncHandler(async (req, res, next) => {
 });
 
 exports.createOccupation = asyncHandler(async (req, res, next) => {
-    console.log("data: ", req.body)
 
     const occupation = await Occupation.create(req.body)
 

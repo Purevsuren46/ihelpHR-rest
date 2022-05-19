@@ -12,8 +12,6 @@ const {
   getCvFilterJobs,
   specialJob,
   urgentJob,
-  likeJob,
-  unlikeJob,
   deleteJob,
   updateJob,
   applyJob,
@@ -33,8 +31,6 @@ router.route("/unspecials").get(protect, getUnspecialJobs)
 router.route("/urgents").get(protect, getUrgentJobs)
 router.route("/filters").get(protect, getCvFilterJobs)
   
-router.route("/:id/like").get(protect, likeJob)  
-router.route("/:id/unlike").get(protect, unlikeJob)  
 
 
 router

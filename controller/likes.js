@@ -79,7 +79,7 @@ exports.getCvJobLikes = asyncHandler(async (req, res, next) => {
     const likes = like.map((item)=>item.job)
     const likes1 = likes.map(item=>item.toString())
 
-    res.status(200).json({ success: true, data: likes1, pagination, })
+    res.status(200).json({ success: true, data: like, pagination, })
 
 })
 
@@ -95,7 +95,7 @@ exports.getJobLikes = asyncHandler(async (req, res, next) => {
     // Pagination
     const pagination = await paginate(page, limit, Like)
 
-    const like = await Like.find({createUser: req.params.id, job: {$ne: null}}).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "job", populate: {path: "createUser", select: "firstName lastName name profile"}})
+    const like = await Like.find({createUser: req.params.id, job: {$ne: null}}).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "job", populate: {path: "createUser", select: "firstName lastName name profile"}}).populate({path: "job", populate: {path: "occupation", select: "name"}})
     // const likes = like.map((item)=>item.job)
     // const likes1 = likes.map(item=>item.toString())
 
@@ -194,6 +194,7 @@ exports.createJobLike = asyncHandler(async (req, res, next) => {
     req.body.like = like._id
     req.body.who = req.userId
     req.body.for = post.createUser
+    req.body.isJob = true
     const notification = await Notification.create(req.body)
     const cv = await Cv.findById(post.createUser)
     cv.notification += 1

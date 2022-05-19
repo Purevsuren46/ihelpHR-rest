@@ -265,36 +265,6 @@ exports.getJob = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.likeJob = asyncHandler(async (req, res, next) => {
-  const job = await Job.findById(req.params.id);
-
-  if (!job) {
-    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
-  }
-  job.like.addToSet(req.userId);
-  job.save()
-
-  res.status(200).json({
-    success: true,
-    data: job
-  });
-});
-
-exports.unlikeJob = asyncHandler(async (req, res, next) => {
-  const job = await Job.findById(req.params.id);
-
-  if (!job) {
-    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
-  }
-  job.like.remove(req.userId);
-  job.save()
-
-  res.status(200).json({
-    success: true,
-    data: job
-  });
-});
-
 exports.specialJob = asyncHandler(async (req, res, next) => {
   const job = await Job.findById(req.params.id);
   const profile = await Cv.findById(req.userId);
