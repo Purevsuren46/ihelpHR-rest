@@ -549,10 +549,131 @@ exports.updateCv = asyncHandler(async (req, res, next) => {
     cv.isCvList = cvv.isCvList
     cv.save()
   }
+  if (req.body.status) {
+
+    const follows = await Follow.find({followUser: req.params.id}).populate({path: "createUser", select: "expoPushToken"})
+    const user = follows.map((item)=>item.createUser)
+    const expos = []
+    for (let i=0; i < follows.length; i++) {
+      if (user[i] != null) {
+        expos.push(user[i].expoPushToken)
+      }
+    }
+    for (let i=0; i < expos.length; i++) {
+      let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+      let messages = [];
+      if (!Expo.isExpoPushToken(cv.expoPushToken)) {
+          console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
+      }
+      if (req.body.status == "working") {
+        messages.push({
+          to: expos[i],
+          sound: 'default',
+          body: `${cv.firstName} ажилд орлоо`,
+          data: {  data1: "NetworkingStack" },
+        })
+      let chunks = expo.chunkPushNotifications(messages);
+      let tickets = [];
+      (async () => {
+          for (let chunk of chunks) {
+            try {
+              let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+              tickets.push(...ticketChunk);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        })();
+      }
+      if (req.body.status == "opentowork") {
+        messages.push({
+          to: expos[i],
+          sound: 'default',
+          body: `${cv.firstName} ажлын байранд нээлттэй боллоо`,
+          data: {  data1: "NetworkingStack" },
+        })
+      let chunks = expo.chunkPushNotifications(messages);
+      let tickets = [];
+      (async () => {
+          for (let chunk of chunks) {
+            try {
+              let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+              tickets.push(...ticketChunk);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        })();
+      }
+      if (req.body.status == "getEmployee") {
+        messages.push({
+          to: expos[i],
+          sound: 'default',
+          body: `${cv.firstName} ажиллах хүч авна`,
+          data: {  data1: "NetworkingStack" },
+        })
+      let chunks = expo.chunkPushNotifications(messages);
+      let tickets = [];
+      (async () => {
+          for (let chunk of chunks) {
+            try {
+              let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+              tickets.push(...ticketChunk);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        })();
+      }
+      if (req.body.status == "lookingForJob") {
+        messages.push({
+          to: expos[i],
+          sound: 'default',
+          body: `${cv.firstName} ажил хайж байна`,
+          data: {  data1: "NetworkingStack" },
+        })
+      let chunks = expo.chunkPushNotifications(messages);
+      let tickets = [];
+      (async () => {
+          for (let chunk of chunks) {
+            try {
+              let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+              tickets.push(...ticketChunk);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        })();
+      }
+      if (req.body.status == "lookingForJob") {
+        messages.push({
+          to: expos[i],
+          sound: 'default',
+          body: `${cv.firstName} ажил хайж байна`,
+          data: {  data1: "NetworkingStack" },
+        })
+      let chunks = expo.chunkPushNotifications(messages);
+      let tickets = [];
+      (async () => {
+          for (let chunk of chunks) {
+            try {
+              let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+              tickets.push(...ticketChunk);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        })();
+      }
+      
+      
+    }
+
+
+
+  }
   if (req.userId == req.params.id || req.userRole == "admin") {
-    req.body.updateByUser = req.userId;
-    req.body.updateUser = req.params.id;
-    const history = await History.create(req.body)
+    
     res.status(200).json({
       success: true,
       data: cv,
