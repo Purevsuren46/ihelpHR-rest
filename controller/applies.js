@@ -1,4 +1,5 @@
 const Apply = require('../models/Apply')
+const Activity = require('../models/Activity')
 const Questionnaire = require('../models/Questionnaire')
 const Job = require('../models/Job')
 const Cv = require('../models/Cv')
@@ -139,6 +140,11 @@ exports.createApply = asyncHandler(async (req, res, next) => {
         req.body.who = req.userId
         req.body.for = post.createUser
         const notification = await Notification.create(req.body)
+        req.body.createUser = req.userId
+        req.body.type = "JobApply"
+        req.body.crud = "Create"
+        req.body.jobId = req.params.id
+        const activity = await Activity.create(req.body)
         const cv = await Cv.findById(post.createUser)
         cv.notification += 1
         cv.save()

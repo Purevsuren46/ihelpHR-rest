@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const Activity = require('../models/Activity')
 const Like = require("../models/Like");
 const Follow = require("../models/Follow");
 const Cv = require("../models/Cv");
@@ -109,9 +110,9 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Post.find({createUser: user, isBoost: false  }))
 
 
-  const post = await Post.find({createUser: user, isBoost: false  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile organization profession workingCompany'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile organization profession workingCompany'}})
+  const post = await Post.find({createUser: user, isBoost: false  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile organization profession workingCompany status'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile organization profession workingCompany status'}})
 
-  const boost = await Post.find({isBoost: true}).sort({"createdAt": -1}).populate({path: 'createUser', select: 'lastName firstName profile organization profession workingCompany'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile organization profession workingCompany'}})
+  const boost = await Post.find({isBoost: true}).sort({"createdAt": -1}).populate({path: 'createUser', select: 'lastName firstName profile organization profession workingCompany status'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile organization profession workingCompany status'}})
   if (post[post.length - 1] != undefined) {
     const lik = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gte: post[post.length - 1].createdAt}}).select('post')
     const like = []
@@ -228,6 +229,11 @@ exports.createPost = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.userId);
   cv.postNumber += 1
   cv.save()
+  req.body.createUser = req.userId
+  req.body.type = "Post"
+  req.body.crud = "Create"
+  req.body.postId = articl._id
+  const activity = await Activity.create(req.body)
 
   
   // image upload

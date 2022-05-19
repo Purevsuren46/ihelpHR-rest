@@ -5,6 +5,7 @@ const Like = require('../models/Like')
 const Cv = require('../models/Cv')
 const Post = require('../models/Post')
 const MyError = require("../utils/myError")
+const Activity = require('../models/Activity')
 const asyncHandler = require("express-async-handler")
 const paginate = require("../utils/paginate")
 const Expo = require("expo-server-sdk").Expo
@@ -121,7 +122,11 @@ exports.createShare = asyncHandler(async (req, res, next) => {
         req.body.who = req.userId
         req.body.for = post.createUser
         const notification = await Notification.create(req.body)
-        console.log(notification)
+        req.body.createUser = req.userId
+        req.body.type = "Share"
+        req.body.crud = "Create"
+        req.body.postId = req.params.id
+        const activity = await Activity.create(req.body)
 
         const cv = await Cv.findById(post.createUser)
         cv.notification += 1

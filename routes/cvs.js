@@ -5,17 +5,14 @@ const {
   login,
   getCvs,
   getCv,
-  getCvFollower,
-  getCvFollowing,
   getAuthCvs,
   createCv,
   settingProfile,
   sendPhone,
   authPhone,
+  getCvActivity,
   cvList,
   urgentProfile,
-  followCv,
-  unfollowCv,
   updateCv,
   deleteCv,
   forgotPassword,
@@ -64,10 +61,8 @@ router.route("/setting/:id").put(settingProfile);
 router.route("/urgent/:id").put(urgentProfile);
 router.route("/cvlist/:id").put(cvList);
 
-router.route("/:id/follow").get(followCv)  
-router.route("/:id/unfollow").get(unfollowCv)  
-
 router.route("/auths").get(getAuthCvs)
+router.route("/activity").get(getCvActivity)
 router
   .route("/:id")
   .get( getCv)
@@ -79,7 +74,5 @@ router
   .get(getCvPosts);
 
 
-router.route("/:id/follower").get(getCvFollower);
-router.route("/:id/following").get(getCvFollowing);
 
 module.exports = router;

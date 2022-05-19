@@ -14,7 +14,6 @@ const {
   urgentJob,
   deleteJob,
   updateJob,
-  applyJob,
   evalCand,
 } = require("../controller/jobs");
 
@@ -39,7 +38,6 @@ router
   .delete(protect, deleteJob)
   .put(protect, updateJob);
 
-router.route("/:id/apply").get(protect, applyJob);
 router.route("/:id/eval").put(protect, evalCand);
 router.route("/:id/special").put(protect, specialJob);
 router.route("/:id/urgent").put(protect, urgentJob);

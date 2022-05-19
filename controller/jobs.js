@@ -8,6 +8,7 @@ const Profile = require("../models/Profile");
 const Occupation = require("../models/Occupation");
 const Questionnaire = require("../models/Questionnaire");
 const Cv = require("../models/Cv");
+const Activity = require('../models/Activity')
 const queryString = require('query-string');
 
 exports.getSpecialJobs = asyncHandler(async (req, res, next) => {
@@ -369,20 +370,6 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.applyJob = asyncHandler(async (req, res, next) => {
-  const job = await Job.findById(req.params.id);
-
-  if (!job) {
-    throw new MyError(req.params.id + " ID-тэй ажил байхгүй!", 400);
-  }
-  job.apply.addToSet(req.userId);
-  job.save()
-
-  res.status(200).json({
-    success: true,
-    data: job
-  });
-});
 
 exports.evalCand = asyncHandler(async (req, res, next) => {
   const job = await Job.findById(req.params.id);
@@ -496,6 +483,11 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   profile.save()
   req.body.createUser = req.userId;
   const job = await Job.create(req.body);
+  req.body.createUser = req.userId
+  req.body.type = "Job"
+  req.body.crud = "create"
+  req.body.jobId = job._id
+  const activity = await Activity.create(req.body)
   res.status(200).json({
     success: true,
     data: job,

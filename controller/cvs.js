@@ -16,6 +16,7 @@ const sharp = require("sharp");
 const axios = require("axios");
 const fs = require("fs");
 const mongoose = require('mongoose');
+const Activity = require('../models/Activity')
 const Expo = require("expo-server-sdk").Expo
 
 
@@ -127,6 +128,29 @@ exports.getCv = asyncHandler(async (req, res, next) => {
     data: cv,
   });
 });
+
+exports.getCvActivity = asyncHandler(async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Cv);
+ req.query.createUser = req.userId
+
+  const cvs = await Activity.find(req.query, select).populate("postId jobId followId")
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+
+  res.status(200).json({
+    success: true,
+    data: cvs,
+    pagination,
+  });
+});
 // Үнэмлэхний зургаа явуулцан, гэрээгээ зөвшөөрцөн хэрэглэгчдийг авах
 exports.getAuthCvs = asyncHandler(async (req, res, next) => {
 
@@ -134,54 +158,6 @@ exports.getAuthCvs = asyncHandler(async (req, res, next) => {
   req.query.isApproved = true;
   req.query.authentication = false;
   return this.getCvs(req, res, next);
-});
-// Дагагчдийг авах
-exports.getCvFollower = asyncHandler(async (req, res, next) => {
-
-  req.query.follower = req.params.id;
-  return this.getCvs(req, res, next);
-});
-// Дагадаг хэрэглэгдчийг авах
-exports.getCvFollowing = asyncHandler(async (req, res, next) => {
-
-  req.query.following = req.params.id;
-  return this.getCvs(req, res, next);
-});
-// Хэрэглэгч дагах 
-exports.followCv = asyncHandler(async (req, res, next) => {
-  const cvs = await Cv.findById(req.params.id);
-  const cv = await Cv.findById(req.userId);
-
-  if (!cvs) {
-    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
-  }
-  cv.following.addToSet(req.params.id);
-  cvs.follower.addToSet(req.userId);
-  cv.save()
-  cvs.save()
-
-  res.status(200).json({
-    success: true,
-    data: cv
-  });
-});
-// Хэрэглэгч дагахаа болих
-exports.unfollowCv = asyncHandler(async (req, res, next) => {
-  const cvs = await Cv.findById(req.params.id);
-  const cv = await Cv.findById(req.userId);
-
-  if (!cvs) {
-    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
-  }
-  cv.following.remove(req.params.id);
-  cvs.follower.remove(req.userId);
-  cv.save()
-  cvs.save()
-
-  res.status(200).json({
-    success: true,
-    data: cv
-  });
 });
 // Wallet оос Point шилжүүлэх
 exports.chargePoint = asyncHandler(async (req, res, next) => {

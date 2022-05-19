@@ -32,6 +32,11 @@ const CvSchema = new mongoose.Schema({
   authPhoto: {
     type: String,
   },
+  status: {
+    type: String,
+    default: null,
+    enum: ["opentowork", "working", "getEmployee", "lookingForJob"],
+  },
   portfolio: {
     image1: {type: String},
     image2: {type: String},

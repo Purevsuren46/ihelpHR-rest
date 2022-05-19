@@ -5,6 +5,7 @@ const Post = require('../models/Post')
 const MyError = require("../utils/myError")
 const asyncHandler = require("express-async-handler")
 const paginate = require("../utils/paginate")
+const Activity = require('../models/Activity')
 const Expo = require("expo-server-sdk").Expo
 
 exports.getComments = asyncHandler(async (req, res, next) => {
@@ -80,6 +81,11 @@ exports.createComment = asyncHandler(async (req, res, next) => {
                 req.body.who = req.userId
                 req.body.for = post.createUser
                 const notification = await Notification.create(req.body)
+                req.body.createUser = req.userId
+                req.body.type = "Comment"
+                req.body.crud = "Create"
+                req.body.postId = req.params.id
+                const activity = await Activity.create(req.body)
                 const cv = await Cv.findById(post.createUser)
                 cv.notification += 1
                 cv.save()
