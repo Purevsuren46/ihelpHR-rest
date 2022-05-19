@@ -144,6 +144,9 @@ exports.updateQuestionnaire = asyncHandler(async (req, res, next) => {
   if(quest.workingCompany != null) {
     cv.workingCompany = quest.workingCompany
   }
+  if(quest.status != null) {
+    cv.status = quest.status
+  }
   cv.save()
 
 

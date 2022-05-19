@@ -53,8 +53,8 @@ const QuestionnareSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: null,
-    enum: ["opentowork", "working", "getEmployee", "lookingForJob"],
+    default: "null",
+    enum: ["opentowork", "working", "getEmployee", "lookingForJob", "null"],
   },
   position: {
     type: String,
