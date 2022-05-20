@@ -141,7 +141,7 @@ exports.getCvActivity = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Cv);
  req.query.createUser = req.userId
 
-  const cvs = await Activity.find(req.query, select).populate({path: "postId", populate: {path: "createUser", select: "name lastName firstName profile"}}).populate({path: "jobId", populate: {path: "createUser", select: "name lastName firstName profile"}})
+  const cvs = await Activity.find(req.query, select).populate({path: "postId", populate: {path: "createUser", select: "name lastName firstName profile occupation"}}).populate({path: "jobId", populate: {path: "createUser", select: "name lastName firstName profile occupation"}})
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
