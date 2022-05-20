@@ -125,7 +125,7 @@ exports.createShare = asyncHandler(async (req, res, next) => {
         req.body.createUser = req.userId
         req.body.type = "Share"
         req.body.crud = "Create"
-        req.body.postId = req.params.id
+        req.body.postId = share._id
         const activity = await Activity.create(req.body)
 
         const cv = await Cv.findById(post.createUser)

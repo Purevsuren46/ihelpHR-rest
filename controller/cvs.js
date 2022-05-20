@@ -1,4 +1,5 @@
 const Cv = require("../models/Cv");
+const Like = require("../models/Like");
 const Transaction = require("../models/Transaction");
 const Questionnaire = require("../models/Questionnaire");
 const Follow = require("../models/Follow");
@@ -140,10 +141,23 @@ exports.getCvActivity = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Cv);
  req.query.createUser = req.userId
 
-  const cvs = await Activity.find(req.query, select).populate("postId jobId followId")
+  const cvs = await Activity.find(req.query, select).populate({path: "postId", populate: {path: "createUser", select: "name lastName firstName profile"}}).populate({path: "jobId", populate: {path: "createUser", select: "name lastName firstName profile"}})
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
+    const lik = await Like.find({createUser: req.userId, post: {$ne: null} }).select('post')
+    const like = []
+    for (let i = 0; i < (lik.length); i++ ) {
+      like.push(lik[i].post.toString())
+    }
+    for (let i = 0; i < cvs.length; i++) {
+      if (cvs[i].postId != undefined) {
+        if (like.includes(cvs[i].postId._id.toString()) ) {
+          cvs[i].postId.isLiked = true
+        } 
+      }
+      
+    }
 
   res.status(200).json({
     success: true,
