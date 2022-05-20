@@ -9,6 +9,9 @@ const ActivitySchema = new mongoose.Schema({
         type: String,
         enum: ["Create", "Delete"]
     },
+    commentBody: {
+        type: String,
+    },
     createdAt: {
         type: Date,
         default: Date.now,

@@ -85,6 +85,7 @@ exports.createComment = asyncHandler(async (req, res, next) => {
                 req.body.type = "Comment"
                 req.body.crud = "Create"
                 req.body.postId = req.params.id
+                req.body.commentBody = req.body.description
                 const activity = await Activity.create(req.body)
                 const cv = await Cv.findById(post.createUser)
                 cv.notification += 1
@@ -116,7 +117,7 @@ exports.createComment = asyncHandler(async (req, res, next) => {
                     }
                   })();
         
-                res.status(200).json({ success: true, data: comment, })
+                res.status(200).json({ success: true, data: comment, act: activity })
               }
 
     
