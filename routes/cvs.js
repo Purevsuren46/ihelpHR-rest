@@ -15,6 +15,7 @@ const {
   urgentProfile,
   updateCv,
   deleteCv,
+  deleteActivity,
   forgotPassword,
   resetPassword,
   chargePoint,
@@ -68,6 +69,10 @@ router
   .get( getCv)
   .put( updateCv)
   .delete( deleteCv);
+
+router
+  .route("/:id/activity")
+  .delete( deleteActivity);
 
 router
   .route("/:id/posts")

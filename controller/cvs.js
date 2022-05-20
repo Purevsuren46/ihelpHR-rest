@@ -714,6 +714,20 @@ exports.deleteCv = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.deleteActivity = asyncHandler(async (req, res, next) => {
+  const cv = await Activity.findById(req.params.id);
+
+  if (!cv) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+  cv.remove();
+
+  res.status(200).json({
+    success: true,
+    data: cv,
+  });
+});
+
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   if (!req.body.phone) {
     throw new MyError("Та нууц үг сэргээх имэйл хаягаа дамжуулна уу", 400);
