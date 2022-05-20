@@ -66,6 +66,7 @@ const CvSchema = new mongoose.Schema({
   },
   about: {
     type: String,
+    default: "me"
   },
   authentication: {
     type: Boolean,
