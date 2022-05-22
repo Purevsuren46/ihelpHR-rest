@@ -767,12 +767,12 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 });
 
 exports.changePhoneRequest = asyncHandler(async (req, res, next) => {
-  const cv = await Cv.findOne({phone: req.body.phone})
-  const phon = await Phone.findOne({phone: req.body.phone})
+  const cv = await Cv.findOne(req.userId)
+  const phon = await Phone.findOne(cv.phone)
 
   if (cv == null) {
     const random = Math.floor(1000 + Math.random() * 9000);
-    const params = `from=72773055&to=${req.body.phone}&text=Таны бүртгэл үүсгэх нууц код ${random}`
+    const params = `from=72773055&to=${req.body.newPhone}&text=Таны дугаар солих нууц код ${random}`
     const param = encodeURI(params)
     await axios({
       method: "get",
@@ -785,11 +785,13 @@ exports.changePhoneRequest = asyncHandler(async (req, res, next) => {
   }
 
   if (phon == null) {
+    req.body.phone = cv.phone
     const phone = await Phone.create(req.body)
     res.status(200).json({
       success: true,
     });
   } else {
+    phon.newPhone = req.body.newPhone
     phon.random = req.body.random
     phon.save()
     res.status(200).json({

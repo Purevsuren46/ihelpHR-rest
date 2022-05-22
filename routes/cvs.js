@@ -11,6 +11,8 @@ const {
   sendPhone,
   authPhone,
   getCvActivity,
+  changePhoneRequest,
+  changePhone,
   cvList,
   urgentProfile,
   updateCv,
@@ -45,6 +47,7 @@ router.route("/reset-password").post(resetPassword);
 router.route("/send").post(sendPhone);
 
 
+
 //"/api/v1/cvs"
 router
   .route("/")
@@ -52,6 +55,8 @@ router
   .post(createCv);
   
 router.use(protect);
+router.route("/req").post(changePhoneRequest);
+router.route("/change").post(changePhone);
 router.route("/profile").put(uploadCvProfile);
 router.route("/cover").put(uploadCvCover);
 router.route("/portfolio").put(uploadCvPortfolio);
