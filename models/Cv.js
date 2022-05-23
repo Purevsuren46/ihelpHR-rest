@@ -169,6 +169,13 @@ const CvSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "Category",
   },
+  promoId: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Cv",
+  },
+  promoCode: {
+    type: String,
+  },
   register: {
     type: String,
   },
