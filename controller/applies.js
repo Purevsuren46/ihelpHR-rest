@@ -81,7 +81,7 @@ exports.getApply = asyncHandler( async (req, res, next) => {
 })
 
 exports.getCvApplies = asyncHandler(async (req, res, next) => {
-        req.query.apply = req.params.cvId;
+        req.query.createUser = req.params.cvId;
         return this.getApplies(req, res, next);
 });
       
@@ -134,6 +134,7 @@ exports.createApply = asyncHandler(async (req, res, next) => {
             req.body.questionnaire = quest._id;
             req.body.createUser = req.userId;
             req.body.job = req.params.id;
+            req.body.company = post.createUser;
 
         const like = await Apply.create(req.body);
         req.body.apply = like._id

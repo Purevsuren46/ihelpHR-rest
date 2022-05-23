@@ -38,5 +38,5 @@ router
   .post(protect, createProfileApply)
   .delete(protect, deleteProfileApply);
 
-router.route("/:cvId/apply").get(protect, authorize("admin"), getCvApplies)
+router.route("/:cvId/apply").get(protect, getCvApplies)
 module.exports = router;
