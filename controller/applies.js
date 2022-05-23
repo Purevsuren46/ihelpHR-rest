@@ -20,7 +20,9 @@ exports.getApplies = asyncHandler(async (req, res, next) => {
         // Pagination
         const pagination = await paginate(page, limit, Apply)
 
-        const applies = await Apply.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
+        const applies = await Apply.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "job", select: "type salary occupation", populate: {path: "occupation", select: "name"}})
+        .populate({path: "company", select: "name profile"})
+        .populate({path: "createUser", select: "name lastName firstName profile"})
 
         res.status(200).json({ success: true, data: applies, pagination, })
     
