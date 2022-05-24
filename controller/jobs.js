@@ -400,19 +400,12 @@ exports.createJob = asyncHandler(async (req, res, next) => {
     throw new MyError(req.body.occupation + " ID-тэй мэргэжил байхгүй!", 400);
   }
 
-  Date.prototype.addDays = function (days) {
-    const date = new Date(this.valueOf());
-    date.setDate(date.getDate() + days);
-    return date;
-  };
   if (req.body.urgent != undefined) {
     if (profile.point < req.body.urgent) {
       throw new MyError(" Point оноо хүрэхгүй байна", 400);
     } else {
-        const date = new Date()
         profile.point -= req.body.urgent
-        req.body.urgent = date.addDays(req.body.urgent)
-        req.body.isUrgent = true
+        req.body.urgent = Date.now() + 60 * 60 * 1000 * 24 * req.body.urgent
     }
   } 
 
@@ -420,13 +413,11 @@ exports.createJob = asyncHandler(async (req, res, next) => {
     if (profile.point < req.body.order) {
       throw new MyError(" Point оноо хүрэхгүй байна", 400);
     } else if (req.body.order == 30) {
-        const date = new Date()
         profile.point -= 10
-        req.body.order = date.addDays(30)
+        req.body.order = Date.now() + 60 * 60 * 1000 * 24 * req.body.order
     } else {
-      const date = new Date()
       profile.point -= req.body.order
-      req.body.order = date.addDays(req.body.order)
+      req.body.order = Date.now() + 60 * 60 * 1000 * 24 * req.body.order
     }
   } 
 
@@ -438,39 +429,18 @@ exports.createJob = asyncHandler(async (req, res, next) => {
     } else if (req.body.special == 7) {
         const date = new Date()
         profile.point -= 20
-        req.body.special = date.addDays(req.body.special)
-        req.body.isSpecial = true
+        req.body.special = Date.now() + 60 * 60 * 1000 * 24 * req.body.special
     } else if (req.body.special == 14) {
       const date = new Date()
       profile.point -= 30
-      req.body.special += date.addDays(req.body.special)
-      req.body.isSpecial = true
+      req.body.special = Date.now() + 60 * 60 * 1000 * 24 * req.body.special
     } else if (req.body.special == 30) {
       const date = new Date()
       profile.point -= 40
-      req.body.special = date.addDays(req.body.special)
-      req.body.isSpecial = true
+      req.body.special = Date.now() + 60 * 60 * 1000 * 24 * req.body.special
     } 
     } 
 
-
-  // if(profile.point < req.body.special + req.body.urgent + req.body.order) {
-  //   throw new MyError(" Point оноо хүрэхгүй байна", 400);
-  // } else {
-  //   const date = new Date()
-  //   profile.point -= req.body.order
-  //   req.body.order = date.addDays(req.body.order)
-    
-  //   const date1 = new Date()
-  //   profile.point -= req.body.urgent
-  //   req.body.isUrgent = true
-  //   req.body.urgent = date1.addDays(req.body.urgent)
-  
-  //   const date2 = new Date()
-  //   profile.point -= req.body.special
-  //   req.body.isSpecial = true
-  //   req.body.special = date2.addDays(req.body.special)
-  // }
   
   profile.jobNumber += 1
   profile.save()
