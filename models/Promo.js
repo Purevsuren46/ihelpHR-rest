@@ -9,6 +9,10 @@ const PromoSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    expireDate: {
+        type: Date,
+        default: Date.now,
+    },
     createUser: {
         type: mongoose.Schema.ObjectId,
         ref: 'Cv',

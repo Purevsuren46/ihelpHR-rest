@@ -173,7 +173,7 @@ const CvSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "Cv",
   },
-  promoCode: {
+  promo: {
     type: String,
   },
   register: {

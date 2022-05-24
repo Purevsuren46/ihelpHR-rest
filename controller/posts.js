@@ -107,12 +107,12 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   const user = follows.map((item)=>item.followUser)
   user.push(req.params.id)
   // Pagination
-  const pagination = await paginate(page, limit, Post.find({createUser: user, isBoost: false  }))
+  const pagination = await paginate(page, limit, Post.find({createUser: user  }))
+  const pop = "lastName firstName profile organization profession workingCompany status"
 
+  const post = await Post.find({createUser: user  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
 
-  const post = await Post.find({createUser: user, isBoost: false  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: 'lastName firstName profile organization profession workingCompany status'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile organization profession workingCompany status'}})
-
-  const boost = await Post.find({isBoost: true}).sort({"createdAt": -1}).populate({path: 'createUser', select: 'lastName firstName profile organization profession workingCompany status'}).populate({path: 'sharePost', populate: {path: 'createUser', select: 'lastName firstName profile organization profession workingCompany status'}})
+  const boost = await Post.find({boost: {$gt: Date.now()}}).sort({"createdAt": -1}).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
   if (post[post.length - 1] != undefined) {
     const lik = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gte: post[post.length - 1].createdAt}}).select('post')
     const like = []
@@ -129,6 +129,9 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
         post[i].isLiked = true
       } 
     }
+    for (let i = 0; i < boost.length; i++) {
+      boost[i].isBoost = true
+    }
   }
 
   res.status(200).json({ success: true, data: post, pagination, })
@@ -140,20 +143,10 @@ exports.getPost = asyncHandler(async (req, res, next) => {
   if (!post) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
   }
-  // Хандалт тоологч
-  if (post.count == null) {
-      // default data
-      const beginCount = new Post({
-          count : 1
-      })
-      beginCount.save()
-  }
-  else {
-      post.count += 1;
-      post.save()
-  }
-  const like = await Like.find({createUser: req.userId, post: req.params.id}).select('post')
 
+  const like = await Like.find({createUser: req.userId, post: req.params.id}).select('post')
+  post.count += 1;
+  post.save()
   if (like != null ) {
     post.isLiked = true
   } else {
@@ -178,28 +171,19 @@ exports.boostPost = asyncHandler(async (req, res, next) => {
     throw new MyError(" Boost төрлөө сонгоно уу?", 400);
   }
 
-  Date.prototype.addDays = function (days) {
-    const date = new Date(this.valueOf());
-    date.setDate(date.getDate() + days);
-    return date;
-  };
+
 
   if(cv.point < req.body.boost) {
     throw new MyError(" Point оноо хүрэхгүй байна", 400);
   } else {
     if(post.boost < Date.now() ) {
-      const date = new Date()
         cv.point -= req.body.boost
-        post.boost = date.addDays(req.body.boost) 
-        post.isBoost = true
+        post.boost = Date.now() + 60 * 60 * 1000 * 24 * req.body.boost
     } else {
-        let date = post.boost
         cv.point -= req.body.boost
-        post.boost = date.addDays(req.body.boost)
-        post.isBoost = true
+        post.boost = post.boost.getTime() + 60 * 60 * 1000 * 24 * req.body.boost
     }
   }
-  const expire = setTimeout(() => {post.isBoost = false, post.save()}, Math.abs(Number(post.boost) - Date.now()))
 
   cv.save()
   post.save()

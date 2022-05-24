@@ -1,4 +1,5 @@
 const Cv = require("../models/Cv");
+const Promo = require("../models/Promo");
 const Like = require("../models/Like");
 const Transaction = require("../models/Transaction");
 const Questionnaire = require("../models/Questionnaire");
@@ -517,7 +518,38 @@ exports.createCv = asyncHandler(async (req, res, next) => {
   if (random == null) {
     throw new MyError("Мессежний код буруу байна", 400)
   } else {
-    req.body.phone = random.phone
+    if(req.body.promo) {
+      const promo = await Promo.findOne({code: req.body.promo, expireDate: {$gt: Date.now()}})
+      if (promo == null) {
+        throw new MyError("Promo код буруу байна", 400)
+      }
+      req.body.promoId = promo.createUser
+      req.body.phone = random.phone
+      req.body.wallet = 0,
+      req.body.point = 5,
+      req.body.role = "user"
+      const posts = await Cv.create(req.body);
+      const promoUser = await Cv.findById(promo.createUser)
+      promoUser.point += 5
+      promoUser.save()
+      const rando = await Phone.deleteOne({random: req.body.random})
+
+      const post = await Cv.findById("6268f4795c8249342cd4ed22")
+      post.follower += 1
+      post.save()
+      posts.following += 1
+      posts.save()
+      req.body.createUser = posts._id;
+      req.body.followUser = "6268f4795c8249342cd4ed22";
+  const follow = await Follow.create(req.body);
+  req.body.createUser = posts._id;
+  const questionnaire = await Questionnaire.create(req.body);
+      res.status(200).json({
+        success: true,
+        data: posts,
+      });
+    } else {
+      req.body.phone = random.phone
     req.body.wallet = 0,
     req.body.point = 0,
     req.body.role = "user"
@@ -538,6 +570,8 @@ const questionnaire = await Questionnaire.create(req.body);
       success: true,
       data: posts,
     });
+    }
+    
   }
 
 });

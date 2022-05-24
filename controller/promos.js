@@ -6,6 +6,7 @@ const MyError = require("../utils/myError")
 const asyncHandler = require("express-async-handler")
 const paginate = require("../utils/paginate")
 const Expo = require("expo-server-sdk").Expo
+const crypto = require("crypto");
 
 exports.getPromos = asyncHandler(async (req, res, next) => {
         const page = parseInt(req.query.page) || 1;
@@ -44,7 +45,14 @@ exports.getPromo = asyncHandler( async (req, res, next) => {
 
 
 exports.createPromo = asyncHandler(async (req, res, next) => {
+        
+const resetToken = crypto.randomBytes(3).toString("hex");
+        
+
     req.body.createUser = req.userId
+    req.body.code = resetToken
+    req.body.expireDate = Date.now() + 60 * 60 * 1000 * 24 * 90;
+
     const promo = await Promo.create(req.body)
     
     res.status(200).json({ success: true, data: promo, })
