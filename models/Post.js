@@ -68,7 +68,11 @@ isShare: {
 },
 
 });
+PostSchema.pre("remove", async function (next) {
 
+  await this.model('Activity').deleteMany({postId: this._id})
+  next()
+});
 
 
 module.exports = mongoose.model("Post", PostSchema);

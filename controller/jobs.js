@@ -450,7 +450,7 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   const job = await Job.create(req.body);
   req.body.createUser = req.userId
   req.body.type = "Job"
-  req.body.crud = "create"
+  req.body.crud = "Create"
   req.body.jobId = job._id
   const activity = await Activity.create(req.body)
   res.status(200).json({
@@ -462,7 +462,6 @@ exports.createJob = asyncHandler(async (req, res, next) => {
 
 exports.deleteJob = asyncHandler(async (req, res, next) => {
   const job = await Job.findById(req.params.id);
-  const cv = await Cv.findById(req.userId);
   if (!job) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
   }
@@ -476,8 +475,6 @@ exports.deleteJob = asyncHandler(async (req, res, next) => {
   const user = await Cv.findById(req.userId);
 
   job.remove();
-  cv.job.remove(req.params.id);
-  cv.save()
   res.status(200).json({
     success: true,
     data: job,

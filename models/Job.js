@@ -186,7 +186,11 @@ JobSchema.methods.getSpecial = function () {
   }
 }
 
+JobSchema.pre("remove", async function (next) {
 
+  await this.model('Activity').deleteMany({jobId: this._id})
+  next()
+});
 
 
 module.exports = mongoose.model("Job", JobSchema);

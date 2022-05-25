@@ -236,6 +236,12 @@ CvSchema.pre("remove", async function (next) {
   await this.model('Notification').deleteMany({for: this._id})
   await this.model('Comment').deleteMany({createUser: this._id})
   await this.model('Wallet').deleteMany({createUser: this._id})
+  await this.model('Activity').deleteMany({createUser: this._id})
+  await this.model('Invitation').deleteMany({createUser: this._id})
+  await this.model('Invitation').deleteMany({candidate: this._id})
+  await this.model('Apply').deleteMany({createUser: this._id})
+  await this.model('Promo').deleteMany({createUser: this._id})
+  await this.model('Questionnaire').deleteMany({createUser: this._id})
   next()
 });
 
