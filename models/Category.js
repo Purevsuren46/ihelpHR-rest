@@ -3,7 +3,6 @@ const { transliterate, slugify} = require('transliteration')
 const CategorySchema = new mongoose.Schema({
     name: {
         type: String,
-        unique: true,
         trim: true,
         maxlength: [50, "Категорийн нэрийн урт 50 тэмдэгт байх ёстой."]
     },
