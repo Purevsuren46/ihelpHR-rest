@@ -138,7 +138,7 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
 });
 
 exports.getPost = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.params.id).populate({path: 'createUser', select: 'lastName firstName profile'}).populate({path: 'sharePost', populate: {path: "createUser", select: "lastName firstName profile status"}});
+  const post = await Post.findById(req.params.id).populate({path: 'createUser', select: 'lastName firstName profile'}).populate({path: 'sharePost', populate: {path: "createUser", select: "lastName firstName profile status profession workingCompany organization"}});
 
   if (!post) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
