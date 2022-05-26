@@ -35,7 +35,7 @@ router
   .route("/:id")
   .get(protect, getPost)
   .delete(protect, deletePost)
-  .put(protect, authorize("admin", "operator"), updatePost);
+  .put(protect, updatePost);
 
 router.route("/:id/boost").put(protect, boostPost);
 
