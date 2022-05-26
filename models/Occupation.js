@@ -4,7 +4,6 @@ const OccupationSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "Категорийн нэрийг оруулна уу"],
-        unique: true,
         trim: true,
         maxlength: [50, "Категорийн нэрийн урт 50 тэмдэгт байх ёстой."]
     },
