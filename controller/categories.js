@@ -34,7 +34,6 @@ res.status(200).json({ success: true, data: category})
 })
 
 exports.createCategory = asyncHandler(async (req, res, next) => {
-console.log("data: ", req.body)
 
 const category = await Category.create(req.body)
 
