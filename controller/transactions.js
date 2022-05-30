@@ -48,7 +48,6 @@ res.status(200).json({ success: true, data: category})
 })
 
 exports.createTransaction = asyncHandler(async (req, res, next) => {
-console.log("data: ", req.body)
 
 const category = await Transaction.create(req.body)
 
