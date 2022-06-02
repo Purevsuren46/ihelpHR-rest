@@ -90,6 +90,7 @@ exports.getUnboostPosts = asyncHandler(async (req, res, next) => {
 
 exports.getCvPosts = asyncHandler(async (req, res, next) => {
   req.query.createUser = req.userId;
+
   return this.getPosts(req, res, next);
 });
 

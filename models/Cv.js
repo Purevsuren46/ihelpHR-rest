@@ -247,7 +247,7 @@ CvSchema.pre("remove", async function (next) {
 
 CvSchema.methods.getJsonWebToken = function () {
   const token = jwt.sign(
-    { id: this._id, role: this.role },
+    { id: this._id, role: this.role, name: this.name, lastName: this.lastName, firstName: this.firstName, profile: this.profile },
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_EXPIRESIN,

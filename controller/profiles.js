@@ -224,7 +224,6 @@ exports.getUnspecialEmployerProfiles = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 exports.specialEmployerProfile = asyncHandler(async (req, res, next) => {
   const profile = await Cv.findById(req.userId);
 
