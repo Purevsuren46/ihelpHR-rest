@@ -211,6 +211,7 @@ exports.boostPost = asyncHandler(async (req, res, next) => {
     }
   }
   const profil = await Cv.findById(req.userId);
+  req.body.firstPoint = profil.point
   req.body.point = profile.point - profil.point
   req.body.post = req.params.id
   req.body.createUser = req.userId

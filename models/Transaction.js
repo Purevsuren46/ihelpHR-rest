@@ -5,8 +5,12 @@ const TransactionSchema = new mongoose.Schema({
   point: {
       type: Number,
   },
+  firstPoint: {
+    type: Number,
+},
   explanation: {
     type: String,
+    enum: ["ажил үүсгэв", "ажил онцлох болгов","ажил яаралтай болгов", "ажил үүсгэв","пост бүүстлэв","дансаа цэнэглэв"],
   },
   createUser: {
     type: mongoose.Schema.ObjectId,

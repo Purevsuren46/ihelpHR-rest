@@ -310,6 +310,7 @@ exports.specialJob = asyncHandler(async (req, res, next) => {
       }
     }
     const profil = await Cv.findById(req.userId);
+    req.body.firstPoint = profil.point
     req.body.point = profile.point - profil.point
     req.body.job = req.params.id
     req.body.createUser = req.userId
@@ -352,6 +353,7 @@ exports.urgentJob = asyncHandler(async (req, res, next) => {
     }
 
     const profil = await Cv.findById(req.userId);
+    req.body.firstPoint = profil.point
     req.body.point = profile.point - profil.point
     req.body.job = req.params.id
     req.body.createUser = req.userId
@@ -467,6 +469,7 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   req.body.jobId = job._id
   const activity = await Activity.create(req.body)
   const profil = await Cv.findById(req.userId);
+  req.body.firstPoint = profil.point
   req.body.point = profile.point - profil.point
   req.body.createUser = req.userId
   req.body.explanation = "ажил үүсгэв"
