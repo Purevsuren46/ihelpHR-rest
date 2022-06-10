@@ -309,7 +309,8 @@ exports.specialJob = asyncHandler(async (req, res, next) => {
       } 
       }
     }
-    req.body.point = req.body.special
+    const profil = await Cv.findById(req.userId);
+    req.body.point = profile.point - profil.point
     req.body.job = req.params.id
     req.body.createUser = req.userId
     req.body.explanation = "ажил онцлох болгов"
@@ -350,7 +351,8 @@ exports.urgentJob = asyncHandler(async (req, res, next) => {
         job.urgent = job.urgent.getTime() + 60 * 60 * 1000 * 24 * req.body.urgent
     }
 
-    req.body.point = req.body.urgent
+    const profil = await Cv.findById(req.userId);
+    req.body.point = profile.point - profil.point
     req.body.job = req.params.id
     req.body.createUser = req.userId
     req.body.explanation = "ажил яаралтай болгов"
@@ -456,7 +458,7 @@ exports.createJob = asyncHandler(async (req, res, next) => {
 
   
   profile.jobNumber += 1
-  profile.save()
+  
   req.body.createUser = req.userId;
   const job = await Job.create(req.body);
   req.body.createUser = req.userId
@@ -464,15 +466,18 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   req.body.crud = "Create"
   req.body.jobId = job._id
   const activity = await Activity.create(req.body)
-  req.body.point = req.body.special + req.body.urgent
+  const profil = await Cv.findById(req.userId);
+  req.body.point = profile.point - profil.point
   req.body.createUser = req.userId
   req.body.explanation = "ажил үүсгэв"
   req.body.job = job._id
   const transaction = await Transaction.create(req.body);
+  profile.save()
   res.status(200).json({
     success: true,
     data: job,
-    profile: profile
+    profile: profile,
+    transaction: transaction
   });
 });
 

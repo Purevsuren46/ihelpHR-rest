@@ -210,7 +210,8 @@ exports.boostPost = asyncHandler(async (req, res, next) => {
         post.boost = post.boost.getTime() + 60 * 60 * 1000 * 24 * req.body.boost
     }
   }
-  req.body.point = req.body.boost
+  const profil = await Cv.findById(req.userId);
+  req.body.point = profile.point - profil.point
   req.body.post = req.params.id
   req.body.createUser = req.userId
   req.body.explanation = "пост бүүстлэв"

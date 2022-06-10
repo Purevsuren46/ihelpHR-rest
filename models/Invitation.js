@@ -14,6 +14,8 @@ const InvitationSchema = new mongoose.Schema({
   },
   approveStatus: {
     type: String,
+    default: "Хүлээгдэж буй",
+    enum: ["Зөвшөөрсөн", "Зөвшөөрөөгүй", "Хүлээгдэж буй"],
   },
   createUser: {
     type: mongoose.Schema.ObjectId,
