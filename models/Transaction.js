@@ -5,9 +5,20 @@ const TransactionSchema = new mongoose.Schema({
   point: {
       type: Number,
   },
+  explanation: {
+    type: String,
+  },
   createUser: {
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
+  },
+  job: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Job',
+  },
+  post: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Post',
   },
   createdAt: {
     type: Date,

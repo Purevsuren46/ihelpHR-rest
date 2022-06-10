@@ -12,6 +12,9 @@ const InvitationSchema = new mongoose.Schema({
   occupation: {
     type: String,
   },
+  approveStatus: {
+    type: String,
+  },
   createUser: {
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',

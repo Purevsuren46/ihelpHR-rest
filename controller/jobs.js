@@ -9,6 +9,7 @@ const Occupation = require("../models/Occupation");
 const Questionnaire = require("../models/Questionnaire");
 const Cv = require("../models/Cv");
 const Activity = require('../models/Activity')
+const Transaction = require('../models/Transaction')
 const queryString = require('query-string');
 
 exports.getSpecialJobs = asyncHandler(async (req, res, next) => {
@@ -308,7 +309,11 @@ exports.specialJob = asyncHandler(async (req, res, next) => {
       } 
       }
     }
-    
+    req.body.point = req.body.special
+    req.body.job = req.params.id
+    req.body.createUser = req.userId
+    req.body.explanation = "ажил онцлох болгов"
+    const transaction = await Transaction.create(req.body);
 
     } 
 
@@ -344,6 +349,12 @@ exports.urgentJob = asyncHandler(async (req, res, next) => {
         profile.point -= req.body.urgent
         job.urgent = job.urgent.getTime() + 60 * 60 * 1000 * 24 * req.body.urgent
     }
+
+    req.body.point = req.body.urgent
+    req.body.job = req.params.id
+    req.body.createUser = req.userId
+    req.body.explanation = "ажил яаралтай болгов"
+    const transaction = await Transaction.create(req.body);
   }
 
   profile.save()
@@ -453,6 +464,11 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   req.body.crud = "Create"
   req.body.jobId = job._id
   const activity = await Activity.create(req.body)
+  req.body.point = req.body.special + req.body.urgent
+  req.body.createUser = req.userId
+  req.body.explanation = "ажил үүсгэв"
+  req.body.job = job._id
+  const transaction = await Transaction.create(req.body);
   res.status(200).json({
     success: true,
     data: job,

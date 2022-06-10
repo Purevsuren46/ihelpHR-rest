@@ -2,6 +2,7 @@ const Post = require("../models/Post");
 const Activity = require('../models/Activity')
 const Like = require("../models/Like");
 const Follow = require("../models/Follow");
+const Transaction = require("../models/Transaction");
 const Cv = require("../models/Cv");
 const path = require("path");
 
@@ -209,6 +210,11 @@ exports.boostPost = asyncHandler(async (req, res, next) => {
         post.boost = post.boost.getTime() + 60 * 60 * 1000 * 24 * req.body.boost
     }
   }
+  req.body.point = req.body.boost
+  req.body.post = req.params.id
+  req.body.createUser = req.userId
+  req.body.explanation = "пост бүүстлэв"
+  const transaction = await Transaction.create(req.body);
 
   cv.save()
   post.save()
@@ -243,6 +249,7 @@ exports.createPost = asyncHandler(async (req, res, next) => {
   req.body.crud = "Create"
   req.body.postId = articl._id
   const activity = await Activity.create(req.body)
+
 
   
   // image upload

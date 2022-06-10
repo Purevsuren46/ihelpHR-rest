@@ -340,6 +340,7 @@ exports.chargeWallet = asyncHandler(async (req, res, next) => {
     profile.save()
     req.body.point = req.params.numId
     req.body.createUser = req.params.id
+    req.body.explanation = "дансаа цэнэглэв"
     const transaction = await Transaction.create(req.body);
 
 
