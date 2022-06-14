@@ -18,7 +18,7 @@ const notifications = await Notification.find(req.query, select)
   .populate({ path: 'comment', select: 'post' })
   .populate({ path: 'share', select: 'sharePost ' })
   .populate({ path: 'who', select: 'lastName firstName profile' })
-  .populate({ path: 'for', select: 'lastName firstName' })
+  .populate({ path: 'for', select: 'lastName firstName profile' })
   .sort(sort)
   .skip(pagination.start - 1)
   .limit(limit);
