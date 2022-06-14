@@ -3,7 +3,7 @@ const { transliterate, slugify} = require('transliteration')
 const ActivitySchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ["Comment", "Like", "Share", "Job", "JobSave", "JobApply", "Follow", "Post"]
+        enum: ["Comment", "Like", "Share", "Job", "JobSave", "JobApply", "Follow", "Post", "Announcement"]
     },
     crud: {
         type: String,

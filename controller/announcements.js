@@ -314,7 +314,7 @@ exports.specialAnnouncement = asyncHandler(async (req, res, next) => {
     req.body.point = profile.point - profil.point
     req.body.announcement = req.params.id
     req.body.createUser = req.userId
-    req.body.explanation = "ажил онцлох болгов"
+    req.body.explanation = "ажил хайх онцлох болгов"
     const transaction = await Transaction.create(req.body);
 
     } 
@@ -357,7 +357,7 @@ exports.urgentAnnouncement = asyncHandler(async (req, res, next) => {
     req.body.point = profile.point - profil.point
     req.body.announcement = req.params.id
     req.body.createUser = req.userId
-    req.body.explanation = "ажил яаралтай болгов"
+    req.body.explanation = "ажил хайх яаралтай болгов"
     const transaction = await Transaction.create(req.body);
   }
 
@@ -472,7 +472,7 @@ exports.createAnnouncement = asyncHandler(async (req, res, next) => {
   req.body.firstPoint = profil.point
   req.body.point = profile.point - profil.point
   req.body.createUser = req.userId
-  req.body.explanation = "ажил үүсгэв"
+  req.body.explanation = "ажил хайх үүсгэв"
   req.body.announcement = announcement._id
   const transaction = await Transaction.create(req.body);
   profile.save()

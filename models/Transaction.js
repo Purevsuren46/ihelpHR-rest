@@ -10,7 +10,7 @@ const TransactionSchema = new mongoose.Schema({
 },
   explanation: {
     type: String,
-    enum: ["ажил үүсгэв", "ажил онцлох болгов","ажил яаралтай болгов", "ажил үүсгэв","пост бүүстлэв","дансаа цэнэглэв"],
+    enum: ["ажил үүсгэв", "ажил онцлох болгов","ажил яаралтай болгов","пост бүүстлэв","дансаа цэнэглэв", "ажил хайх үүсгэв", "ажил хайх онцлох болгов", "ажил хайх яаралтай болгов", ""],
   },
   createUser: {
     type: mongoose.Schema.ObjectId,
@@ -19,6 +19,10 @@ const TransactionSchema = new mongoose.Schema({
   job: {
     type: mongoose.Schema.ObjectId,
     ref: 'Job',
+  },
+  announcement: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Announcement',
   },
   post: {
     type: mongoose.Schema.ObjectId,
