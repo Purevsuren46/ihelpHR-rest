@@ -8,7 +8,7 @@ const AnnouncementSchema = new mongoose.Schema({
   do: {
     type: String,
   },
-  salary: {
+  price: {
       type: String,
       enum: [
           "400,000 - 600,000", 
@@ -24,14 +24,49 @@ const AnnouncementSchema = new mongoose.Schema({
           "4,000,000 - 5,000,000", 
           "5,000,000 -аас дээш"]
   },
-  type: {
-      type: String,
-      enum: ["full-time", "part-time", "freelancer", "intern"],
-      default: "full-time"
+  time: {
+    type: String,
+    enum: [
+        "1 - 7 хоног", 
+        "7 - 14 хоног", 
+        "14 - 21 хоног", 
+        "21 - 30 хоног", 
+        "1 - 2 сар", 
+        "2 - 3 сар", 
+        "3 - 4 сар", 
+        "4 - 6 сар", 
+        "6 - 8 сар", 
+        "8 - 12 сар", 
+        "1 - 2 жил", 
+        "2 - 3 жил"]
+  },
+  workerNumber: {
+    type: String,
+    enum: [
+        "1 - 5", 
+        "5 - 10", 
+        "10 - 15", 
+        "15 - 20", 
+        "20 - 30", 
+        "30 - 40", 
+        "40 - 50", 
+        "50 - 100", 
+        "100 - 200", 
+        "200 - 500", 
+        "500 - 1000", 
+        "1000 - 10000"]
   },
   occupation: {
     type: mongoose.Schema.ObjectId,
     ref: 'Occupation',
+  },
+  portfolio: {
+    image1: {type: String},
+    image2: {type: String},
+    image3: {type: String},
+    image4: {type: String},
+    image5: {type: String},
+    image6: {type: String}
   },
   createUser: {
     type: mongoose.Schema.ObjectId,
@@ -64,14 +99,20 @@ const AnnouncementSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  startDate: {
+    type: Date,
+    default: Date.now,
+  },
   count: {
     type: Number,
     default: 0,
   },
   skill: String,
+  specialPermission: String,
   experience: String,
+  location: String,
   schedule: String,
-  benefit: String,
+  certificate: String,
   createdAt: {
     type: Date,
     default: Date.now,

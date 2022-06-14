@@ -87,6 +87,7 @@ exports.createQuestionnaire = asyncHandler(async (req, res, next) => {
     req.body.createUser = req.userId;
     req.body.firstName = cv.firstName;
     req.body.lastName = cv.lastName;
+    req.body.profile = cv.profile;
     const questionnaire = await Questionnaire.create(req.body);
     if(questionnaire.profession != null) {
       cv.profession = questionnaire.profession

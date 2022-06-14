@@ -203,6 +203,10 @@ const QuestionnareSchema = new mongoose.Schema({
       
   default: false
   },
+  profile: {
+    type: String,
+    default: "ihelp.jpg"
+  },
   activity: {
       type: String,
       
