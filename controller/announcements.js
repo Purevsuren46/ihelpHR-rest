@@ -41,7 +41,7 @@ exports.getAnnouncements = asyncHandler(async (req, res, next) => {
 
   const announcements = await Announcement.find(req.query, select).populate("occupation").populate({
     path: 'createUser',
-    select: 'name profile'
+    select: 'name profile lastName firstName'
   })
   .sort({isUrgent:-1})  
   .sort(sort)
