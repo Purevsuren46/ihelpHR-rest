@@ -14,6 +14,7 @@ const {
   updateLike,
   deleteLike,
   deleteJobLike,
+  deleteId,
 } = require("../controller/likes");
 
 // api/v1/likes/:id/books
@@ -40,5 +41,6 @@ router.route("/:id/cv").get(protect, getCvLikes);
 router.route("/:id/job").get(protect, getCvJobLikes);
 router.route("/:id/jobs").get(protect, getJobLikes);
 router.route("/:id/job").delete(protect, deleteJobLike);
+router.route("/:id/id").delete(protect, deleteId);
 
 module.exports = router;

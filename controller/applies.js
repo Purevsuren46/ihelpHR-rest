@@ -279,3 +279,14 @@ exports.deleteProfileApply = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: apply, })
   
 })
+
+exports.deleteId = asyncHandler(async (req, res, next) => {
+  const apply = await Apply.findById(req.params.id)
+
+  if(!apply) {
+  return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
+  } 
+  apply.remove()
+  res.status(200).json({ success: true, data: apply, })
+  
+})

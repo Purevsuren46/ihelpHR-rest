@@ -299,3 +299,15 @@ exports.deleteJobLike = asyncHandler(async (req, res, next) => {
     res.status(200).json({ success: true, data: like, })
     
 })
+
+exports.deleteId = asyncHandler(async (req, res, next) => {
+  const like = await Like.findById(req.params.id)
+  if(!like) {
+  return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
+  } 
+  like.remove()
+
+
+  res.status(200).json({ success: true, data: like, })
+  
+})

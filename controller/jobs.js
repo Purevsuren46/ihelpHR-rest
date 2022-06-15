@@ -1,4 +1,5 @@
 const Job = require("../models/Job");
+const Like = require("../models/Like");
 const Apply = require("../models/Apply");
 const path = require("path");
 const MyError = require("../utils/myError");
@@ -497,6 +498,8 @@ exports.deleteJob = asyncHandler(async (req, res, next) => {
   // }
 
   const user = await Cv.findById(req.userId);
+  const like = await Like.deleteMany({job: req.params.id})
+  const apply = await Apply.deleteMany({job: req.params.id})
 
   job.remove();
   res.status(200).json({

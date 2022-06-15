@@ -13,6 +13,7 @@ const {
   updateApply,
   deleteApply,
   deleteProfileApply,
+  deleteId,
 } = require("../controller/applies");
 
 
@@ -37,6 +38,8 @@ router
   .get(protect, getProfileApplies)
   .post(protect, createProfileApply)
   .delete(protect, deleteProfileApply);
+
+router.route("/:id/id").delete(protect, deleteId)
 
 router.route("/:cvId/apply").get(protect, getCvApplies)
 module.exports = router;
