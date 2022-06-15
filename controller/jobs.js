@@ -500,6 +500,7 @@ exports.deleteJob = asyncHandler(async (req, res, next) => {
   const user = await Cv.findById(req.userId);
   const like = await Like.deleteMany({job: req.params.id})
   const apply = await Apply.deleteMany({job: req.params.id})
+  const activity = await Activity.deleteMany({jobId: req.params.id})
 
   job.remove();
   res.status(200).json({

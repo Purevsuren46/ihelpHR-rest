@@ -322,6 +322,8 @@ exports.deletePost = asyncHandler(async (req, res, next) => {
   // }
 
   post.remove();
+  const activity = await Activity.deleteMany({postId: req.params.id})
+
 
   res.status(200).json({
     success: true,
