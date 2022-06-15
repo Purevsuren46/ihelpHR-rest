@@ -53,7 +53,7 @@ exports.createInvitation = asyncHandler(async (req, res, next) => {
     messages.push({
         to: cv.expoPushToken,
         sound: 'default',
-        body: `Таньд ${cv1.name} ажлын санал илгээлээ`,
+        body: `Таньд ${cv1.firstName} ажлын санал илгээлээ`,
         data: { invitationID: category._id, cvId: req.params.id, data: "PostDetailScreen", data1: "NetworkingStack" },
       })
     

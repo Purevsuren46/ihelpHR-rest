@@ -41,7 +41,7 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
 
   const jobs = await Job.find(req.query, select).populate("occupation").populate({
     path: 'createUser',
-    select: 'name profile'
+    select: 'firstName profile'
   })
   .sort({isUrgent:-1})  
   .sort(sort)
@@ -187,7 +187,7 @@ exports.getOccupationJobs = asyncHandler(async (req, res, next) => {
   )
   .populate("occupation").populate({
     path: 'createUser',
-    select: 'name profile'
+    select: 'firstName profile'
   })
     .sort(sort)
     .skip(pagination.start - 1)
@@ -229,7 +229,7 @@ exports.getCvFilterJobs = asyncHandler(async (req, res, next) => {
 exports.getJob = asyncHandler(async (req, res, next) => {
   const job = await Job.findById(req.params.id).populate("occupation").populate({
     path: 'createUser',
-    select: "category name profile jobNumber",
+    select: "category firstName profile jobNumber",
     populate: {path: "category", select: "name"}
   })
 
@@ -502,7 +502,7 @@ exports.deleteJob = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: job,
-    whoDeleted: user.name,
+    whoDeleted: user.firstName,
   });
 });
 
