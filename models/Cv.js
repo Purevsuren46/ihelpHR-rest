@@ -127,6 +127,10 @@ const CvSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  announcementNumber: {
+    type: Number,
+    default: 0
+  },
   isEmployeeSpecial: {
     type: Boolean,
     default: false,
