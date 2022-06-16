@@ -6,6 +6,7 @@ const {
   getJob,
   createJob,
   getSpecialJobs,
+  getOccupationJobs,
   getUnspecialJobs,
   getUrgentJobs,
   getProfileJobs,
@@ -29,6 +30,7 @@ router.route("/specials").get(protect, getSpecialJobs)
 router.route("/unspecials").get(protect, getUnspecialJobs)
 router.route("/urgents").get(protect, getUrgentJobs)
 router.route("/filters").get(protect, getCvFilterJobs)
+router.route("/:occupationId/occupation").get(protect, getOccupationJobs)
   
 
 
