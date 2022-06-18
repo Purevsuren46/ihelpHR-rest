@@ -202,6 +202,42 @@ exports.getOccupationJobs = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.getCategoryJobs = asyncHandler(async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 2;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Job);
+  const occupation = await Occupation.find({category: req.params.categoryId})
+
+  const occupations = []
+  for (let i=0; i < occupation.length; i++ ) {
+    occupations.push(occupation[i].id)
+  }
+  //req.query, select
+  const jobs = await Job.find(
+    { ...req.query, occupation: occupations },
+    select
+  )
+  .populate("occupation").populate({
+    path: 'createUser',
+    select: 'firstName profile'
+  })
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+
+  res.status(200).json({
+    success: true,
+    count: jobs.length,
+    data: jobs,
+    pagination,
+  });
+});
+
 exports.getCvFilterJobs = asyncHandler(async (req, res, next) => {
   const questionnaire = await Questionnaire.findOne({createUser: req.userId});
   if (!questionnaire) {

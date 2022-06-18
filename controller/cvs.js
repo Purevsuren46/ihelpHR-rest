@@ -98,32 +98,22 @@ exports.getCvs = asyncHandler(async (req, res, next) => {
 });
 // Хэрэглэгчийг iD гаар авна
 exports.getCv = asyncHandler(async (req, res, next) => {
-  const cv = await Cv.findById(req.params.id)
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+  const cv = await Cv.findById(req.params.id, select)
+  .sort(sort)
+  .skip(pagination.start - 1)
+  .limit(limit);
 
   if (!cv) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
   }
-
-  if (cv.special > String(Date.now())) {
-    cv.isSpecial = true
-  } else {
-    cv.isSpecial = false
-  }
-
-  if (cv.urgent > String(Date.now())) {
-    cv.isUrgent = true
-  } else {
-    cv.isUrgent = false
-  }
-
-  if (cv.cvList > String(Date.now())) {
-    cv.isCvList = true
-  } else {
-    cv.isCvList = false
-  }
   
 
-  cv.save()
 
   res.status(200).json({
     success: true,
