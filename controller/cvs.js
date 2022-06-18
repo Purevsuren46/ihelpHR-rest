@@ -106,7 +106,6 @@ exports.getCv = asyncHandler(async (req, res, next) => {
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
   const cv = await Cv.findById(req.params.id, select)
   .sort(sort)
-  .skip(pagination.start - 1)
   .limit(limit);
 
   if (!cv) {
