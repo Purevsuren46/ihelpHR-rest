@@ -25,7 +25,7 @@ const router = express.Router();
 router
   .route("/")
   .get(protect, getJobs)
-  .post(protect, createJob);
+  
 
 router.route("/specials").get(protect, getSpecialJobs)
 router.route("/unspecials").get(protect, getUnspecialJobs)
@@ -40,7 +40,8 @@ router
   .route("/:id")
   .get(getJob)
   .delete(protect, deleteJob)
-  .put(protect, updateJob);
+  .put(protect, updateJob)
+  .post(protect, createJob);
 
 router.route("/:id/eval").put(protect, evalCand);
 router.route("/:id/special").put(protect, specialJob);

@@ -447,7 +447,7 @@ exports.evalCand = asyncHandler(async (req, res, next) => {
 
 exports.createJob = asyncHandler(async (req, res, next) => {
   const occupation = await Occupation.findById(req.body.occupation);
-  const profile = await Cv.findById(req.userId);
+  const profile = await Cv.findById(req.params.id);
 
   
   if (!occupation) {
@@ -498,17 +498,17 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   
   profile.jobNumber += 1
   
-  req.body.createUser = req.userId;
+  req.body.createUser = req.params.id;
   const job = await Job.create(req.body);
-  req.body.createUser = req.userId
+  req.body.createUser = req.params.id
   req.body.type = "Job"
   req.body.crud = "Create"
   req.body.jobId = job._id
   const activity = await Activity.create(req.body)
-  const profil = await Cv.findById(req.userId);
+  const profil = await Cv.findById(req.params.id);
   req.body.firstPoint = profil.point
   req.body.point = profile.point - profil.point
-  req.body.createUser = req.userId
+  req.body.createUser = req.params.id
   req.body.explanation = "ажил үүсгэв"
   req.body.job = job._id
   const transaction = await Transaction.create(req.body);
