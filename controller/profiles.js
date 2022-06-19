@@ -86,7 +86,14 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
 });
 
 exports.getProfile = asyncHandler(async (req, res, next) => {
-  const profile = await Cv.findById(req.params.id).populate({
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 100;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const profile = await Cv.findById(req.params.id, select).populate({
     path: 'job',
     populate: { path: 'occupation', select: 'name' }
   }).populate("category");
