@@ -74,6 +74,7 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Profile);
 
   const profiles = await Cv.find(req.query, select)
+    .populate({path: "category", select: "name"})
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
