@@ -71,7 +71,6 @@ exports.getQuestionnaire = asyncHandler(async (req, res, next) => {
   if (questionnaire.achievement.length > 0) {
     questionnaire.score += 10
   }
-  questionnaire.save()
 
 
 
