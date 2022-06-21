@@ -98,22 +98,22 @@ exports.getFollow = asyncHandler( async (req, res, next) => {
 })
 
 exports.createFollow = asyncHandler(async (req, res, next) => {
-    const follows = await Follow.findOne({createUser: `${req.userId}`, followUser: `${req.params.id}`}).exec()
+    const follows = await Follow.findOne({createUser: `${req.params.id2}`, followUser: `${req.params.id}`}).exec()
     if (follows == null) {
         const post = await Cv.findById(req.params.id)
-        const posts = await Cv.findById(req.userId)
+        const posts = await Cv.findById(req.params.id2)
         post.follower += 1
         post.save()
         posts.following += 1
         posts.save()
-        req.body.createUser = req.userId;
+        req.body.createUser = req.params.id2;
         req.body.followUser = req.params.id;
     const follow = await Follow.create(req.body);
     req.body.follow = follow._id
-    req.body.who = req.userId
+    req.body.who = req.params.id2
     req.body.for = req.params.id
     const notification = await Notification.create(req.body)
-    req.body.createUser = req.userId
+    req.body.createUser = req.params.id2
     req.body.type = "Follow"
     req.body.crud = "Create"
     req.body.followId = req.params.id
@@ -122,7 +122,7 @@ exports.createFollow = asyncHandler(async (req, res, next) => {
     cv.notification += 1
     cv.save()
 
-    const cv1 = await Cv.findById(req.userId)
+    const cv1 = await Cv.findById(req.params.id2)
     let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
     let messages = [];
     if (!Expo.isExpoPushToken(cv.expoPushToken)) {
@@ -172,12 +172,12 @@ exports.updateFollow = asyncHandler(async (req, res, next) => {
 })
 
 exports.deleteFollow = asyncHandler(async (req, res, next) => {
-        const follow = await Follow.findOne({followUser: req.params.id, createUser: req.userId})
+        const follow = await Follow.findOne({followUser: req.params.id, createUser: req.params.id2})
         if (follow != null) {
           const post = await Cv.findById(req.params.id)
         post.follower -= 1
         post.save()
-        const posts = await Cv.findById(req.userId)
+        const posts = await Cv.findById(req.params.id2)
         posts.following -= 1
         posts.save()
         if(!follow) {
