@@ -25,7 +25,7 @@ router
   .get(getFollows);
 
 router
-  .route("/:id/:id2")
+  .route("/:id")
   .get(getFollow)
   .put(protect, authorize("admin", "operator"), updateFollow)
   .delete(protect, deleteFollow);
