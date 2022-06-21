@@ -35,10 +35,19 @@ exports.getFollowers = asyncHandler(async (req, res, next) => {
     ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
     // Pagination
-    const pagination = await paginate(page, limit, Follow)
+    const pagination = await paginate(page, limit, Follow.find(req.query))
 
     const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'createUser', select: 'firstName lastName profile occupation'}).populate({path: 'followUser', select: 'firstName lastName profile occupation'})
-
+    const follo = await Follow.find({followUser: req.userId})
+    const userList = []
+    for(let i = 0; i<follo.length; i++) {
+      userList.push(follo[i].createUser.toString())
+    } 
+    for(let i = 0; i< follows.length; i++) {
+      if(userList.includes(follows[i].createUser._id.toString())) {
+        follows[i].isFollowing = true 
+      }
+    }
     res.status(200).json({ success: true, data: follows, pagination, })
 
 })
@@ -53,10 +62,20 @@ exports.getCvFollows = asyncHandler(async (req, res, next) => {
     ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
     // Pagination
-    const pagination = await paginate(page, limit, Follow)
+    const pagination = await paginate(page, limit, Follow.find(req.query))
 
     const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'followUser', select: 'firstName lastName profile occupation'}).populate({path: 'createUser', select: 'organization'})
-    
+    const follo = await Follow.find({createUser: req.userId})
+    const userList = []
+    for(let i = 0; i<follo.length; i++) {
+      userList.push(follo[i].followUser.toString())
+    } 
+    for(let i = 0; i< follows.length; i++) {
+      if(userList.includes(follows[i].followUser._id.toString())) {
+        follows[i].isFollowing = true 
+      }
+    }
+
     res.status(200).json({ success: true, data: follows, pagination, })
 
 })

@@ -13,6 +13,10 @@ const FollowSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Cv',
     },
+    isFollowing: {
+        type: Boolean,
+        default: false,
+    },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 
