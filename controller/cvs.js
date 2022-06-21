@@ -946,6 +946,7 @@ exports.authPhone = asyncHandler(async (req, res, next) => {
 // PUT: api/v1/cvs/:id/profile
 exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findById(req.userId);
+  const ques = await Questionnaire.findOne({createUser: req.userId});
   if (!cv) {
     throw new MyError(req.userId + " ID-тэй ном байхгүйээ.", 400);
   }
@@ -967,6 +968,8 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
   
     cv.profile = file.name;
     cv.save();
+    ques.profile = file.name
+    ques.save()
 
     res.status(200).json({
       success: true,
