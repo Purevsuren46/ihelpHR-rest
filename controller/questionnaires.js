@@ -38,40 +38,42 @@ exports.getQuestionnaire = asyncHandler(async (req, res, next) => {
   if (!questionnaire) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
   }
+  let score = 0
   if (questionnaire.birth != null) {
-    questionnaire.score += 10
+    score += 10
   }
   if (questionnaire.location != null) {
-    questionnaire.score += 10
+    score += 10
   }
   if (questionnaire.birthPlace != null) {
-    questionnaire.score += 10
+    score += 10
   }
   if (questionnaire.phoneEmergency != null) {
-    questionnaire.score += 10
+    score += 10
   }
   if (questionnaire.profession != null) {
-    questionnaire.score += 10
+    score += 10
   }
   if (questionnaire.register != null) {
-    questionnaire.score += 10
+    score += 10
   }
   if (questionnaire.education != null) {
-    questionnaire.score += 10
+    score += 10
   }
   if (questionnaire.experiences != null) {
-    questionnaire.score += 10
+    score += 10
   }
   if (questionnaire.course.length > 0) {
-    questionnaire.score += 10
+    score += 10
   }
   if (questionnaire.experience.length > 0) {
-    questionnaire.score += 10
+    score += 10
   }
   if (questionnaire.achievement.length > 0) {
-    questionnaire.score += 10
+    score += 10
   }
-
+  questionnaire.score = score
+  questionnaire.save()
 
 
   res.status(200).json({
