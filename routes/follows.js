@@ -10,6 +10,7 @@ const {
   createFollow,
   updateFollow,
   deleteFollow,
+  deleteFollowId,
 } = require("../controller/follows");
 
 // api/v1/follows/:id/books
@@ -32,5 +33,6 @@ router
 router.route("/:id").post(protect, createFollow);
 router.route("/:id/followers").get(protect, getFollowers);
 router.route("/:id/cv").get(protect, getCvFollows);
+router.route("/:id/id").delete(protect, deleteFollowId);
 
 module.exports = router;

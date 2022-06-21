@@ -191,3 +191,11 @@ exports.deleteFollow = asyncHandler(async (req, res, next) => {
         
         
 })
+
+exports.deleteFollowId = asyncHandler(async (req, res, next) => {
+  const follow = await Follow.findOneAndDelete(req.params.id)
+
+  res.status(200).json({ success: true, data: follow, })
+
+
+})
