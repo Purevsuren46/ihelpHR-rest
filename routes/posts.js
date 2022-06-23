@@ -5,6 +5,7 @@ const {
   getPosts,
   getPostsNoShare,
   getCvPosts,
+  getUserPosts,
   getBoostPosts,
   getUnboostPosts,
   getFollowingPosts,
@@ -24,6 +25,7 @@ router
   .get(getPosts)
   .post(protect, createPost);
 router.route("/cv").get(protect, getCvPosts);
+router.route("/:id/user").get(protect, getUserPosts);
 router.route("/noshare").get(protect, getPostsNoShare);
 router.route("/boosts").get(getBoostPosts);
 router.route("/unboosts").get(getUnboostPosts);

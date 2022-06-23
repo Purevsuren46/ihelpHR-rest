@@ -119,6 +119,12 @@ exports.getCvPosts = asyncHandler(async (req, res, next) => {
   return this.getPosts(req, res, next);
 });
 
+exports.getUserPosts = asyncHandler(async (req, res, next) => {
+  req.query.createUser = req.params.id;
+
+  return this.getPosts(req, res, next);
+});
+
 // api/v1/categories/:catId/Posts
 exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   req.query.createUser = req.params.id;
