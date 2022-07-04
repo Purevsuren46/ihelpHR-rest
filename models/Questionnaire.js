@@ -264,7 +264,21 @@ const QuestionnareSchema = new mongoose.Schema({
   createUser: {
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
-  }
+  },
+  experienceYear: {
+    type: String,
+    enum: [
+        "Байхгүй", 
+        "1", 
+        "2-3", 
+        "4-5", 
+        "6-8", 
+        "9-11", 
+        "11-13", 
+        "13-15", 
+        "16+"
+      ]
+  },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}});
 
 
