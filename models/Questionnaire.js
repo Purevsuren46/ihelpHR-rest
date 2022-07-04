@@ -279,6 +279,18 @@ const QuestionnareSchema = new mongoose.Schema({
         "16+"
       ]
   },
+  educationLevel: {
+    type: String,
+    enum: [
+        "Доктор", 
+        "Магистр", 
+        "Бакалавр", 
+        "Тусгай мэргэжлийн дунд", 
+        "Бүрэн дунд", 
+        "Суурь", 
+        "Бага"
+      ]
+  },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}});
 
 
