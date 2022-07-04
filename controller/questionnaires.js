@@ -330,6 +330,56 @@ exports.updateCourseQuestionnaire = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.createLanguageQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  questionnaire.language.push(req.body)
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
+exports.deleteLanguageQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  questionnaire.language.pull({_id: req.params.id})
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
+exports.updateLanguageQuestionnaire = asyncHandler(async (req, res, next) => {
+  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
+
+  if (!questionnaire) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  
+  const number = questionnaire.language.findIndex((obj => obj._id == req.params.id))
+  questionnaire.language[number] = req.body
+  questionnaire.save()
+
+  res.status(200).json({
+    success: true,
+    data: questionnaire,
+  });
+});
+
 exports.createAchievementQuestionnaire = asyncHandler(async (req, res, next) => {
   const questionnaire = await Questionnaire.findOne({createUser: req.userId});
 

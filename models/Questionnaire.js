@@ -172,6 +172,20 @@ const QuestionnareSchema = new mongoose.Schema({
       enum: ['Бүтэн цаг', 'Хагас цаг', 'freelancer', 'self-employed', 'contract', 'intern', 'apprentice', 'seasonal' ]
   },
   }],
+  language: [{
+    country: {
+      type: {
+        type: String,
+        default: null
+    },
+    },
+    level: {
+      type: {
+        type: String,
+        default: null
+    },
+    }
+  }],
   course: [{ 
   field: {
       type: String,

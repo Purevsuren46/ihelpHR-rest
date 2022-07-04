@@ -15,6 +15,9 @@ const {
   createCourseQuestionnaire,
   deleteCourseQuestionnaire,
   updateCourseQuestionnaire,
+  createLanguageQuestionnaire,
+  deleteLanguageQuestionnaire,
+  updateLanguageQuestionnaire,
   createAchievementQuestionnaire,
   deleteAchievementQuestionnaire,
   updateAchievementQuestionnaire,
@@ -52,6 +55,13 @@ router
 router
   .route("/course")
   .post(protect, createCourseQuestionnaire);
+router
+  .route("/:id/language")
+  .delete(protect, deleteLanguageQuestionnaire)
+  .put(protect, updateLanguageQuestionnaire);
+router
+  .route("/language")
+  .post(protect, createLanguageQuestionnaire);
 router
   .route("/:id/experience")
   .delete(protect, deleteExperienceQuestionnaire)
