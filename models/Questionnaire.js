@@ -203,10 +203,7 @@ const QuestionnareSchema = new mongoose.Schema({
       
   default: false
   },
-  profile: {
-    type: String,
-    default: "ihelp.jpg"
-  },
+
   activity: {
       type: String,
       
@@ -241,6 +238,10 @@ const QuestionnareSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },  
+  profile: {
+    type: String,
+    default: "ihelp.jpg"
+  },
   createUser: {
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',

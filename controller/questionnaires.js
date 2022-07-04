@@ -75,6 +75,8 @@ exports.getQuestionnaire = asyncHandler(async (req, res, next) => {
   questionnaire.score = score
   questionnaire.save()
 
+  // console.log(questionnaire.skill)
+
 
   res.status(200).json({
     success: true,
