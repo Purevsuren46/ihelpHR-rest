@@ -968,8 +968,11 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
   
     cv.profile = file.name;
     cv.save();
-    ques.profile = file.name
-    ques.save()
+    if(ques != null) {
+      ques.profile = file.name
+      ques.save()
+    }
+
 
     res.status(200).json({
       success: true,
@@ -994,8 +997,10 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
     cv.profile = file.name;
     cv.save();
 
-    ques.profile = file.name
-    ques.save()
+    if(ques != null) {
+      ques.profile = file.name
+      ques.save()
+    }
 
     res.status(200).json({
       success: true,
