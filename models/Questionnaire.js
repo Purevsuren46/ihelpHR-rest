@@ -253,6 +253,10 @@ const QuestionnareSchema = new mongoose.Schema({
     type: Number,
     default: 0
   }, 
+  salaryExpectation: {
+    type: Number,
+    default: 0
+  }, 
   profile: {
     type: String,
     default: "ihelp.jpg"
