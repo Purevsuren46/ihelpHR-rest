@@ -729,7 +729,9 @@ exports.deleteCv = asyncHandler(async (req, res, next) => {
   if (!cv) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
   }
-  ques.remove()
+  if(ques != null) {
+    ques.remove()
+  }
   cv.remove();
 
   res.status(200).json({
