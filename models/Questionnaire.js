@@ -174,16 +174,12 @@ const QuestionnareSchema = new mongoose.Schema({
   }],
   language: [{
     country: {
-      type: {
-        type: String,
-        default: null
-    },
+      type: String,
+      default: null
     },
     level: {
-      type: {
-        type: String,
-        default: null
-    },
+      type: String,
+      default: null
     }
   }],
   course: [{ 
