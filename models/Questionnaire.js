@@ -268,8 +268,8 @@ const QuestionnareSchema = new mongoose.Schema({
     default: 0
   }, 
   salaryExpectation: {
-    type: Number,
-    default: 0
+    type: String,
+    default: null
   }, 
   profile: {
     type: String,
