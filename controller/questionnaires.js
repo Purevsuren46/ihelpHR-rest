@@ -73,9 +73,12 @@ exports.getQuestionnaire = asyncHandler(async (req, res, next) => {
     score += 10
   }
   questionnaire.score = score
+  questionnaire.familyCount = questionnaire.family.length
+  questionnaire.achievementCount = questionnaire.achievement.length
+  questionnaire.experienceCount = questionnaire.experience.length
+  questionnaire.courseCount = questionnaire.course.length
   questionnaire.save()
 
-  // console.log(questionnaire.skill)
 
 
   res.status(200).json({

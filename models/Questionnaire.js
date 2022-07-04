@@ -203,7 +203,6 @@ const QuestionnareSchema = new mongoose.Schema({
       
   default: false
   },
-
   activity: {
       type: String,
       
@@ -238,6 +237,22 @@ const QuestionnareSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },  
+  familyCount: {
+    type: Number,
+    default: 0
+  }, 
+  achievementCount: {
+    type: Number,
+    default: 0
+  }, 
+  experienceCount: {
+    type: Number,
+    default: 0
+  }, 
+  courseCount: {
+    type: Number,
+    default: 0
+  }, 
   profile: {
     type: String,
     default: "ihelp.jpg"
