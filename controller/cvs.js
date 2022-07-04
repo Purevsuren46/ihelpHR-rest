@@ -271,7 +271,7 @@ exports.invoiceWallet = asyncHandler(async (req, res, next) => {
         invoice_receiver_code: `${profile.phone}`,
         invoice_description:`ihelp wallet charge ${profile.email}`,
         
-        amount:req.body.amount,
+        amount: req.body.amount,
         callback_url:`http://128.199.128.37/api/v1/cvs/callbacks/${req.params.id}/${req.body.amount}`
       }
     }).then(async (response) => {
@@ -993,6 +993,9 @@ exports.uploadCvProfile = asyncHandler(async (req, res, next) => {
   
     cv.profile = file.name;
     cv.save();
+
+    ques.profile = file.name
+    ques.save()
 
     res.status(200).json({
       success: true,
