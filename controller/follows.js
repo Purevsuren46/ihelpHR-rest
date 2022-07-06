@@ -71,9 +71,12 @@ exports.getCvFollows = asyncHandler(async (req, res, next) => {
       userList.push(follo[i].followUser.toString())
     } 
     for(let i = 0; i< follows.length; i++) {
-      if(userList.includes(follows[i].followUser._id.toString())) {
-        follows[i].isFollowing = true 
+      if(follows[i].followUser != null) {
+        if(userList.includes(follows[i].followUser._id.toString())) {
+          follows[i].isFollowing = true 
+        }
       }
+
     }
 
     res.status(200).json({ success: true, data: follows, pagination, })

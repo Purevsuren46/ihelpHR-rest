@@ -146,7 +146,6 @@ exports.getCvActivity = asyncHandler(async (req, res, next) => {
           cvs[i].postId.isLiked = true
         } 
       }
-      
     }
 
   res.status(200).json({
