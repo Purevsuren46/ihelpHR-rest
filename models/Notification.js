@@ -43,6 +43,10 @@ const NotificationSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    isAnnouncement: {
+      type: Boolean,
+      default: false
+    },
     createdAt: {
       type: Date,
       default: Date.now,

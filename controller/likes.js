@@ -1,4 +1,5 @@
 const Like = require('../models/Like')
+const Announcement = require('../models/Announcement')
 const Share = require('../models/Share')
 const Job = require('../models/Job')
 const Notification = require('../models/Notification')
@@ -192,6 +193,56 @@ exports.createJobLike = asyncHandler(async (req, res, next) => {
     const likes = await Like.findOne({createUser: req.userId, job: req.params.id}).exec()
     if (likes == null) {
         const post = await Job.findById(req.params.id)
+        if (post == null) {
+          const post = await Announcement.findById(req.params.id)
+          if (post != null) {
+            post.like += 1
+            post.save()
+            req.body.createUser = req.userId;
+            req.body.announcement = req.params.id;
+        const like = await Like.create(req.body);
+        req.body.like = like._id
+        req.body.who = req.userId
+        req.body.for = post.createUser
+        req.body.isAnnouncement = true
+        const notification = await Notification.create(req.body)
+        req.body.createUser = req.userId
+        req.body.type = "AnnouncementSave"
+        req.body.crud = "Create"
+        req.body.announcementId = req.params.id
+        const activity = await Activity.create(req.body)
+        const cv = await Cv.findById(post.createUser)
+        cv.notification += 1
+        cv.save()
+    
+        const cv1 = await Cv.findById(req.userId)
+        let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+        let messages = [];
+        if (!Expo.isExpoPushToken(cv.expoPushToken)) {
+            console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
+        }
+        messages.push({
+            to: cv.expoPushToken,
+            sound: 'default',
+            body: `Таны ажлын зарыг ${cv1.firstName} хадгаллаа`,
+            data: { notificationId: notification._id },
+          })
+        let chunks = expo.chunkPushNotifications(messages);
+        let tickets = [];
+        (async () => {
+            for (let chunk of chunks) {
+              try {
+                let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+                console.log(ticketChunk);
+                tickets.push(...ticketChunk);
+              } catch (error) {
+                console.error(error);
+              }
+            }
+          })();
+        res.status(200).json({ success: true, data: like, notification: notification, })
+          }
+        }
         post.like += 1
         post.save()
         req.body.createUser = req.userId;
