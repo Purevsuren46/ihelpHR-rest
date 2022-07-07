@@ -533,9 +533,11 @@ exports.createCv = asyncHandler(async (req, res, next) => {
   const follow = await Follow.create(req.body);
   req.body.createUser = posts._id;
   const questionnaire = await Questionnaire.create(req.body);
+  const token = posts.getJsonWebToken();
       res.status(200).json({
         success: true,
         data: posts,
+        token,
       });
     } else {
       req.body.phone = random.phone
@@ -555,9 +557,11 @@ exports.createCv = asyncHandler(async (req, res, next) => {
 const follow = await Follow.create(req.body);
 req.body.createUser = posts._id;
 const questionnaire = await Questionnaire.create(req.body);
+const token = posts.getJsonWebToken();
     res.status(200).json({
       success: true,
       data: posts,
+      token,
     });
     }
     
@@ -755,7 +759,7 @@ exports.deleteActivity = asyncHandler(async (req, res, next) => {
 
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   if (!req.body.phone) {
-    throw new MyError("Та нууц үг сэргээх имэйл хаягаа дамжуулна уу", 400);
+    throw new MyError("Та нууц үг сэргээх утас дамжуулна уу", 400);
   }
 
   const cv = await Cv.findOne({ phone: req.body.phone });
