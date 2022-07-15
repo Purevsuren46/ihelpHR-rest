@@ -28,19 +28,23 @@ const JobSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ["эр", "эм", "хоёул"],
+    default: "Сонгох",
+    enum: ["Сонгох", "эр", "эм", "хоёул" ],
   },
   age: {
     type: String,
-    enum: ["18-25", "26-30", "31-36", "37-45", "45+", "хамаагүй"]
+    default: "Сонгох",
+    enum: ["Сонгох", "18-25", "26-30", "31-36", "37-45", "45+", "хамаагүй"]
   },
   experience: {
     type: String,
-    enum: ["0-1", "1-3", "3-5", "5-10", "10+", "хамаагүй"]
+    default: "Сонгох",
+    enum: ["Сонгох", "0-1", "1-3", "3-5", "5-10", "10+", "хамаагүй"]
   },
   education: {
     type: String,
-    enum: ["Бүрэн дунд", "Бакалавр", "Магистр", "Доктор"]
+    default: "Сонгох",
+    enum: ["Сонгох", "Бүрэн дунд", "Бакалавр", "Магистр", "Доктор"]
   },
   percent: {
     type: Number,
@@ -48,7 +52,9 @@ const JobSchema = new mongoose.Schema({
   },
   salary: {
       type: String,
+      default: "Сонгох",
       enum: [
+          "Сонгох",
           "400,000 - 600,000", 
           "600,000 - 800,000", 
           "800,000 - 1,000,000", 
@@ -64,7 +70,9 @@ const JobSchema = new mongoose.Schema({
   },
   partTimeSalary: {
     type: String,
+    default: "Сонгох",
     enum: [
+        "Сонгох",
         "1,000 - 3,000₮", 
         "3,000 - 5,000₮",
         "5,000 - 8,000₮"
@@ -80,11 +88,13 @@ const JobSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['Бүтэн цаг', 'Хагас цаг', 'freelancer', 'self-employed', 'contract', 'intern', 'apprentice', 'seasonal' ]
+    default: "Сонгох",
+    enum: ["Сонгох", 'Бүтэн цаг', 'Хагас цаг', 'freelancer', 'self-employed', 'contract', 'intern', 'apprentice', 'seasonal' ]
   },
   level: {
     type: String,
-    enum: ["Мэргэжилтэн", "Дадлага", "Мэргэжил хамаарахгүй", "Дунд шатны удирдлага", "Дээд шатны удирдлага"],
+    default: "Сонгох",
+    enum: ["Сонгох", "Мэргэжилтэн", "Дадлага", "Мэргэжил хамаарахгүй", "Дунд шатны удирдлага", "Дээд шатны удирдлага"],
   },
   occupation: {
     type: mongoose.Schema.ObjectId,
