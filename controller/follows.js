@@ -154,7 +154,17 @@ exports.createFollow = asyncHandler(async (req, res, next) => {
     
     res.status(200).json({ success: true, data: follow, })
     } else {
-        throw new MyError("Follow дарсан байна.", 400)
+      const post = await Cv.findById(req.params.id)
+      post.follower -= 1
+      post.save()
+      const posts = await Cv.findById(req.params.id2)
+      posts.following -= 1
+      posts.save()
+      if(!follows) {
+      return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
+      } 
+      follows.remove()
+      res.status(200).json({ success: true, data: follows, })
     }
     
 })
