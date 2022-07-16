@@ -19,6 +19,7 @@ const {
   deleteCv,
   deleteActivity,
   forgotPassword,
+  forgotPasswordEmail,
   resetPassword,
   chargePoint,
   logout,
@@ -43,6 +44,7 @@ router.route("/callbacks").post(chargeSocial);
 router.route("/login").post(login);
 router.route("/logout").get(logout);
 router.route("/forgot-password").post(forgotPassword);
+router.route("/forgot-password-email").post(forgotPasswordEmail);
 router.route("/reset-password").post(resetPassword);
 router.route("/send").post(sendPhone);
 

@@ -795,6 +795,39 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.forgotPasswordEmail = asyncHandler(async (req, res, next) => {
+  if (!req.body.email) {
+    throw new MyError("Та нууц үг сэргээх имэйл дамжуулна уу", 400);
+  }
+
+  const cv = await Cv.findOne({ email: req.body.email });
+
+  if (!cv) {
+    throw new MyError(req.body.phone + " имэйлтэй хэрэглэгч олдсонгүй!", 400);
+  }
+
+  const resetToken = cv.generatePasswordChangeToken();
+
+
+  await cv.save({ validateBeforeSave: false });
+
+  // Имэйл илгээнэ
+  const link = `${resetToken}`;
+
+  const message = `Нууц үг өөрчлөх код: ${link}`;
+
+
+  const info = await sendEmail({
+    email: cv.email,
+    subject: "Нууц үг өөрчлөх хүсэлт",
+    message,
+  });
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
 exports.changePhoneRequest = asyncHandler(async (req, res, next) => {
   const cv = await Cv.findOne(req.userId)
   const phon = await Phone.findOne(cv.phone)
