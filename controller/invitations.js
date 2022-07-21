@@ -45,6 +45,9 @@ exports.createInvitation = asyncHandler(async (req, res, next) => {
     const category = await Invitation.create(req.body)
     const cv = await Cv.findById(req.params.id)
     const cv1 = await Cv.findById(req.userId)
+    if(cv.organization == true) {
+      category.organization = true
+    }
     let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
     let messages = [];
     if (!Expo.isExpoPushToken(cv.expoPushToken)) {

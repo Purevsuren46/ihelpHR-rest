@@ -29,6 +29,10 @@ const InvitationSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  organization: {
+    type: Boolean,
+    default: false,
+  },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}});
 
 
