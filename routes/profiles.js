@@ -49,7 +49,7 @@ router.route("/unspecials/employer").get(getUnspecialEmployerProfiles);
 
 router
   .route("/")
-  .get(getProfiles)
+  .get(protect, getProfiles)
   .post(createProfile);
 
 

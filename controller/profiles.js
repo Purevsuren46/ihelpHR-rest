@@ -69,6 +69,7 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
   const sort = req.query.sort;
   const select = req.query.select;
   req.query.organization = true;
+  
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
   const pagination = await paginate(page, limit, Profile);
@@ -78,6 +79,21 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
+  req.query = {createUser: req.userId}
+
+  const follows = await Follow.find(req.query).sort(sort).limit(1000)
+
+
+  const user = []
+  for (let i = 0; i < (follows.length); i++ ) {
+    user.push(follows[i].followUser.toString())
+  }
+
+  for (let i = 0; i < profiles.length; i++) {
+    if (user.includes(profiles[i]._id.toString()) ) {
+      profiles[i].isFollowing = true
+    } 
+  }
 
   res.status(200).json({
     success: true,
