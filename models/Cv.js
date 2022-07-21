@@ -64,6 +64,10 @@ const CvSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isSentCv: {
+    type: Boolean,
+    default: false,
+  },
   about: {
     type: String,
     default: "me"

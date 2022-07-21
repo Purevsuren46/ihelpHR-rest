@@ -1,4 +1,5 @@
 const Profile = require("../models/Profile");
+const Apply = require("../models/Apply");
 const Follow = require("../models/Follow");
 const Wallet = require("../models/Wallet");
 const Cv = require("../models/Cv");
@@ -79,11 +80,9 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
-  req.query = {createUser: req.userId}
+  
 
-  const follows = await Follow.find(req.query).sort(sort).limit(1000)
-
-
+  const follows = await Follow.find({createUser: req.userId})
   const user = []
   for (let i = 0; i < (follows.length); i++ ) {
     user.push(follows[i].followUser.toString())
@@ -92,6 +91,18 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
   for (let i = 0; i < profiles.length; i++) {
     if (user.includes(profiles[i]._id.toString()) ) {
       profiles[i].isFollowing = true
+    } 
+  }
+
+  const applies = await Apply.find({createUser: req.userId})
+  const apply = []
+  for (let i = 0; i < (applies.length); i++ ) {
+    apply.push(applies[i].company.toString())
+  }
+
+  for (let i = 0; i < profiles.length; i++) {
+    if (apply.includes(profiles[i]._id.toString()) ) {
+      profiles[i].isSentCv = true
     } 
   }
 
