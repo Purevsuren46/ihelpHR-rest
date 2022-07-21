@@ -83,9 +83,9 @@ exports.getAnnouncements = asyncHandler(async (req, res, next) => {
       announcements[i].percent += percent
     } else if (announcements[i].age == "37-45" && age >= 37 && age <= 45) {
       announcements[i].percent += percent
-    } else if (announcements[i].age == "45+" && age >= 45) {
+    } else if (announcements[i].age == "45-аас дээш" && age >= 45) {
       announcements[i].percent += percent
-    } else if (announcements[i].age == "хамаагүй") {
+    } else if (announcements[i].age == "Хамаагүй") {
       announcements[i].percent += percent
     }
 
@@ -107,9 +107,9 @@ exports.getAnnouncements = asyncHandler(async (req, res, next) => {
       announcements[i].percent += percent
     } else if (announcements[i].experience == "5-10" && experience > 5 && experience <= 10) {
       announcements[i].percent += percent
-    } else if (announcements[i].experience == "10+" && experience > 10) {
+    } else if (announcements[i].experience == "10-аас дээш" && experience > 10) {
       announcements[i].percent += percent
-    } else if (announcements[i].experience == "хамаагүй") {
+    } else if (announcements[i].experience == "Хамаагүй") {
       announcements[i].percent += percent
     }
 

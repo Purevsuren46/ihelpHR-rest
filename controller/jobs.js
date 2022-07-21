@@ -35,7 +35,7 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
   const select = req.query.select;
-
+  console.log(req.query)
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
   const pagination = await paginate(page, limit, Job);
@@ -84,9 +84,9 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
       jobs[i].percent += percent
     } else if (jobs[i].age == "37-45" && age >= 37 && age <= 45) {
       jobs[i].percent += percent
-    } else if (jobs[i].age == "45+" && age >= 45) {
+    } else if (jobs[i].age == "45-аас дээш" && age >= 45) {
       jobs[i].percent += percent
-    } else if (jobs[i].age == "хамаагүй") {
+    } else if (jobs[i].age == "Хамаагүй") {
       jobs[i].percent += percent
     }
 
@@ -108,9 +108,9 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
       jobs[i].percent += percent
     } else if (jobs[i].experience == "5-10" && experience > 5 && experience <= 10) {
       jobs[i].percent += percent
-    } else if (jobs[i].experience == "10+" && experience > 10) {
+    } else if (jobs[i].experience == "10-аас дээш" && experience > 10) {
       jobs[i].percent += percent
-    } else if (jobs[i].experience == "хамаагүй") {
+    } else if (jobs[i].experience == "Хамаагүй") {
       jobs[i].percent += percent
     }
 

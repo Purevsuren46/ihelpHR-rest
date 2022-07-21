@@ -14,7 +14,7 @@ const QuestionnareSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ["эр", "эм"]
+    enum: ["Эр", "Эм"]
   },
   birth: {
     type: Date,
