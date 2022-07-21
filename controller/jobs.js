@@ -35,7 +35,7 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
   const select = req.query.select;
-  console.log(req.query)
+
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
   const pagination = await paginate(page, limit, Job);
