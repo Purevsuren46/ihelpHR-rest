@@ -42,10 +42,10 @@ router.route("/login").post(login);
 router.route("/logout").get(logout);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").post(resetPassword);
-router.route("/specials/employee").get(getSpecialEmployeeProfiles);
-router.route("/unspecials/employee").get(getUnspecialEmployeeProfiles);
-router.route("/specials/employer").get(getSpecialEmployerProfiles);
-router.route("/unspecials/employer").get(getUnspecialEmployerProfiles);
+router.route("/specials/employee").get(protect, getSpecialEmployeeProfiles);
+router.route("/unspecials/employee").get(protect, getUnspecialEmployeeProfiles);
+router.route("/specials/employer").get(protect, getSpecialEmployerProfiles);
+router.route("/unspecials/employer").get(protect, getUnspecialEmployerProfiles);
 
 router
   .route("/")

@@ -95,6 +95,7 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
     } 
   }
 
+
   res.status(200).json({
     success: true,
     data: profiles,
@@ -124,6 +125,7 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
     follo.push(follow[i].followUser.toString())
   }
 
+
   if (follo.includes(profile._id.toString())) {
     profile.isFollowing = true
   } else {
@@ -140,112 +142,26 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
 
 exports.getSpecialEmployeeProfiles = asyncHandler(async (req, res, next) => {
   req.query.employeeSpecial = {$gt: Date.now()}
-  req.query.organization = true;
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const sort = req.query.sort;
-  const select = req.query.select;
-
-  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
-
-  const pagination = await paginate(page, limit, Profile);
-
-  const profiles = await Cv.find(req.query, select).populate({
-    path: 'job',
-    populate: { path: 'occupation', select: 'name' }
-  })
-    .sort(sort)
-    .skip(pagination.start - 1)
-    .limit(limit);
-
-  res.status(200).json({
-    success: true,
-    data: profiles,
-    pagination,
-  });
+  req.query.isEmployee = true
+  return this.getProfiles(req, res, next);
 });
 
 exports.getSpecialEmployerProfiles = asyncHandler(async (req, res, next) => {
   req.query.employerSpecial = {$gt: Date.now()}
-  req.query.organization = true;
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const sort = req.query.sort;
-  const select = req.query.select;
-
-  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
-
-  const pagination = await paginate(page, limit, Profile);
-
-  const profiles = await Cv.find(req.query, select).populate({
-    path: 'job',
-    populate: { path: 'occupation', select: 'name' }
-  })
-    .populate({path: "category", select: "name"})
-    .sort(sort)
-    .skip(pagination.start - 1)
-    .limit(limit);
-
-  res.status(200).json({
-    success: true,
-    data: profiles,
-    pagination,
-  });
+  req.query.isEmployer = true
+  return this.getProfiles(req, res, next);
 });
 
 exports.getUnspecialEmployeeProfiles = asyncHandler(async (req, res, next) => {
   req.query.employeeSpecial = {$lt: Date.now()}
-  req.query.organization = true;
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const sort = req.query.sort;
-  const select = req.query.select;
-
-  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
-
-  const pagination = await paginate(page, limit, Profile);
-
-  const profiles = await Cv.find(req.query, select).populate({
-    path: 'job',
-    populate: { path: 'occupation', select: 'name' }
-  })
-    .sort(sort)
-    .skip(pagination.start - 1)
-    .limit(limit);
-
-  res.status(200).json({
-    success: true,
-    data: profiles,
-    pagination,
-  });
+  req.query.isEmployee = true
+  return this.getProfiles(req, res, next);
 });
 
 exports.getUnspecialEmployerProfiles = asyncHandler(async (req, res, next) => {
   req.query.employerSpecial = {$lt: Date.now()}
-  req.query.organization = true;
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const sort = req.query.sort;
-  const select = req.query.select;
-
-  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
-
-  const pagination = await paginate(page, limit, Profile);
-
-  const profiles = await Cv.find(req.query, select).populate({
-    path: 'job',
-    populate: { path: 'occupation', select: 'name' }
-  })
-    .populate({path: "category", select: "name"})
-    .sort(sort)
-    .skip(pagination.start - 1)
-    .limit(limit);
-
-  res.status(200).json({
-    success: true,
-    data: profiles,
-    pagination,
-  });
+  req.query.isEmployer = true
+  return this.getProfiles(req, res, next);
 });
 
 exports.specialEmployerProfile = asyncHandler(async (req, res, next) => {
