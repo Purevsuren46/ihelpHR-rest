@@ -64,7 +64,7 @@ exports.getCvFollows = asyncHandler(async (req, res, next) => {
     // Pagination
     const pagination = await paginate(page, limit, Follow.find(req.query))
 
-    const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'followUser', select: 'firstName lastName profile occupation organization'}).populate({path: 'createUser', select: 'organization'})
+    const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'followUser', select: 'firstName lastName profile occupation organization category'}).populate({path: 'createUser', select: 'organization'})
     const follo = await Follow.find({createUser: req.userId})
     const userList = []
     for(let i = 0; i<follo.length; i++) {
