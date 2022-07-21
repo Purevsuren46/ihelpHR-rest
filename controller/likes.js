@@ -380,18 +380,19 @@ exports.deleteLike = asyncHandler(async (req, res, next) => {
 
 exports.deleteJobLike = asyncHandler(async (req, res, next) => {
     const like = await Like.findOne({job: req.params.id, createUser: req.userId})
-    if(!like) {
-    return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
-    } 
-    like.remove()
-    // if(like !== null) {
-    //     const post = await Job.findById(req.params.id)
-    //     post.like -= 1
-    //     post.save()
-    //     
-    // }
+    if (like == null) {
+    const lik = await Like.findOne({announcement: req.params.id, createUser: req.userId})
+    if (lik == null) {
+      return res.status(400).json({ success: false, error: req.params.id + " ID-тай ажил байхгүй.", })
+    } else {
+      lik.remove()
+      res.status(200).json({ success: true, data: lik, })
+    }
+    } else {
+      like.remove()
+      res.status(200).json({ success: true, data: like, })
+    }
 
-    res.status(200).json({ success: true, data: like, })
     
 })
 
