@@ -125,32 +125,33 @@ exports.createFollow = asyncHandler(async (req, res, next) => {
     cv.notification += 1
     cv.save()
 
-    const cv1 = await Cv.findById(req.params.id2)
-    let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
-    let messages = [];
-    if (!Expo.isExpoPushToken(cv.expoPushToken)) {
-        console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
-    }
-    messages.push({
-        to: cv.expoPushToken,
-        sound: 'default',
-        body: `Таныг ${cv1.firstName} дагалаа`,
-        data: { notificationId: notification._id, data1: "NetworkingStack" },
-      })
-    let chunks = expo.chunkPushNotifications(messages);
-    let tickets = [];
-    (async () => {
-        for (let chunk of chunks) {
-          try {
-            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-            console.log(ticketChunk);
-            tickets.push(...ticketChunk);
-          } catch (error) {
-            console.error(error);
+    if (cv.expoPushToken != undefined) {
+      const cv1 = await Cv.findById(req.params.id2)
+      let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+      let messages = [];
+      if (!Expo.isExpoPushToken(cv.expoPushToken)) {
+          console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
+      }
+      messages.push({
+          to: cv.expoPushToken,
+          sound: 'default',
+          body: `Таныг ${cv1.firstName} дагалаа`,
+          data: { notificationId: notification._id, data1: "NetworkingStack" },
+        })
+      let chunks = expo.chunkPushNotifications(messages);
+      let tickets = [];
+      (async () => {
+          for (let chunk of chunks) {
+            try {
+              let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+              console.log(ticketChunk);
+              tickets.push(...ticketChunk);
+            } catch (error) {
+              console.error(error);
+            }
           }
-        }
-      })();
-
+        })();
+    } 
     
     res.status(200).json({ success: true, data: follow, })
     } else {

@@ -27,10 +27,10 @@ router
 router
   .route("/:id")
   .get(getFollow)
-  .put(protect, authorize("admin", "operator"), updateFollow)
-  .delete(protect, deleteFollow);
+  .put(protect, authorize("admin", "operator"), updateFollow);
+  
 
-router.route("/:id/:id2").post(protect, createFollow);
+router.route("/:id/:id2").post(protect, createFollow).delete(protect, deleteFollow);;
 router.route("/:id/followers").get(protect, getFollowers);
 router.route("/:id/cv").get(protect, getCvFollows);
 router.route("/:id/id").delete(protect, deleteFollowId);
