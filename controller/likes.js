@@ -137,7 +137,7 @@ exports.getAnnouncementLikes = asyncHandler(async (req, res, next) => {
   // Pagination
   const pagination = await paginate(page, limit, Like)
 
-  const like = await Like.find({createUser: req.params.id, announcement: {$ne: null}}).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "announcement", populate: {path: "createUser", select: "firstName lastName name profile"}}).populate({path: "job", populate: {path: "occupation", select: "name"}})
+  const like = await Like.find({createUser: req.params.id, announcement: {$ne: null}}).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "announcement", populate: {path: "createUser", select: "firstName lastName name profile isEmployee isEmployer"}}).populate({path: "job", populate: {path: "occupation", select: "name"}})
   // const likes = like.map((item)=>item.job)
   // const likes1 = likes.map(item=>item.toString())
 
