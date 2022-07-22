@@ -42,7 +42,7 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
 
   const jobs = await Job.find(req.query, select).populate("occupation").populate({
     path: 'createUser',
-    select: 'firstName profile'
+    select: 'firstName profile isEmployee isEmployer'
   })
   .sort({isUrgent:-1})  
   .sort(sort)
