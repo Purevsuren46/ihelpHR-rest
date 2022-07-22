@@ -41,7 +41,7 @@ exports.getAnnouncements = asyncHandler(async (req, res, next) => {
 
   const announcements = await Announcement.find(req.query, select).populate("occupation").populate({
     path: 'createUser',
-    select: 'profile lastName firstName'
+    select: 'profile lastName firstName isEmployee isEmployer'
   })
   .sort({isUrgent:-1})  
   .sort(sort)
@@ -155,7 +155,7 @@ exports.getProfileAnnouncements = asyncHandler(async (req, res, next) => {
 
   const announcements = await Announcement.find(req.query, select).populate("occupation").populate({
     path: 'createUser',
-    select: 'firstName profile'
+    select: 'firstName profile isEmployee isEmployer'
   })
   .sort({isUrgent:-1})  
   .sort(sort)
@@ -187,7 +187,7 @@ exports.getOccupationAnnouncements = asyncHandler(async (req, res, next) => {
   )
   .populate("occupation").populate({
     path: 'createUser',
-    select: 'firstName profile'
+    select: 'firstName profile isEmployee isEmployer'
   })
     .sort(sort)
     .skip(pagination.start - 1)
@@ -229,7 +229,7 @@ exports.getCvFilterAnnouncements = asyncHandler(async (req, res, next) => {
 exports.getAnnouncement = asyncHandler(async (req, res, next) => {
   const announcement = await Announcement.findById(req.params.id).populate("occupation").populate({
     path: 'createUser',
-    select: "category name profile announcementNumber firstName",
+    select: "category name profile announcementNumber firstName isEmployee isEmployer",
     populate: {path: "category", select: "name"}
   })
 

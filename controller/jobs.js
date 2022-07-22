@@ -156,7 +156,7 @@ exports.getProfileJobs = asyncHandler(async (req, res, next) => {
 
   const jobs = await Job.find(req.query, select).populate("occupation").populate({
     path: 'createUser',
-    select: 'name profile'
+    select: 'name profile isEmployee isEmployer'
   })
   .sort({isUrgent:-1})  
   .sort(sort)
@@ -188,7 +188,7 @@ exports.getOccupationJobs = asyncHandler(async (req, res, next) => {
   )
   .populate("occupation").populate({
     path: 'createUser',
-    select: 'firstName profile'
+    select: 'firstName profile isEmployee isEmployer'
   })
     .sort(sort)
     .skip(pagination.start - 1)
@@ -224,7 +224,7 @@ exports.getCategoryJobs = asyncHandler(async (req, res, next) => {
   )
   .populate("occupation").populate({
     path: 'createUser',
-    select: 'firstName profile'
+    select: 'firstName profile isEmployee isEmployer'
   })
     .sort(sort)
     .skip(pagination.start - 1)
@@ -266,7 +266,7 @@ exports.getCvFilterJobs = asyncHandler(async (req, res, next) => {
 exports.getJob = asyncHandler(async (req, res, next) => {
   const job = await Job.findById(req.params.id).populate("occupation").populate({
     path: 'createUser',
-    select: "category firstName profile jobNumber",
+    select: "category firstName profile jobNumber isEmployee isEmployer",
     populate: {path: "category", select: "name"}
   })
 
