@@ -287,8 +287,7 @@ exports.createJobLike = asyncHandler(async (req, res, next) => {
         res.status(200).json({ success: true, data: like, notification: notification, })
           }
         }
-        post.like += 1
-        post.save()
+
         req.body.createUser = req.userId;
         req.body.job = req.params.id;
     const like = await Like.create(req.body);
