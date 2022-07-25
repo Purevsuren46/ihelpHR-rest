@@ -6,6 +6,7 @@ const {
   getLikes,
   getPostLikes,
   getCvLikes,
+  getCvPostLikes,
   getCvJobLikes,
   getJobLikes,
   getAnnouncementLikes,
@@ -39,6 +40,7 @@ router
 router.route("/:id").post(protect, createLike);
 router.route("/:id/job").post(protect, createJobLike);
 router.route("/:id/post").get(protect, getPostLikes);
+router.route("/:id/posts").get(protect, getCvPostLikes);
 router.route("/:id/cv").get(protect, getCvLikes);
 router.route("/:id/job").get(protect, getCvJobLikes);
 router.route("/:id/jobs").get(protect, getJobLikes);
