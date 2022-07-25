@@ -85,7 +85,21 @@ exports.getApply = asyncHandler( async (req, res, next) => {
 exports.getCvApplies = asyncHandler(async (req, res, next) => {
         req.query.createUser = req.params.cvId;
         req.query.job = {$ne: null}
-        return this.getApplies(req, res, next);
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 100;
+        const sort = req.query.sort;
+        const select = req.query.select;
+
+        ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+        // Pagination
+        const pagination = await paginate(page, limit, Apply)
+
+        const applies = await Apply.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "job", select: "type salary occupation", populate: {path: "occupation", select: "name"}})
+
+
+        res.status(200).json({ success: true, data: applies, pagination, })
 });
       
 exports.createApply = asyncHandler(async (req, res, next) => {
