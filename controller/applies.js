@@ -84,6 +84,7 @@ exports.getApply = asyncHandler( async (req, res, next) => {
 
 exports.getCvApplies = asyncHandler(async (req, res, next) => {
         req.query.createUser = req.params.cvId;
+        req.query.job = {$ne: null}
         return this.getApplies(req, res, next);
 });
       
