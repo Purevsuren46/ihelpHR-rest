@@ -41,7 +41,7 @@ exports.getPostLikes = asyncHandler(async (req, res, next) => {
     // Pagination
     const pagination = await paginate(page, limit, Like.find(req.query))
 
-    const likes = await Like.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "createUser", select: "lastName firstName"})
+    const likes = await Like.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "createUser", select: "lastName firstName profile"})
 
     res.status(200).json({ success: true, data: likes, pagination, })
 
