@@ -5,6 +5,7 @@ const { protect, authorize } = require("../middleware/protect");
 const {
   getInvitations,
   getCvInvitations,
+  getCvSentInvitations,
   getInvitation,
   createInvitation,
   deleteInvitation,
@@ -19,6 +20,10 @@ router
 router
   .route("/:id/cv")
   .get(getCvInvitations)
+
+router
+  .route("/:id/sent")
+  .get(getCvSentInvitations)
 
 router
   .route("/:id")

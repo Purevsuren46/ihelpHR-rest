@@ -35,7 +35,24 @@ exports.getInvitation = asyncHandler( async (req, res, next) => {
 
 exports.getCvInvitations = asyncHandler(async (req, res, next) => {
         req.query.candidate = req.params.id;
-        return this.getInvitations(req, res, next);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 100;
+        const sort = req.query.sort;
+        const select = req.query.select;
+
+        ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+        // Pagination
+        const pagination = await paginate(page, limit, Invitation)
+
+        const invitations = await Invitation.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
+
+        res.status(200).json({ success: true, data: invitations, pagination, })
+});
+
+exports.getCvSentInvitations = asyncHandler(async (req, res, next) => {
+  req.query.createUser = req.params.id;
+  return this.getInvitations(req, res, next);
 });
 
 exports.createInvitation = asyncHandler(async (req, res, next) => {
