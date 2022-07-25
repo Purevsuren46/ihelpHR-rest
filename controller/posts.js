@@ -64,16 +64,19 @@ exports.getPostsNoShare = asyncHandler(async (req, res, next) => {
 exports.getBoostPosts = asyncHandler(async (req, res, next) => {
   
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 5;
+  const limit = parseInt(req.query.limit) || 1;
   const sort = req.query.sort;
   const select = req.query.select;
 
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
   const pop = "lastName firstName profile organization profession workingCompany status"
 
-  const pagination = await paginate(page, limit, Post);
+  const pagination = await paginate(page, limit, Post.find({boost: {$gt: Date.now()}}));
 
   const posts = await Post.find({boost: {$gt: Date.now()}}, select).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
+  .sort(sort)
+  .skip(pagination.start - 1)
+  .limit(limit);
 
   res.status(200).json({
     success: true,
