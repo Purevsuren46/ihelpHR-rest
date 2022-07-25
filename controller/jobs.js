@@ -57,16 +57,16 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
       pagination,
     });
   } else {
-    const sendsCv = await Apply.find({createUser: req.userId, job: {$ne: null} });
-  const jobsId = []
-  for (let i = 0; i < sendsCv.length; i++) {
-    jobsId.push(sendsCv[i].job.toString())
-  }
-  for (let i = 0; i < jobs.length; i++) {
-    if (jobsId.includes(jobs[i]._id.toString()) ) {
-      jobs[i].isSentCv = true
-    } 
-  }
+  //   const sendsCv = await Apply.find({createUser: req.userId, job: {$ne: null} });
+  // const jobsId = []
+  // for (let i = 0; i < sendsCv.length; i++) {
+  //   jobsId.push(sendsCv[i].job.toString())
+  // }
+  // for (let i = 0; i < jobs.length; i++) {
+  //   if (jobsId.includes(jobs[i]._id.toString()) ) {
+  //     jobs[i].isSentCv = true
+  //   } 
+  // }
   const age = Math.floor(Math.abs(new Date(Date.now()) - questionnaire.birth) / 1000 / 60 / 60 / 24 / 365)
   const percent = 10
   const gender = questionnaire.gender
