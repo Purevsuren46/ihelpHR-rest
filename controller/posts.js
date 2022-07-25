@@ -150,19 +150,24 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
     // for (let i = 0; i < (lik.length); i++ ) {
     //   like.push(lik[i].post.toString())
     // }
-    if (boost != 0) {
-      if (boost[page - 1] != undefined) {
-        post.push(boost[page - 1])
-      }
-    } 
+    
+    // if (boost != 0) {
+    //   if (boost[page - 1] != undefined) {
+    //     post.push(boost[page - 1])
+    //   }
+    // } 
+
+
     // for (let i = 0; i < post.length; i++) {
     //   if (like.includes(post[i]._id.toString()) ) {
     //     post[i].isLiked = true
     //   } 
     // }
-    for (let i = 0; i < boost.length; i++) {
-      boost[i].isBoost = true
-    }
+
+
+    // for (let i = 0; i < boost.length; i++) {
+    //   boost[i].isBoost = true
+    // }
   }
 
   res.status(200).json({ success: true, data: post, pagination, })
