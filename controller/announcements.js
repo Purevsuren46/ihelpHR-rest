@@ -47,97 +47,14 @@ exports.getAnnouncements = asyncHandler(async (req, res, next) => {
   .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit)
-  const questionnaire = await Questionnaire.findOne({createUser: req.userId});
-  if (questionnaire == null) {
+
     res.status(200).json({
       success: true,
       count: announcements.length,
       data: announcements,
       pagination,
     });
-  } else {
-    const sendsCv = await Apply.find({createUser: req.userId, announcement: {$ne: null} });
-  const announcementsId = []
-  for (let i = 0; i < sendsCv.length; i++) {
-    announcementsId.push(sendsCv[i].announcement.toString())
-  }
-  for (let i = 0; i < announcements.length; i++) {
-    if (announcementsId.includes(announcements[i]._id.toString()) ) {
-      announcements[i].isSentCv = true
-    } 
-  }
-  const age = Math.floor(Math.abs(new Date(Date.now()) - questionnaire.birth) / 1000 / 60 / 60 / 24 / 365)
-  const percent = 10
-  const gender = questionnaire.gender
-  const education = questionnaire.education
-  const experience = questionnaire.experiences
-  const occupation = questionnaire.occupation
-  const level = questionnaire.level
-  const type = questionnaire.type
-  for (let i = 0; i < announcements.length; i++) {
-    if (announcements[i].age == "18-25" && age >= 18 && age <= 25) {
-      announcements[i].percent += percent
-    } else if (announcements[i].age == "26-30" && age >= 26 && age <= 30) {
-      announcements[i].percent += percent
-    } else if (announcements[i].age == "31-36" && age >= 31 && age <= 36) {
-      announcements[i].percent += percent
-    } else if (announcements[i].age == "37-45" && age >= 37 && age <= 45) {
-      announcements[i].percent += percent
-    } else if (announcements[i].age == "45-аас дээш" && age >= 45) {
-      announcements[i].percent += percent
-    } else if (announcements[i].age == "Хамаагүй") {
-      announcements[i].percent += percent
-    }
 
-    if (announcements[i].gender == "хоёул") {
-      announcements[i].percent += percent
-    } else if (announcements[i].gender == gender) {
-      announcements[i].percent += percent
-    } 
-
-    if (announcements[i].education == education) {
-      announcements[i].percent += percent
-    }
-
-    if (announcements[i].experience == "0-1" && experience >= 0 && experience <= 1) {
-      announcements[i].percent += percent
-    } else if (announcements[i].experience == "1-3" && experience > 1 && experience <= 3) {
-      announcements[i].percent += percent
-    } else if (announcements[i].experience == "3-5" && experience > 3 && experience <= 5) {
-      announcements[i].percent += percent
-    } else if (announcements[i].experience == "5-10" && experience > 5 && experience <= 10) {
-      announcements[i].percent += percent
-    } else if (announcements[i].experience == "10-аас дээш" && experience > 10) {
-      announcements[i].percent += percent
-    } else if (announcements[i].experience == "Хамаагүй") {
-      announcements[i].percent += percent
-    }
-
-    if (announcements[i].occupation == occupation) {
-      announcements[i].percent += percent
-    }
-
-    if (announcements[i].level == level) {
-      announcements[i].percent += percent
-    }
-    if (announcements[i].type == type) {
-      announcements[i].percent += percent
-    }
-    if (announcements[i].salary == questionnaire.salary) {
-      announcements[i].percent += percent
-    }
-
-  }
-
-
-
-  res.status(200).json({
-    success: true,
-    count: announcements.length,
-    data: announcements,
-    pagination,
-  });
-  }
   
 });
 
