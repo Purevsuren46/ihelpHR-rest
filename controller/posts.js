@@ -134,15 +134,15 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
 
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
-  // const follows = await Follow.find(req.query, select).sort(sort).limit(1000)
-  // const user = follows.map((item)=>item.followUser)
-  // user.push(req.params.id)
+  const follows = await Follow.find(req.query, select).sort(sort).limit(1000)
+  const user = follows.map((item)=>item.followUser)
+  user.push(req.params.id)
   // Pagination
-  const pagination = await paginate(page, limit, Post.find())
+  const pagination = await paginate(page, limit, Post.find({createUser: user  }))
   const pop = "lastName firstName profile organization profession workingCompany status"
 
-  const post = await Post.find().limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
-  // {createUser: user  }
+  const post = await Post.find({createUser: user  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
+  
   // const boost = await Post.find({boost: {$gt: Date.now()}}).sort({"createdAt": -1}).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
   // if (post[post.length - 1] != undefined) {
     // const lik = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gte: post[post.length - 1].createdAt}}).select('post')
