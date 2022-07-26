@@ -138,7 +138,7 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   // const user = follows.map((item)=>item.followUser)
   // user.push(req.params.id)
   // Pagination
-  const pagination = await paginate(page, limit, Post.find({createUser: user  }))
+  const pagination = await paginate(page, limit, Post.find())
   const pop = "lastName firstName profile organization profession workingCompany status"
 
   const post = await Post.find().limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
