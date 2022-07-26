@@ -143,7 +143,7 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
 
   const post = await Post.find({createUser: user  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
 
-  const boost = await Post.find({boost: {$gt: Date.now()}}).sort({"createdAt": -1}).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
+  // const boost = await Post.find({boost: {$gt: Date.now()}}).sort({"createdAt": -1}).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
   // if (post[post.length - 1] != undefined) {
     // const lik = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gte: post[post.length - 1].createdAt}}).select('post')
     // const like = []
