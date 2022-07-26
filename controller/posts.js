@@ -144,13 +144,13 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   const post = await Post.find({createUser: user  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
 
   const boost = await Post.find({boost: {$gt: Date.now()}}).sort({"createdAt": -1}).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
-  if (post[post.length - 1] != undefined) {
+  // if (post[post.length - 1] != undefined) {
     // const lik = await Like.find({createUser: req.userId, post: {$ne: null}, createdAt: {$gte: post[post.length - 1].createdAt}}).select('post')
     // const like = []
     // for (let i = 0; i < (lik.length); i++ ) {
     //   like.push(lik[i].post.toString())
     // }
-    
+
     // if (boost != 0) {
     //   if (boost[page - 1] != undefined) {
     //     post.push(boost[page - 1])
@@ -168,7 +168,7 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
     // for (let i = 0; i < boost.length; i++) {
     //   boost[i].isBoost = true
     // }
-  }
+  // }
 
   res.status(200).json({ success: true, data: post, pagination, })
 });
