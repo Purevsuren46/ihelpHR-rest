@@ -130,18 +130,18 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
   }
-  const follow = await Follow.find({createUser: req.userId})
-  const follo = []
-  for (let i = 0; i < follow.length; i++) {
-    follo.push(follow[i].followUser.toString())
-  }
+  // const follow = await Follow.find({createUser: req.userId})
+  // const follo = []
+  // for (let i = 0; i < follow.length; i++) {
+  //   follo.push(follow[i].followUser.toString())
+  // }
 
 
-  if (follo.includes(profile._id.toString())) {
-    profile.isFollowing = true
-  } else {
-    profile.isFollowing = false
-  }
+  // if (follo.includes(profile._id.toString())) {
+  //   profile.isFollowing = true
+  // } else {
+  //   profile.isFollowing = false
+  // }
   
 
 
