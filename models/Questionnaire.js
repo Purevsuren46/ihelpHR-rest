@@ -1,7 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
 
 const QuestionnareSchema = new mongoose.Schema({
   firstName: {

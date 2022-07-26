@@ -1,5 +1,4 @@
 const mongoose = require("mongoose")
-const { transliterate, slugify} = require('transliteration')
 const ShareSchema = new mongoose.Schema({
     createdAt: {
         type: Date,

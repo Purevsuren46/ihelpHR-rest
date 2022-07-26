@@ -1,5 +1,4 @@
 const mongoose = require("mongoose")
-const { transliterate, slugify} = require('transliteration')
 const SchoolSchema = new mongoose.Schema({
     name: {
         type: String,

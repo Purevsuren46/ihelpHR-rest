@@ -1,5 +1,4 @@
 const mongoose = require("mongoose")
-const { transliterate, slugify} = require('transliteration')
 const CommentSchema = new mongoose.Schema({
     description: {
         type: String,

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose")
-const { transliterate, slugify} = require('transliteration')
 const PromoSchema = new mongoose.Schema({
     code: {
         type: String,

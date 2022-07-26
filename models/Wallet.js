@@ -1,5 +1,4 @@
 const mongoose = require("mongoose")
-const { transliterate, slugify} = require('transliteration')
 const WalletSchema = new mongoose.Schema({
     createUser: {
         type: mongoose.Schema.ObjectId,

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const { transliterate, slugify} = require('transliteration')
+
 const FollowSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
