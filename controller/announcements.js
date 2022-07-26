@@ -297,7 +297,6 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 exports.evalCand = asyncHandler(async (req, res, next) => {
   const announcement = await Announcement.findById(req.params.id);
 
