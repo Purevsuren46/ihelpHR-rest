@@ -22,7 +22,7 @@ exports.getWallets = asyncHandler(async (req, res, next) => {
 
 exports.getWallet = asyncHandler( async (req, res, next) => {
     
-        const wallet = await Wallet.findById(req.params.id).populate('books')
+        const wallet = await Wallet.findById(req.params.id)
         
         if(!wallet) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)

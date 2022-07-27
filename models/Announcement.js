@@ -92,7 +92,7 @@ const AnnouncementSchema = new mongoose.Schema({
   profile: {
     type: String,
   },
-  occupation: {
+  occupationName: {
     type: String,
   },
   category: {

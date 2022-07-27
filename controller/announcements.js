@@ -376,7 +376,7 @@ exports.createAnnouncement = asyncHandler(async (req, res, next) => {
   announcement.profile = profil.profile
   announcement.isEmployee = profil.isEmployee
   announcement.isEmployer = profil.isEmployer
-  announcement.occupation = occupation.name
+  announcement.occupationName = occupation.name
   announcement.category = profil.category
   announcement.announcementNumber = profil.announcementNumber
   announcement.save()

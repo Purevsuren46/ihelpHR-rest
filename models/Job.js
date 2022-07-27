@@ -100,6 +100,9 @@ const JobSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Occupation',
   },
+  occupationName: {
+    type: String
+  },
   createUser: {
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',

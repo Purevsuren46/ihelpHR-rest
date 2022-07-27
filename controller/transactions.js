@@ -32,7 +32,7 @@ exports.getCvTransactions = asyncHandler(async (req, res, next) => {
 
 exports.getTransaction = asyncHandler( async (req, res, next) => {
     
-const category = await Transaction.findById(req.params.id).populate('books')
+const category = await Transaction.findById(req.params.id)
 
 if(!category) {
 throw new MyError(req.params.id + " ID-тай категори байхгүй.", 400)

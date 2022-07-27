@@ -22,7 +22,7 @@ exports.getHistories = asyncHandler(async (req, res, next) => {
 
 exports.getHistory = asyncHandler( async (req, res, next) => {
     
-        const history = await History.findById(req.params.id).populate('books')
+        const history = await History.findById(req.params.id)
         
         if(!history) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)

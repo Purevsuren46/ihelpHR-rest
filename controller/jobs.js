@@ -495,7 +495,7 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   job.profile = profil.profile
   job.isEmployee = profil.isEmployee
   job.isEmployer = profil.isEmployer
-  job.occupation = occupation.name
+  job.occupationName = occupation.name
   job.category = profil.category
   job.announcementNumber = profil.announcementNumber
   job.save()

@@ -22,7 +22,7 @@ exports.getOccupations = asyncHandler(async (req, res, next) => {
 
 exports.getOccupation = asyncHandler( async (req, res, next) => {
     
-        const occupation = await Occupation.findById(req.params.id).populate('books')
+        const occupation = await Occupation.findById(req.params.id)
         
         if(!occupation) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)
