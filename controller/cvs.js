@@ -552,7 +552,7 @@ exports.createCv = asyncHandler(async (req, res, next) => {
     const posts = await Cv.create(req.body);
     if(req.body.category) {
       const category = await Category.findById(req.body.category)
-      posts.category = category.name
+      posts.categoryName = category.name
       posts.save()
     }
     const rando = await Phone.deleteOne({random: req.body.random})

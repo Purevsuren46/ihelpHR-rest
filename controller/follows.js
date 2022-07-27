@@ -130,7 +130,7 @@ exports.createFollow = asyncHandler(async (req, res, next) => {
     follow.followUserInfo.isEmployer = cv.isEmployer
     follow.followUserInfo.occupation = cv.occupation
     follow.followUserInfo.organization = cv.organization
-    follow.followUserInfo.category = cv.category
+    follow.followUserInfo.category = cv.categoryName
 
     follow.createUserInfo.firstName = cv1.firstName
     follow.createUserInfo.lastName = cv1.lastName
@@ -139,7 +139,7 @@ exports.createFollow = asyncHandler(async (req, res, next) => {
     follow.createUserInfo.isEmployer = cv1.isEmployer
     follow.createUserInfo.occupation = cv1.occupation
     follow.createUserInfo.organization = cv1.organization
-    follow.createUserInfo.category = cv1.category
+    follow.createUserInfo.category = cv1.categoryName
     follow.save()
     cv.notification += 1
     cv.save()

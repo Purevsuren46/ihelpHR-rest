@@ -174,7 +174,11 @@ const CvSchema = new mongoose.Schema({
     ref: "Questionnaire",
   },
   category: {
-    type: String,
+    type: mongoose.Schema.ObjectId,
+    ref: "Category",
+  },
+  categoryName: {
+    type: String
   },
   promoId: {
     type: mongoose.Schema.ObjectId,

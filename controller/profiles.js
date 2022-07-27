@@ -315,7 +315,7 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
   const profile = await Cv.create(req.body);
   if(req.body.category) {
     const category = await Category.findById(req.body.category)
-    profile.category = category.name
+    profile.categoryName = category.name
     profile.save()
   }
 
