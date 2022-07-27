@@ -105,43 +105,31 @@ location: {
 },
 like: {
   type: Number,
-  default: 0,
 },
 comment: {
   type: Number,
-  default: 0,
 },
 share: {
   type: Number,
-  default: 0,
 },
-category: [{
-  type: mongoose.Schema.ObjectId,
-  ref: 'Cv',
-}],
 createUser: {
   type: mongoose.Schema.ObjectId,
   ref: 'Cv',
 },
 isBoost: {
   type: Boolean,
-  default: false,
 },
 isLiked: {
   type: Boolean,
-  default: false,
 },
 boost: {
   type: Date,
-  default: Date.now,
 },
 count: {
   type: Number,
-  default: 0,
 },
 createdAt: {
   type: Date,
-  default: Date.now,
 },
 firstName: {
   type: String,
@@ -174,7 +162,6 @@ shareDescription: {
 },
 isShare: {
   type: Boolean,
-  default: false
 },
 },
 });
