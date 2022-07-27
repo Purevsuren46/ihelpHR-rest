@@ -528,13 +528,13 @@ exports.createCv = asyncHandler(async (req, res, next) => {
       promoUser.save()
       const rando = await Phone.deleteOne({random: req.body.random})
 
-      const post = await Cv.findById("6268f4795c8249342cd4ed22")
+      const post = await Cv.findById("62e13ba9d002f0538c325965")
       post.follower += 1
       post.save()
       posts.following += 1
       posts.save()
       req.body.createUser = posts._id;
-      req.body.followUser = "6268f4795c8249342cd4ed22";
+      req.body.followUser = "62e13ba9d002f0538c325965";
   const follow = await Follow.create(req.body);
   req.body.createUser = posts._id;
   const questionnaire = await Questionnaire.create(req.body);
@@ -557,13 +557,13 @@ exports.createCv = asyncHandler(async (req, res, next) => {
     }
     const rando = await Phone.deleteOne({random: req.body.random})
 
-    const post = await Cv.findById("6268f4795c8249342cd4ed22")
+    const post = await Cv.findById("62e13ba9d002f0538c325965")
     post.follower += 1
     post.save()
     posts.following += 1
     posts.save()
     req.body.createUser = posts._id;
-    req.body.followUser = "6268f4795c8249342cd4ed22";
+    req.body.followUser = "62e13ba9d002f0538c325965";
 const follow = await Follow.create(req.body);
 req.body.createUser = posts._id;
 const questionnaire = await Questionnaire.create(req.body);
