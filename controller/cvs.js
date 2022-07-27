@@ -600,6 +600,12 @@ exports.updateCv = asyncHandler(async (req, res, next) => {
     cv.isCvList = cvv.isCvList
     cv.save()
   }
+  if (req.body.category) {
+    const category = await Category.findById(req.body.category)
+    cv.categoryName = category.name
+    cv.category = req.body.category
+    cv.save()
+  }
   if (req.body.status) {
 
     const follows = await Follow.find({followUser: req.params.id}).populate({path: "createUser", select: "expoPushToken"})
