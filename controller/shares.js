@@ -117,7 +117,35 @@ exports.createShare = asyncHandler(async (req, res, next) => {
         req.body.createUser = req.userId;
         req.body.sharePost = req.params.id;
         req.body.isShare = true
+
+
         const share = await Post.create(req.body);
+        share.shareInfo.body = post.body
+        share.shareInfo.photo = post.photo
+        share.shareInfo.location = post.location
+        share.shareInfo.like = post.like
+        share.shareInfo.comment = post.comment
+        share.shareInfo.share = post.share
+        share.shareInfo.category = post.category
+        share.shareInfo.createUser = post.createUser
+        share.shareInfo.isBoost = post.isBoost
+        share.shareInfo.isLiked = post.isLiked
+        share.shareInfo.boost = post.boost
+        share.shareInfo.count = post.count
+        share.shareInfo.createdAt = post.createdAt
+        share.shareInfo.firstName = post.firstName
+        share.shareInfo.lastName = post.lastName
+        share.shareInfo.profile = post.profile
+        share.shareInfo.profession = post.profession
+        share.shareInfo.organization = post.organization
+        share.shareInfo.workingCompany = post.workingCompany
+        share.shareInfo.status = post.status
+        share.shareInfo.sharePost = post.sharePost
+        share.shareInfo.shareDescription = post.shareDescription
+        share.shareInfo.isShare = post.isShare     
+        share.save()   
+
+
         req.body.share = share._id
         req.body.who = req.userId
         req.body.for = post.createUser

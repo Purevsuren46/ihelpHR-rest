@@ -24,7 +24,7 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Post);
 
-  const posts = await Post.find(req.query, select).populate("sharePost")
+  const posts = await Post.find(req.query, select)
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -48,7 +48,7 @@ exports.getPostsNoShare = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Post);
   req.query.isShare = false
 
-  const posts = await Post.find(req.query, select).populate("sharePost")
+  const posts = await Post.find(req.query, select)
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -73,7 +73,7 @@ exports.getBoostPosts = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Post.find({boost: {$gt: Date.now()}}));
 
-  const posts = await Post.find({boost: {$gt: Date.now()}}, select).populate("sharePost")
+  const posts = await Post.find({boost: {$gt: Date.now()}}, select)
   .sort(sort)
   .skip(pagination.start - 1)
   .limit(limit);
@@ -98,7 +98,6 @@ exports.getUnboostPosts = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Post);
 
   const posts = await Post.find(req.query, select)
-    .populate('sharePost')
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -140,7 +139,7 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   // Pagination
   const pagination = await paginate(page, limit, Post.find({createUser: user  }))
 
-  const post = await Post.find({createUser: user  }).limit(limit).sort(sort).skip(pagination.start - 1).populate("sharePost")
+  const post = await Post.find({createUser: user  }).limit(limit).sort(sort).skip(pagination.start - 1)
   
   // const boost = await Post.find({boost: {$gt: Date.now()}}).sort({"createdAt": -1}).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
   // if (post[post.length - 1] != undefined) {
@@ -174,7 +173,7 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
 });
 
 exports.getPost = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.params.id).populate("sharePost");
+  const post = await Post.findById(req.params.id)
 
   if (!post) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
