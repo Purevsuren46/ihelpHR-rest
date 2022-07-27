@@ -1,4 +1,5 @@
 const Cv = require("../models/Cv");
+const Category = require("../models/Category");
 const Promo = require("../models/Promo");
 const Like = require("../models/Like");
 const Transaction = require("../models/Transaction");
@@ -98,6 +99,7 @@ exports.getCvs = asyncHandler(async (req, res, next) => {
 });
 // Хэрэглэгчийг iD гаар авна
 exports.getCv = asyncHandler(async (req, res, next) => {
+  console.time("getCv")
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
@@ -118,9 +120,11 @@ exports.getCv = asyncHandler(async (req, res, next) => {
     success: true,
     data: cv,
   });
+  console.timeEnd("getCv")
 });
 
 exports.getCvActivity = asyncHandler(async (req, res, next) => {
+  console.time("getCvActivity")
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
@@ -135,24 +139,25 @@ exports.getCvActivity = asyncHandler(async (req, res, next) => {
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
-    const lik = await Like.find({createUser: req.userId, post: {$ne: null} }).select('post')
-    const like = []
-    for (let i = 0; i < (lik.length); i++ ) {
-      like.push(lik[i].post.toString())
-    }
-    for (let i = 0; i < cvs.length; i++) {
-      if (cvs[i].postId != undefined) {
-        if (like.includes(cvs[i].postId._id.toString()) ) {
-          cvs[i].postId.isLiked = true
-        } 
-      }
-    }
+    // const lik = await Like.find({createUser: req.userId, post: {$ne: null} }).select('post')
+    // const like = []
+    // for (let i = 0; i < (lik.length); i++ ) {
+    //   like.push(lik[i].post.toString())
+    // }
+    // for (let i = 0; i < cvs.length; i++) {
+    //   if (cvs[i].postId != undefined) {
+    //     if (like.includes(cvs[i].postId._id.toString()) ) {
+    //       cvs[i].postId.isLiked = true
+    //     } 
+    //   }
+    // }
 
   res.status(200).json({
     success: true,
     data: cvs,
     pagination,
   });
+  console.timeEnd("getCvActivity")
 });
 // Үнэмлэхний зургаа явуулцан, гэрээгээ зөвшөөрцөн хэрэглэгчдийг авах
 exports.getAuthCvs = asyncHandler(async (req, res, next) => {
@@ -545,6 +550,11 @@ exports.createCv = asyncHandler(async (req, res, next) => {
     req.body.point = 0,
     req.body.role = "user"
     const posts = await Cv.create(req.body);
+    if(req.body.category) {
+      const category = await Category.findById(req.body.category)
+      posts.category = category.name
+      posts.save()
+    }
     const rando = await Phone.deleteOne({random: req.body.random})
 
     const post = await Cv.findById("6268f4795c8249342cd4ed22")

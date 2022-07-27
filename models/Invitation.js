@@ -33,6 +33,18 @@ const InvitationSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
+  profile: {
+    type: String,
+  },
+  createUserOrganization: {
+    type: Boolean,
+},
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}});
 
 

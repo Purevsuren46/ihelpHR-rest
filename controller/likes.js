@@ -41,7 +41,7 @@ exports.getPostLikes = asyncHandler(async (req, res, next) => {
     // Pagination
     const pagination = await paginate(page, limit, Like.find(req.query))
 
-    const likes = await Like.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "createUser", select: "lastName firstName profile"})
+    const likes = await Like.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
 
     res.status(200).json({ success: true, data: likes, pagination, })
 
@@ -66,6 +66,7 @@ exports.getCvLikes = asyncHandler(async (req, res, next) => {
 })
 
 exports.getCvPostLikes = asyncHandler(async (req, res, next) => {
+  console.time("getCvPostLikes")
   // req.query.createUser = req.params.id;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10000;
@@ -78,10 +79,10 @@ exports.getCvPostLikes = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Like.find({createUser: req.params.id, post: {$ne: null}}))
 
   // const likes = await Like.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate("post share").populate({path: "post", populate: {path: "createUser", select: "lastName firstName profile"}}).populate({path: "share", populate: {path: "createUser", select: "lastName firstName profile"}})
-    const likes = await Like.find({createUser: req.params.id, post: {$ne: null}}).select('post').populate({path: "createUser", select: "lastName firstName"})
+    const likes = await Like.find({createUser: req.params.id, post: {$ne: null}}).select('post')
 
   res.status(200).json({ success: true, data: likes, pagination, })
-
+  console.timeEnd("getCvPostLikes")
 })
 
 exports.getCvJobLikes = asyncHandler(async (req, res, next) => {
@@ -220,6 +221,11 @@ exports.createLike = asyncHandler(async (req, res, next) => {
     cv.save()
     
     const cv1 = await Cv.findById(req.userId)
+    like.firstName = cv1.firstName
+    like.lastName = cv1.lastName
+    like.profile = cv1.profile
+    like.save()
+
     let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
     let messages = [];
     if (!Expo.isExpoPushToken(cv.expoPushToken)) {

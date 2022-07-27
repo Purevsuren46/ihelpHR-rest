@@ -30,6 +30,39 @@ const ApplySchema = new mongoose.Schema({
     reminder: {
         type: Boolean,
     },
+    companyInfo: {
+        firstName: {
+            type: String,
+          },
+          profile: {
+            type: String,
+          },
+          category: {
+            type: String,
+          },
+    },
+    createUserInfo: {
+        firstName: {
+            type: String,
+          },
+          lastName: {
+            type: String,
+          },  
+          profile: {
+            type: String,
+          },
+    },
+    jobInfo: {
+        type: {
+            type: String,
+          },
+          salary: {
+            type: String,
+          },  
+          occupation: {
+            type: String,
+          },
+    },
 }, {toJSON: {virtuals: true}, toObject: {virtuals: true}} )
 
 

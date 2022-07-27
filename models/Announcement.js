@@ -83,6 +83,31 @@ const AnnouncementSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
+  profile: {
+    type: String,
+  },
+  occupation: {
+    type: String,
+  },
+  category: {
+    type: String,
+  },
+  isEmployee: {
+    type: Boolean,
+  },
+  isEmployer: {
+    type: Boolean,
+  },
+  announcementNumber: {
+    type: Number,
+    default: 0
+  },
   special: {
     type: Date,
     default: Date.now,

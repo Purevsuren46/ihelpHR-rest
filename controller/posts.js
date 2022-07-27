@@ -24,7 +24,7 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Post);
 
-  const posts = await Post.find(req.query, select).populate({path: "createUser", select: "firstName lastName profile name workingCompany profession"}).populate({path: 'sharePost', populate: {path: "createUser", select: "firstName lastName profile name workingCompany profession"}})
+  const posts = await Post.find(req.query, select).populate("sharePost")
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -48,7 +48,7 @@ exports.getPostsNoShare = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Post);
   req.query.isShare = false
 
-  const posts = await Post.find(req.query, select).populate({path: "createUser", select: "firstName lastName profile name workingCompany profession"}).populate({path: 'sharePost', populate: {path: "createUser", select: "firstName lastName profile name workingCompany profession"}})
+  const posts = await Post.find(req.query, select).populate("sharePost")
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -73,7 +73,7 @@ exports.getBoostPosts = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Post.find({boost: {$gt: Date.now()}}));
 
-  const posts = await Post.find({boost: {$gt: Date.now()}}, select).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
+  const posts = await Post.find({boost: {$gt: Date.now()}}, select).populate("sharePost")
   .sort(sort)
   .skip(pagination.start - 1)
   .limit(limit);
@@ -98,7 +98,6 @@ exports.getUnboostPosts = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Post);
 
   const posts = await Post.find(req.query, select)
-    .populate({path: "createUser", select: "firstName lastName profile name"})
     .populate('sharePost')
     .sort(sort)
     .skip(pagination.start - 1)
@@ -126,6 +125,7 @@ exports.getUserPosts = asyncHandler(async (req, res, next) => {
 
 // api/v1/categories/:catId/Posts
 exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
+  console.time("followingPosts")
   req.query.createUser = req.params.id;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -139,9 +139,8 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   user.push(req.params.id)
   // Pagination
   const pagination = await paginate(page, limit, Post.find({createUser: user  }))
-  const pop = "lastName firstName profile organization profession workingCompany status"
 
-  const post = await Post.find({createUser: user  }).limit(limit).sort(sort).skip(pagination.start - 1).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
+  const post = await Post.find({createUser: user  }).limit(limit).sort(sort).skip(pagination.start - 1).populate("sharePost")
   
   // const boost = await Post.find({boost: {$gt: Date.now()}}).sort({"createdAt": -1}).populate({path: 'createUser', select: pop}).populate({path: 'sharePost', populate: {path: 'createUser', select: pop}})
   // if (post[post.length - 1] != undefined) {
@@ -171,10 +170,11 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   // }
 
   res.status(200).json({ success: true, data: post, pagination, })
+  console.timeEnd("followingPosts")
 });
 
 exports.getPost = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.params.id).populate({path: 'createUser', select: 'lastName firstName profile organization profession workingCompany status'}).populate({path: 'sharePost', populate: {path: "createUser", select: "lastName firstName profile status profession workingCompany organization"}});
+  const post = await Post.findById(req.params.id).populate("sharePost");
 
   if (!post) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
@@ -254,6 +254,15 @@ exports.createPost = asyncHandler(async (req, res, next) => {
   req.body.createUser = req.userId;
   const articl = await Post.create(req.body);
   const cv = await Cv.findById(req.userId);
+  articl.firstName = cv.firstName
+  articl.lastName = cv.lastName
+  articl.profile = cv.profile
+  articl.workingCompany = cv.workingCompany
+  articl.profession = cv.profession
+  articl.organization = cv.organization
+  articl.status = cv.status
+  articl.save()
+
   cv.postNumber += 1
   cv.save()
   req.body.createUser = req.userId

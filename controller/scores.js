@@ -22,7 +22,7 @@ exports.getScores = asyncHandler(async (req, res, next) => {
 
 exports.getScore = asyncHandler( async (req, res, next) => {
     
-        const score = await Score.findById(req.params.id).populate('books')
+        const score = await Score.findById(req.params.id)
         
         if(!score) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)

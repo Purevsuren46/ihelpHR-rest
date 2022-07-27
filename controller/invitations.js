@@ -16,7 +16,7 @@ exports.getInvitations = asyncHandler(async (req, res, next) => {
         // Pagination
         const pagination = await paginate(page, limit, Invitation)
 
-        const invitations = await Invitation.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "createUser", select: "name lastName firstName profile organization"})
+        const invitations = await Invitation.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
 
         res.status(200).json({ success: true, data: invitations, pagination, })
     
@@ -24,7 +24,7 @@ exports.getInvitations = asyncHandler(async (req, res, next) => {
 
 exports.getInvitation = asyncHandler( async (req, res, next) => {
     
-        const invitation = await Invitation.findById(req.params.id).populate({path: "createUser", select: "name lastName firstName profile organization"})
+        const invitation = await Invitation.findById(req.params.id)
         
         if(!invitation) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)
@@ -62,6 +62,14 @@ exports.createInvitation = asyncHandler(async (req, res, next) => {
     const category = await Invitation.create(req.body)
     const cv = await Cv.findById(req.params.id)
     const cv1 = await Cv.findById(req.userId)
+    category.firstName = cv1.firstName
+    category.lastName = cv1.lastName
+    category.profile = cv1.profile
+    category.createUserOrganization = cv1.organization
+
+    category.save()
+
+
     if(cv.organization == true) {
       category.organization = true
     }

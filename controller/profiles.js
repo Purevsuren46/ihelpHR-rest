@@ -1,4 +1,5 @@
 const Profile = require("../models/Profile");
+const Category = require("../models/Category");
 const Apply = require("../models/Apply");
 const Follow = require("../models/Follow");
 const Wallet = require("../models/Wallet");
@@ -65,6 +66,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 });
 
 exports.getProfiles = asyncHandler(async (req, res, next) => {
+  console.time("getProfiles")
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
@@ -76,7 +78,6 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
   const pagination = await paginate(page, limit, Profile);
 
   const profiles = await Cv.find(req.query, select)
-    .populate({path: "category", select: "name"})
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -112,6 +113,7 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
     data: profiles,
     pagination,
   });
+  console.timeEnd("getProfiles")
 });
 
 exports.getProfile = asyncHandler(async (req, res, next) => {
@@ -122,10 +124,7 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
 
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
 
-  const profile = await Cv.findById(req.params.id, select).populate({
-    path: 'job',
-    populate: { path: 'occupation', select: 'name' }
-  }).populate("category");
+  const profile = await Cv.findById(req.params.id, select)
 
   if (!profile) {
     throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүй!", 400);
@@ -314,6 +313,11 @@ exports.createProfile = asyncHandler(async (req, res, next) => {
   req.body.point = 0,
   req.body.organization = true
   const profile = await Cv.create(req.body);
+  if(req.body.category) {
+    const category = await Category.findById(req.body.category)
+    profile.category = category.name
+    profile.save()
+  }
 
   res.status(200).json({
     success: true,

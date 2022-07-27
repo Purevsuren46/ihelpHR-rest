@@ -31,6 +31,7 @@ exports.getUnspecialJobs = asyncHandler(async (req, res, next) => {
 
 // api/v1/Jobs
 exports.getJobs = asyncHandler(async (req, res, next) => {
+  console.time("getJobs")
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
@@ -40,10 +41,7 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Job);
 
-  const jobs = await Job.find(req.query, select).populate("occupation").populate({
-    path: 'createUser',
-    select: 'firstName profile isEmployee isEmployer'
-  })
+  const jobs = await Job.find(req.query, select)
   .sort({isUrgent:-1})  
   .sort(sort)
     .skip(pagination.start - 1)
@@ -57,7 +55,7 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
     pagination,
   });
   
-  
+  console.timeEnd("getJobs")
 });
 
 exports.getProfileJobs = asyncHandler(async (req, res, next) => {
@@ -72,10 +70,7 @@ exports.getProfileJobs = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Job);
 
-  const jobs = await Job.find(req.query, select).populate("occupation").populate({
-    path: 'createUser',
-    select: 'name profile isEmployee isEmployer'
-  })
+  const jobs = await Job.find(req.query, select)
   .sort({isUrgent:-1})  
   .sort(sort)
     .skip(pagination.start - 1)
@@ -104,10 +99,6 @@ exports.getOccupationJobs = asyncHandler(async (req, res, next) => {
     { ...req.query, occupation: req.params.occupationId },
     select
   )
-  .populate("occupation").populate({
-    path: 'createUser',
-    select: 'firstName profile isEmployee isEmployer'
-  })
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -140,10 +131,6 @@ exports.getCategoryJobs = asyncHandler(async (req, res, next) => {
     { ...req.query, occupation: occupations },
     select
   )
-  .populate("occupation").populate({
-    path: 'createUser',
-    select: 'firstName profile isEmployee isEmployer'
-  })
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -166,10 +153,7 @@ exports.getCvFilterJobs = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Job);
 
-  const jobs = await Job.find(req.query, select).populate("occupation").populate({
-    path: 'createUser',
-    select: 'firstName profile isEmployee isEmployer'
-  })
+  const jobs = await Job.find(req.query, select)
   .sort({isUrgent:-1})  
   .sort(sort)
     .skip(pagination.start - 1)
@@ -268,11 +252,7 @@ exports.getCvFilterJobs = asyncHandler(async (req, res, next) => {
 });
 
 exports.getJob = asyncHandler(async (req, res, next) => {
-  const job = await Job.findById(req.params.id).populate("occupation").populate({
-    path: 'createUser',
-    select: "category firstName profile jobNumber isEmployee isEmployer",
-    populate: {path: "category", select: "name"}
-  })
+  const job = await Job.findById(req.params.id)
 
 
   if (!job) {
@@ -510,6 +490,15 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   req.body.jobId = job._id
   const activity = await Activity.create(req.body)
   const profil = await Cv.findById(req.params.id);
+  job.firstName = profil.firstName
+  job.lastName = profil.lastName
+  job.profile = profil.profile
+  job.isEmployee = profil.isEmployee
+  job.isEmployer = profil.isEmployer
+  job.occupation = occupation.name
+  job.category = profil.category
+  job.announcementNumber = profil.announcementNumber
+  job.save()
   req.body.firstPoint = profil.point
   req.body.point = profile.point - profil.point
   req.body.createUser = req.params.id

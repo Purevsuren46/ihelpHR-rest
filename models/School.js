@@ -16,6 +16,15 @@ const SchoolSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Cv',
     },
+    firstName: {
+        type: String,
+      },
+      lastName: {
+        type: String,
+      },
+      profile: {
+        type: String,
+      },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 

@@ -24,6 +24,15 @@ const LikeSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Announcement',
     },
+    firstName: {
+        type: String,
+      },
+      lastName: {
+        type: String,
+      },
+      profile: {
+        type: String,
+      },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 

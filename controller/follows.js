@@ -37,7 +37,7 @@ exports.getFollowers = asyncHandler(async (req, res, next) => {
     // Pagination
     const pagination = await paginate(page, limit, Follow.find(req.query))
 
-    const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'createUser', select: 'firstName lastName profile occupation organization isEmployee isEmployer'}).populate({path: 'followUser', select: 'firstName lastName profile occupation organization isEmployee isEmployer'})
+    const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
     // const follo = await Follow.find({followUser: req.userId})
     // const userList = []
     // for(let i = 0; i<follo.length; i++) {
@@ -64,7 +64,7 @@ exports.getCvFollows = asyncHandler(async (req, res, next) => {
     // Pagination
     const pagination = await paginate(page, limit, Follow.find(req.query))
 
-    const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'followUser', select: 'firstName lastName profile occupation organization category isEmployee isEmployer'}).populate({path: 'createUser', select: 'organization'})
+    const follows = await Follow.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
     // const follo = await Follow.find({createUser: req.userId})
     // const userList = []
     // for(let i = 0; i<follo.length; i++) {
@@ -85,7 +85,7 @@ exports.getCvFollows = asyncHandler(async (req, res, next) => {
 
 exports.getFollow = asyncHandler( async (req, res, next) => {
     
-        const follow = await Follow.findById(req.params.id).populate('books')
+        const follow = await Follow.findById(req.params.id)
         
         if(!follow) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)
@@ -122,6 +122,25 @@ exports.createFollow = asyncHandler(async (req, res, next) => {
     req.body.followId = req.params.id
     const activity = await Activity.create(req.body)
     const cv = await Cv.findById(req.params.id)
+    const cv1 = await Cv.findById(req.params.id2)
+    follow.followUserInfo.firstName = cv.firstName
+    follow.followUserInfo.lastName = cv.lastName
+    follow.followUserInfo.profile = cv.profile
+    follow.followUserInfo.isEmployee = cv.isEmployee
+    follow.followUserInfo.isEmployer = cv.isEmployer
+    follow.followUserInfo.occupation = cv.occupation
+    follow.followUserInfo.organization = cv.organization
+    follow.followUserInfo.category = cv.category
+
+    follow.createUserInfo.firstName = cv1.firstName
+    follow.createUserInfo.lastName = cv1.lastName
+    follow.createUserInfo.profile = cv1.profile
+    follow.createUserInfo.isEmployee = cv1.isEmployee
+    follow.createUserInfo.isEmployer = cv1.isEmployer
+    follow.createUserInfo.occupation = cv1.occupation
+    follow.createUserInfo.organization = cv1.organization
+    follow.createUserInfo.category = cv1.category
+    follow.save()
     cv.notification += 1
     cv.save()
 

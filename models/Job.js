@@ -114,6 +114,21 @@ const JobSchema = new mongoose.Schema({
   language: {
     type: String,
   },
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
+  profile: {
+    type: String,
+  },
+  isEmployee: {
+    type: Boolean,
+  },
+  isEmployer: {
+    type: Boolean,
+  },
   score: {
     type: Number,
   },

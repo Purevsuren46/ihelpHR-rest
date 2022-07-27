@@ -55,6 +55,27 @@ const PostSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
+  profile: {
+    type: String,
+  },
+  profession: {
+    type: String,
+  },
+  organization: {
+    type: String,
+  },
+  workingCompany: {
+    type: String,
+  },
+  status: {
+    type: String,
+  },
 sharePost: {
     type: mongoose.Schema.ObjectId,
     ref: 'Post',

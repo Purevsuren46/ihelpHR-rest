@@ -20,9 +20,7 @@ exports.getApplies = asyncHandler(async (req, res, next) => {
         // Pagination
         const pagination = await paginate(page, limit, Apply)
 
-        const applies = await Apply.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: "job", select: "type salary occupation", populate: {path: "occupation", select: "name"}})
-        .populate({path: "company", select: "firstName profile category", populate: {path: "category", select: "name"}})
-        .populate({path: "createUser", select: "name lastName firstName profile"})
+        const applies = await Apply.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
 
         res.status(200).json({ success: true, data: applies, pagination, })
     
@@ -164,10 +162,24 @@ exports.createApply = asyncHandler(async (req, res, next) => {
         req.body.jobId = req.params.id
         const activity = await Activity.create(req.body)
         const cv = await Cv.findById(post.createUser)
+        const cv1 = await Cv.findById(req.userId)
+
+        like.companyInfo.firstName = cv.firstName
+        like.companyInfo.profile = cv.profile
+        like.companyInfo.category = cv.category
+
+        like.createUserInfo.firstName = cv1.firstName
+        like.createUserInfo.profile = cv1.profile
+        like.createUserInfo.lastName = cv1.lastName
+
+        like.jobInfo.type = post.type
+        like.jobInfo.salary = post.salary
+        like.jobInfo.occupation = post.occupation
+        like.save()
+
         cv.notification += 1
         cv.save()
 
-        const cv1 = await Cv.findById(req.userId)
         let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
         let messages = [];
         if (!Expo.isExpoPushToken(cv.expoPushToken)) {

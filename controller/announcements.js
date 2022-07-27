@@ -39,10 +39,7 @@ exports.getAnnouncements = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Announcement);
 
-  const announcements = await Announcement.find(req.query, select).populate("occupation").populate({
-    path: 'createUser',
-    select: 'profile lastName firstName isEmployee isEmployer'
-  })
+  const announcements = await Announcement.find(req.query, select)
   .sort({isUrgent:-1})  
   .sort(sort)
     .skip(pagination.start - 1)
@@ -70,10 +67,7 @@ exports.getProfileAnnouncements = asyncHandler(async (req, res, next) => {
 
   const pagination = await paginate(page, limit, Announcement);
 
-  const announcements = await Announcement.find(req.query, select).populate("occupation").populate({
-    path: 'createUser',
-    select: 'firstName profile isEmployee isEmployer'
-  })
+  const announcements = await Announcement.find(req.query, select)
   .sort({isUrgent:-1})  
   .sort(sort)
     .skip(pagination.start - 1)
@@ -102,10 +96,6 @@ exports.getOccupationAnnouncements = asyncHandler(async (req, res, next) => {
     { ...req.query, occupation: req.params.occupationId },
     select
   )
-  .populate("occupation").populate({
-    path: 'createUser',
-    select: 'firstName profile isEmployee isEmployer'
-  })
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
@@ -144,11 +134,7 @@ exports.getCvFilterAnnouncements = asyncHandler(async (req, res, next) => {
 });
 
 exports.getAnnouncement = asyncHandler(async (req, res, next) => {
-  const announcement = await Announcement.findById(req.params.id).populate("occupation").populate({
-    path: 'createUser',
-    select: "category name profile announcementNumber firstName isEmployee isEmployer",
-    populate: {path: "category", select: "name"}
-  })
+  const announcement = await Announcement.findById(req.params.id)
 
 
   if (!announcement) {
@@ -385,6 +371,15 @@ exports.createAnnouncement = asyncHandler(async (req, res, next) => {
   req.body.announcementId = announcement._id
   const activity = await Activity.create(req.body)
   const profil = await Cv.findById(req.userId);
+  announcement.firstName = profil.firstName
+  announcement.lastName = profil.lastName
+  announcement.profile = profil.profile
+  announcement.isEmployee = profil.isEmployee
+  announcement.isEmployer = profil.isEmployer
+  announcement.occupation = occupation.name
+  announcement.category = profil.category
+  announcement.announcementNumber = profil.announcementNumber
+  announcement.save()
   req.body.firstPoint = profil.point
   req.body.point = profile.point - profil.point
   req.body.createUser = req.userId

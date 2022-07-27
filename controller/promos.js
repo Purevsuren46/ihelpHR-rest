@@ -19,7 +19,7 @@ exports.getPromos = asyncHandler(async (req, res, next) => {
         // Pagination
         const pagination = await paginate(page, limit, Promo)
 
-        const promos = await Promo.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'createUser', select: 'lastName firstName profile'})
+        const promos = await Promo.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
 
         res.status(200).json({ success: true, data: promos, pagination, })
     
@@ -28,7 +28,7 @@ exports.getPromos = asyncHandler(async (req, res, next) => {
 
 exports.getPromo = asyncHandler( async (req, res, next) => {
     
-        const promo = await Promo.findById(req.params.id).populate('books')
+        const promo = await Promo.findById(req.params.id)
         
         if(!promo) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)
@@ -54,6 +54,11 @@ const resetToken = crypto.randomBytes(3).toString("hex");
     req.body.expireDate = Date.now() + 60 * 60 * 1000 * 24 * 90;
 
     const promo = await Promo.create(req.body)
+    const cv = await Cv.findById(req.userId)
+    promo.firstName = cv.firstName
+    promo.lastName = cv.lastName
+    promo.profile = cv.profile
+    promo.save()
     
     res.status(200).json({ success: true, data: promo, })
         

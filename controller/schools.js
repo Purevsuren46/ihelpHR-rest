@@ -18,7 +18,7 @@ exports.getSchools = asyncHandler(async (req, res, next) => {
         // Pagination
         const pagination = await paginate(page, limit, School)
 
-        const schools = await School.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'createUser', select: 'lastName firstName profile'})
+        const schools = await School.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
 
         res.status(200).json({ success: true, data: schools, pagination, })
     
@@ -27,7 +27,7 @@ exports.getSchools = asyncHandler(async (req, res, next) => {
 
 exports.getSchool = asyncHandler( async (req, res, next) => {
     
-        const school = await School.findById(req.params.id).populate('books')
+        const school = await School.findById(req.params.id)
         
         if(!school) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)
@@ -46,7 +46,11 @@ exports.getSchool = asyncHandler( async (req, res, next) => {
 exports.createSchool = asyncHandler(async (req, res, next) => {
     
     const school = await School.create(req.body)
-    
+    const cv = await Cv.findById(req.userId)
+    school.firstName = cv.firstName
+    school.lastName = cv.lastName
+    school.profile = cv.profile
+    school.save()
     res.status(200).json({ success: true, data: school, })
         
         

@@ -19,7 +19,7 @@ exports.getComments = asyncHandler(async (req, res, next) => {
         // Pagination
         const pagination = await paginate(page, limit, Comment)
 
-        const comments = await Comment.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'createUser', select: 'lastName firstName profile'})
+        const comments = await Comment.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
 
         res.status(200).json({ success: true, data: comments, pagination, })
     
@@ -37,7 +37,7 @@ exports.getPostComments = asyncHandler(async (req, res, next) => {
         // Pagination
         const pagination = await paginate(page, limit, Comment)
 
-        const comments = await Comment.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit).populate({path: 'createUser', select: 'lastName firstName profile'})
+        const comments = await Comment.find(req.query, select).sort(sort).skip(pagination.start - 1).limit(limit)
 
         res.status(200).json({ success: true, data: comments, pagination, })
     
@@ -45,7 +45,7 @@ exports.getPostComments = asyncHandler(async (req, res, next) => {
 
 exports.getComment = asyncHandler( async (req, res, next) => {
     
-        const comment = await Comment.findById(req.params.id).populate('books')
+        const comment = await Comment.findById(req.params.id)
         
         if(!comment) {
         throw new MyError(req.params.id + " ID-тай ажил байхгүй.", 400)
@@ -92,6 +92,10 @@ exports.createComment = asyncHandler(async (req, res, next) => {
                 cv.save()
         
                 const cv1 = await Cv.findById(req.userId)
+                comment.firstName = cv1.firstName
+                comment.lastName = cv1.lastName
+                comment.profile = cv1.profile
+                comment.save()
                 let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
                 let messages = [];
                 if (!Expo.isExpoPushToken(cv.expoPushToken)) {
