@@ -138,6 +138,9 @@ const JobSchema = new mongoose.Schema({
   score: {
     type: Number,
   },
+  comJobNumber: {
+    type: Number,
+  },
   isLiked: {
     type: Boolean,
     default: false,

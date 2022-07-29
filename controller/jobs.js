@@ -499,6 +499,7 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   job.occupationName = occupation.name
   job.comCategoryName = profil.categoryName
   job.announcementNumber = profil.announcementNumber
+  job.comJobNumber = profil.jobNumber
   job.save()
   req.body.firstPoint = profil.point
   req.body.point = profile.point - profil.point
