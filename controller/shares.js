@@ -112,11 +112,15 @@ exports.getShare = asyncHandler( async (req, res, next) => {
 
 exports.createShare = asyncHandler(async (req, res, next) => {
         const post = await Post.findById(req.params.id)
+        const cv1 = await Cv.findById(req.userId)
         post.share += 1
         post.save()
         req.body.createUser = req.userId;
         req.body.sharePost = req.params.id;
         req.body.isShare = true
+        req.body.profile = cv1.profile
+        req.body.firstName = cv1.firstName
+        req.body.lastName = cv1.lastName
 
 
         const share = await Post.create(req.body);
@@ -160,7 +164,6 @@ exports.createShare = asyncHandler(async (req, res, next) => {
         cv.notification += 1
         cv.save()
 
-        const cv1 = await Cv.findById(req.userId)
         let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
         let messages = [];
         if (!Expo.isExpoPushToken(cv.expoPushToken)) {
