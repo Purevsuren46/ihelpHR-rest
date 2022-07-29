@@ -111,6 +111,9 @@ const JobSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Cv',
   },
+  comCategoryName: {
+    type: String
+  },
   schedule: {
     type: String,
   },

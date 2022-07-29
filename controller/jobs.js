@@ -483,6 +483,7 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   profile.jobNumber += 1
   
   req.body.createUser = req.params.id;
+
   const job = await Job.create(req.body);
   req.body.createUser = req.params.id
   req.body.type = "Job"
@@ -496,7 +497,7 @@ exports.createJob = asyncHandler(async (req, res, next) => {
   job.isEmployee = profil.isEmployee
   job.isEmployer = profil.isEmployer
   job.occupationName = occupation.name
-  job.category = profil.categoryName
+  job.comCategoryName = profil.categoryName
   job.announcementNumber = profil.announcementNumber
   job.save()
   req.body.firstPoint = profil.point
