@@ -194,19 +194,41 @@ exports.createLike = asyncHandler(async (req, res, next) => {
     const likes = await Like.findOne({createUser: req.userId, post: req.params.id}).exec()
     if (likes == null) {
         const post = await Post.findById(req.params.id)
+        const cv1 = await Cv.findById(req.userId)
+
         if(post.createUser == req.userId) {
+
           post.like += 1
           post.save()
           req.body.createUser = req.userId;
           req.body.post = req.params.id;
+          req.body.firstName = cv1.firstName
+          req.body.lastName = cv1.lastName
+          req.body.profile = cv1.profile
+          req.body.isEmployee = cv1.isEmployee
+          req.body.isEmployer = cv1.isEmployer
       const like = await Like.create(req.body);
+
+
+
+
+
       res.status(200).json({ success: true, data: like, })
         } else {
           post.like += 1
         post.save()
         req.body.createUser = req.userId;
         req.body.post = req.params.id;
+        req.body.firstName = cv1.firstName
+        req.body.lastName = cv1.lastName
+        req.body.profile = cv1.profile
+        req.body.isEmployee = cv1.isEmployee
+        req.body.isEmployer = cv1.isEmployer
     const like = await Like.create(req.body);
+    
+
+
+          
     req.body.like = like._id
     req.body.who = req.userId
     req.body.for = post.createUser
@@ -220,7 +242,6 @@ exports.createLike = asyncHandler(async (req, res, next) => {
     cv.notification += 1
     cv.save()
     
-    const cv1 = await Cv.findById(req.userId)
     like.firstName = cv1.firstName
     like.lastName = cv1.lastName
     like.profile = cv1.profile
@@ -273,10 +294,16 @@ exports.createJobLike = asyncHandler(async (req, res, next) => {
         if (post == null) {
           const post = await Announcement.findById(req.params.id)
           if (post != null) {
+        const cv1 = await Cv.findById(req.userId)
             post.like += 1
             post.save()
             req.body.createUser = req.userId;
             req.body.announcement = req.params.id;
+            req.body.firstName = cv1.firstName
+            req.body.lastName = cv1.lastName
+            req.body.profile = cv1.profile
+            req.body.isEmployee = cv1.isEmployee
+            req.body.isEmployer = cv1.isEmployer
         const like = await Like.create(req.body);
         req.body.like = like._id
         req.body.who = req.userId
@@ -292,7 +319,6 @@ exports.createJobLike = asyncHandler(async (req, res, next) => {
         cv.notification += 1
         cv.save()
     
-        const cv1 = await Cv.findById(req.userId)
         let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
         let messages = [];
         if (!Expo.isExpoPushToken(cv.expoPushToken)) {
@@ -320,9 +346,15 @@ exports.createJobLike = asyncHandler(async (req, res, next) => {
         res.status(200).json({ success: true, data: like, notification: notification, })
           }
         }
+    const cv1 = await Cv.findById(req.userId)
 
         req.body.createUser = req.userId;
         req.body.job = req.params.id;
+        req.body.firstName = cv1.firstName
+        req.body.lastName = cv1.lastName
+        req.body.profile = cv1.profile
+        req.body.isEmployee = cv1.isEmployee
+        req.body.isEmployer = cv1.isEmployer
     const like = await Like.create(req.body);
     req.body.like = like._id
     req.body.who = req.userId
@@ -338,7 +370,6 @@ exports.createJobLike = asyncHandler(async (req, res, next) => {
     cv.notification += 1
     cv.save()
 
-    const cv1 = await Cv.findById(req.userId)
     let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
     let messages = [];
     if (!Expo.isExpoPushToken(cv.expoPushToken)) {
@@ -368,6 +399,68 @@ exports.createJobLike = asyncHandler(async (req, res, next) => {
         throw new MyError("Like дарсан байна.", 400)
     }
     
+})
+
+exports.createAnnouncementLike = asyncHandler(async (req, res, next) => {
+  const like = await Like.findOne({createUser: req.userId, announcement: req.params.id}).exec()
+
+  if (like == null) {
+    const post = await Announcement.findById(req.params.id)
+    const cv1 = await Cv.findById(req.userId)
+    post.like += 1
+    post.save()
+    req.body.createUser = req.userId;
+    req.body.announcement = req.params.id;
+    req.body.firstName = cv1.firstName
+    req.body.lastName = cv1.lastName
+    req.body.profile = cv1.profile
+    req.body.isEmployee = cv1.isEmployee
+    req.body.isEmployer = cv1.isEmployer
+const like = await Like.create(req.body);
+req.body.like = like._id
+req.body.who = req.userId
+req.body.for = post.createUser
+req.body.isAnnouncement = true
+const notification = await Notification.create(req.body)
+req.body.createUser = req.userId
+req.body.type = "AnnouncementSave"
+req.body.crud = "Create"
+req.body.announcementId = req.params.id
+const activity = await Activity.create(req.body)
+const cv = await Cv.findById(post.createUser)
+cv.notification += 1
+cv.save()
+
+let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+let messages = [];
+if (!Expo.isExpoPushToken(cv.expoPushToken)) {
+    console.error(`Push token ${cv.expoPushToken} is not a valid Expo push token`);
+}
+messages.push({
+    to: cv.expoPushToken,
+    sound: 'default',
+    body: `Таны ажлын зарыг ${cv1.firstName} хадгаллаа`,
+    data: { notificationId: notification._id },
+  })
+let chunks = expo.chunkPushNotifications(messages);
+let tickets = [];
+(async () => {
+    for (let chunk of chunks) {
+      try {
+        let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        console.log(ticketChunk);
+        tickets.push(...ticketChunk);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  })();
+res.status(200).json({ success: true, data: like, notification: notification, })
+  } else {
+    throw new MyError("Like дарсан байна.", 400)
+  }
+
+  
 })
 
 exports.updateLike = asyncHandler(async (req, res, next) => {

@@ -33,6 +33,12 @@ const LikeSchema = new mongoose.Schema({
       profile: {
         type: String,
       },
+      isEmployee: {
+        type: Boolean,
+      },
+      isEmployer: {
+        type: Boolean,
+      },
 }, {toJSON: { virtuals: true}, toObject: {virtuals: true}})
 
 

@@ -104,6 +104,9 @@ const AnnouncementSchema = new mongoose.Schema({
   isEmployer: {
     type: Boolean,
   },
+  comCategoryName: {
+    type: String
+  },
   announcementNumber: {
     type: Number,
     default: 0

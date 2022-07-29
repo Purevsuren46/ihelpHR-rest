@@ -377,7 +377,7 @@ exports.createAnnouncement = asyncHandler(async (req, res, next) => {
   announcement.isEmployee = profil.isEmployee
   announcement.isEmployer = profil.isEmployer
   announcement.occupationName = occupation.name
-  announcement.category = profil.categoryName
+  announcement.comCategoryName = profil.categoryName
   announcement.announcementNumber = profil.announcementNumber
   announcement.save()
   req.body.firstPoint = profil.point
