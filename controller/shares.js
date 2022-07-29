@@ -125,7 +125,6 @@ exports.createShare = asyncHandler(async (req, res, next) => {
         req.body.profession = cv1.profession
         req.body.organization = cv1.organization
         req.body.status = cv1.status
-        console.log(req.body.share)
 
         const share = await Post.create(req.body);
         share.shareInfo.body = post.body
