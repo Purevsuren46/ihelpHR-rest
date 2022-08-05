@@ -31,7 +31,6 @@ exports.getUnspecialJobs = asyncHandler(async (req, res, next) => {
 
 // api/v1/Jobs
 exports.getJobs = asyncHandler(async (req, res, next) => {
-  console.time("getJobs")
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
@@ -54,8 +53,6 @@ exports.getJobs = asyncHandler(async (req, res, next) => {
     data: jobs,
     pagination,
   });
-  
-  console.timeEnd("getJobs")
 });
 
 exports.getProfileJobs = asyncHandler(async (req, res, next) => {

@@ -124,7 +124,6 @@ exports.getUserPosts = asyncHandler(async (req, res, next) => {
 
 // api/v1/categories/:catId/Posts
 exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
-  console.time("followingPosts")
   req.query.createUser = req.params.id;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -169,7 +168,6 @@ exports.getFollowingPosts = asyncHandler(async (req, res, next) => {
   // }
 
   res.status(200).json({ success: true, data: post, pagination, })
-  console.timeEnd("followingPosts")
 });
 
 exports.getPost = asyncHandler(async (req, res, next) => {

@@ -66,7 +66,6 @@ exports.getCvLikes = asyncHandler(async (req, res, next) => {
 })
 
 exports.getCvPostLikes = asyncHandler(async (req, res, next) => {
-  console.time("getCvPostLikes")
   // req.query.createUser = req.params.id;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10000;
@@ -82,7 +81,6 @@ exports.getCvPostLikes = asyncHandler(async (req, res, next) => {
     const likes = await Like.find({createUser: req.params.id, post: {$ne: null}}).select('post')
 
   res.status(200).json({ success: true, data: likes, pagination, })
-  console.timeEnd("getCvPostLikes")
 })
 
 exports.getCvJobLikes = asyncHandler(async (req, res, next) => {

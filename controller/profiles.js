@@ -66,7 +66,6 @@ exports.logout = asyncHandler(async (req, res, next) => {
 });
 
 exports.getProfiles = asyncHandler(async (req, res, next) => {
-  console.time("getProfiles")
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
@@ -113,7 +112,6 @@ exports.getProfiles = asyncHandler(async (req, res, next) => {
     data: profiles,
     pagination,
   });
-  console.timeEnd("getProfiles")
 });
 
 exports.getProfile = asyncHandler(async (req, res, next) => {

@@ -99,7 +99,6 @@ exports.getCvs = asyncHandler(async (req, res, next) => {
 });
 // Хэрэглэгчийг iD гаар авна
 exports.getCv = asyncHandler(async (req, res, next) => {
-  console.time("getCv")
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
@@ -120,11 +119,9 @@ exports.getCv = asyncHandler(async (req, res, next) => {
     success: true,
     data: cv,
   });
-  console.timeEnd("getCv")
 });
 
 exports.getCvActivity = asyncHandler(async (req, res, next) => {
-  console.time("getCvActivity")
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
@@ -157,7 +154,6 @@ exports.getCvActivity = asyncHandler(async (req, res, next) => {
     data: cvs,
     pagination,
   });
-  console.timeEnd("getCvActivity")
 });
 // Үнэмлэхний зургаа явуулцан, гэрээгээ зөвшөөрцөн хэрэглэгчдийг авах
 exports.getAuthCvs = asyncHandler(async (req, res, next) => {
