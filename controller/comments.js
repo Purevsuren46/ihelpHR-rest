@@ -70,6 +70,11 @@ exports.createComment = asyncHandler(async (req, res, next) => {
                 req.body.createUser = req.userId;
                 req.body.post = req.params.id;
             const like = await Comment.create(req.body);
+            const cv1 = await Cv.findById(req.body.createUser)
+            like.firstName = cv1.firstName
+            like.lastName = cv1.lastName
+            like.profile = cv1.profile
+            like.save()
             res.status(200).json({ success: true, data: like, })
               } else {
                 post.comment += 1
